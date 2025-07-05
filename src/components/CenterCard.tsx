@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Star, Phone, ExternalLink, Bookmark, Languages, Utensils, SquareArrowOutUpRight } from 'lucide-react';
+import { MapPin, Star, Phone, ExternalLink, Bookmark, Languages, Utensils, ArrowUpRightSquare as SquareArrowOutUpRight } from 'lucide-react';
 import { Center } from '../types/center';
 
 interface CenterCardProps {
