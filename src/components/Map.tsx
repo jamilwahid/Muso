@@ -16,10 +16,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [showMapHint, setShowMapHint] = useState(() => {
-    // Only show hint if main onboarding is completed but user hasn't clicked a marker
-    const onboardingCompleted = localStorage.getItem('muso-onboarding-completed') === 'true';
+    // Only show hint if tour is completed but user hasn't clicked a marker
+    const tourCompleted = localStorage.getItem('muso-tour-completed') === 'true';
     const hasClickedMarker = localStorage.getItem('muso-clicked-marker') === 'true';
-    return onboardingCompleted && !hasClickedMarker;
+    return tourCompleted && !hasClickedMarker;
   });
   const [showDismissHint, setShowDismissHint] = useState(false);
   const [viewState, setViewState] = useState({

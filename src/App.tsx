@@ -47,11 +47,14 @@ function App() {
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
     localStorage.setItem('muso-onboarding-completed', 'true');
+    // Also mark that they've seen the tour, so map hints work properly
+    localStorage.setItem('muso-tour-completed', 'true');
   };
 
   const handleOnboardingSkip = () => {
     setShowOnboarding(false);
     localStorage.setItem('muso-onboarding-completed', 'true');
+    localStorage.setItem('muso-tour-completed', 'true');
   };
 
   const handleShowOnboarding = () => {
