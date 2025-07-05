@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import Map, { Marker, Popup, useMap } from 'react-map-gl';
+import Map, { Marker } from 'react-map-gl';
 import { MapPin } from 'lucide-react';
 import { Center } from '../types/center';
 import { CenterCard } from './CenterCard';
@@ -12,7 +12,7 @@ interface MapComponentProps {
 
 export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCenters }) => {
   const [selectedCenter, setSelectedCenter] = useState<Center | null>(null);
-  const [cardPosition, setCardPosition] = useState<{ x: number; y: number; anchor: string } | null>(null);
+  const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [viewState, setViewState] = useState({
     longitude: -79.3832,
     latitude: 43.6532,
@@ -20,21 +20,29 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   });
   
   const mapRef = useRef<any>(null);
-  const { current: map } = useMap();
 
   // Only show filtered centers that have valid coordinates
   const centersWithCoords = useMemo(() => {
     return filteredCenters.filter(center => 
       center.location.latitude !== null && 
-      center.location.longitude !== null
+      center.location.longitude !== null &&
+      center.location.latitude !== undefined &&
+      center.location.longitude !== undefined &&
+      !isNaN(center.location.latitude) &&
+      !isNaN(center.location.longitude)
     );
   }, [filteredCenters]);
 
   // Calculate optimal card position based on marker screen coordinates
   const calculateCardPosition = useCallback((center: Center) => {
-    if (!map || !center.location.latitude || !center.location.longitude) return null;
+    if (!mapRef.current || !center.location.latitude || !center.location.longitude) {
+      return null;
+    }
 
     try {
+      const map = mapRef.current.getMap();
+      if (!map) return null;
+
       // Get marker's screen coordinates
       const markerScreenCoords = map.project([center.location.longitude, center.location.latitude]);
       const mapContainer = map.getContainer();
@@ -48,46 +56,42 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
       const cardHeight = 300;
       const margin = 20;
       
-      // Determine optimal position
       let x = markerX;
       let y = markerY;
-      let anchor = 'bottom';
       
       // Check if card would overflow on the right
       if (markerX + cardWidth + margin > containerRect.width) {
         // Position to the left of marker
         x = markerX - cardWidth - margin;
-        anchor = 'right';
       } else {
         // Position to the right of marker
         x = markerX + margin;
-        anchor = 'left';
       }
       
       // Check vertical positioning
       if (markerY - cardHeight - margin < 0) {
         // Not enough space above, position below
         y = markerY + 40; // Account for marker height
-        anchor = anchor === 'left' ? 'top-left' : anchor === 'right' ? 'top-right' : 'top';
       } else {
         // Position above marker
         y = markerY - cardHeight - margin;
-        anchor = anchor === 'left' ? 'bottom-left' : anchor === 'right' ? 'bottom-right' : 'bottom';
       }
       
       // Ensure card stays within viewport bounds
       x = Math.max(margin, Math.min(x, containerRect.width - cardWidth - margin));
       y = Math.max(margin, Math.min(y, containerRect.height - cardHeight - margin));
       
-      return { x, y, anchor };
+      return { x, y };
     } catch (error) {
       console.warn('Error calculating card position:', error);
       return null;
     }
-  }, [map]);
+  }, []);
 
   // Handle marker click - toggle selection and calculate position
   const handleMarkerClick = useCallback((center: Center, event: any) => {
+    event.originalEvent.stopPropagation();
+    
     if (selectedCenter?.center_id === center.center_id) {
       // If clicking the already selected marker, deselect it
       setSelectedCenter(null);
@@ -100,7 +104,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
       setTimeout(() => {
         const position = calculateCardPosition(center);
         setCardPosition(position);
-      }, 50);
+      }, 100);
     }
   }, [selectedCenter, calculateCardPosition]);
 
@@ -125,11 +129,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
 
   // Recalculate card position when map moves
   useEffect(() => {
-    if (selectedCenter && map) {
+    if (selectedCenter && mapRef.current) {
       const position = calculateCardPosition(selectedCenter);
       setCardPosition(position);
     }
-  }, [viewState, selectedCenter, calculateCardPosition, map]);
+  }, [viewState, selectedCenter, calculateCardPosition]);
 
   return (
     <div className="relative h-full w-full">
@@ -154,10 +158,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
               longitude={center.location.longitude!}
               latitude={center.location.latitude!}
               anchor="bottom"
-              onClick={(e) => {
-                e.originalEvent.stopPropagation();
-                handleMarkerClick(center, e);
-              }}
+              onClick={(e) => handleMarkerClick(center, e)}
             >
               <div 
                 className={`relative cursor-pointer transition-all duration-300 transform ${
@@ -208,7 +209,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
             width: 'auto'
           }}
         >
-          <div className="pointer-events-auto transform transition-all duration-300 ease-out animate-in fade-in slide-in-from-bottom-2">
+          <div className="pointer-events-auto transform transition-all duration-300 ease-out">
             <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
               <CenterCard center={selectedCenter} />
             </div>
@@ -235,17 +236,16 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         </div>
       </div>
 
-      {/* Instructions overlay - Top right */}
-      <div className="absolute top-4 right-4 z-10">
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-3">
-          <div className="space-y-1 text-xs text-slate-600">
-            <div className="font-medium">Click a marker to view details</div>
-            {selectedCenter && (
-              <div className="text-indigo-600">Press ESC to close</div>
-            )}
+      {/* Instructions overlay - Top right (only show when no center is selected) */}
+      {!selectedCenter && (
+        <div className="absolute top-4 right-4 z-10">
+          <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-3">
+            <div className="text-xs text-slate-600 font-medium">
+              Click a marker to view details
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
