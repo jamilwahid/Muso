@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import Map, { Marker } from 'react-map-gl';
+import Map, { Marker, Layer, Source } from 'react-map-gl';
 import { MapPin } from 'lucide-react';
 import { Center } from '../types/center';
 import { CenterCard } from './CenterCard';
@@ -22,6 +22,180 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   
   const mapRef = useRef<any>(null);
 
+  // Custom map style configuration for calmer appearance
+  const customMapStyle = useMemo(() => ({
+    version: 8,
+    sources: {
+      'mapbox-streets': {
+        type: 'vector',
+        url: 'mapbox://mapbox.mapbox-streets-v8'
+      }
+    },
+    layers: [
+      // Base land layer - soft off-white
+      {
+        id: 'land',
+        type: 'fill',
+        source: 'mapbox-streets',
+        'source-layer': 'landuse',
+        paint: {
+          'fill-color': '#fafaf9', // Very soft off-white
+          'fill-opacity': 1
+        }
+      },
+      // Water bodies - very soft blue-gray
+      {
+        id: 'water',
+        type: 'fill',
+        source: 'mapbox-streets',
+        'source-layer': 'water',
+        paint: {
+          'fill-color': '#f1f5f9', // Very muted blue-gray
+          'fill-opacity': 0.8
+        }
+      },
+      // Parks and green spaces - muted green
+      {
+        id: 'parks',
+        type: 'fill',
+        source: 'mapbox-streets',
+        'source-layer': 'landuse',
+        filter: ['in', 'class', 'park', 'recreation_ground'],
+        paint: {
+          'fill-color': '#f0f4f0', // Very muted green
+          'fill-opacity': 0.6
+        }
+      },
+      // Buildings - subtle gray
+      {
+        id: 'buildings',
+        type: 'fill',
+        source: 'mapbox-streets',
+        'source-layer': 'building',
+        paint: {
+          'fill-color': '#f8fafc',
+          'fill-opacity': 0.7,
+          'fill-outline-color': '#e2e8f0'
+        }
+      },
+      // Major roads - very muted
+      {
+        id: 'roads-major',
+        type: 'line',
+        source: 'mapbox-streets',
+        'source-layer': 'road',
+        filter: ['in', 'class', 'motorway', 'trunk', 'primary'],
+        paint: {
+          'line-color': '#e2e8f0', // Muted gray instead of bright colors
+          'line-width': {
+            base: 1.2,
+            stops: [[6, 0.5], [20, 8]]
+          },
+          'line-opacity': 0.8
+        }
+      },
+      // Secondary roads - even more muted
+      {
+        id: 'roads-secondary',
+        type: 'line',
+        source: 'mapbox-streets',
+        'source-layer': 'road',
+        filter: ['in', 'class', 'secondary', 'tertiary'],
+        paint: {
+          'line-color': '#f1f5f9',
+          'line-width': {
+            base: 1.2,
+            stops: [[8, 0.5], [20, 4]]
+          },
+          'line-opacity': 0.7
+        }
+      },
+      // Local roads - barely visible
+      {
+        id: 'roads-local',
+        type: 'line',
+        source: 'mapbox-streets',
+        'source-layer': 'road',
+        filter: ['in', 'class', 'street', 'street_limited'],
+        paint: {
+          'line-color': '#f8fafc',
+          'line-width': {
+            base: 1.2,
+            stops: [[12, 0.5], [20, 2]]
+          },
+          'line-opacity': 0.5
+        }
+      },
+      // City labels - very low opacity
+      {
+        id: 'city-labels',
+        type: 'symbol',
+        source: 'mapbox-streets',
+        'source-layer': 'place_label',
+        filter: ['in', 'type', 'city'],
+        layout: {
+          'text-field': '{name}',
+          'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+          'text-size': {
+            base: 1.2,
+            stops: [[7, 14], [14, 24]]
+          }
+        },
+        paint: {
+          'text-color': '#94a3b8', // Very muted gray
+          'text-opacity': 0.4,
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 1,
+          'text-halo-blur': 1
+        }
+      },
+      // Neighborhood labels - extremely low opacity
+      {
+        id: 'neighborhood-labels',
+        type: 'symbol',
+        source: 'mapbox-streets',
+        'source-layer': 'place_label',
+        filter: ['in', 'type', 'neighbourhood'],
+        layout: {
+          'text-field': '{name}',
+          'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+          'text-size': {
+            base: 1.2,
+            stops: [[10, 11], [16, 16]]
+          }
+        },
+        paint: {
+          'text-color': '#cbd5e1',
+          'text-opacity': 0.3,
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 1
+        }
+      },
+      // Road labels - minimal visibility
+      {
+        id: 'road-labels',
+        type: 'symbol',
+        source: 'mapbox-streets',
+        'source-layer': 'road_label',
+        filter: ['in', 'class', 'motorway', 'trunk', 'primary'],
+        layout: {
+          'text-field': '{name}',
+          'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+          'text-size': {
+            base: 1.2,
+            stops: [[13, 10], [18, 13]]
+          },
+          'symbol-placement': 'line'
+        },
+        paint: {
+          'text-color': '#cbd5e1',
+          'text-opacity': 0.25,
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 1
+        }
+      }
+    ]
+  }), []);
   // Only show filtered centers that have valid coordinates
   const centersWithCoords = useMemo(() => {
     return filteredCenters.filter(center => 
@@ -148,7 +322,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         onClick={handleMapClick}
-        mapStyle="mapbox://styles/mapbox/streets-v12"
+        mapStyle={customMapStyle}
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%' }}
         attributionControl={true}
@@ -178,11 +352,13 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                   isSelected ? 'w-10 h-10' : 'w-8 h-8'
                 }`}></div>
                 
-                {/* Main Pin - Unified design */}
+                {/* Main Pin - Enhanced visibility against muted background */}
                 <div className={`relative rounded-full border-3 border-white shadow-lg flex items-center justify-center transition-all duration-300 ${
                   isSelected
-                    ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200 ring-opacity-75'
-                    : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600'
+                    ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-300 ring-opacity-75 shadow-xl'
+                    : center.CWELCC_participant
+                    ? 'w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 shadow-lg'
+                    : 'w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 shadow-lg'
                 }`}>
                   <MapPin className={`text-white transition-all duration-300 ${
                     isSelected ? 'h-5 w-5' : 'h-4 w-4'
@@ -242,9 +418,24 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         </div>
       </div>
 
+      {/* Map Legend - Top right corner */}
+      <div className="absolute top-4 right-4 z-10">
+        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-3">
+          <div className="space-y-2 text-xs">
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full border border-white shadow-sm"></div>
+              <span className="text-slate-600 font-medium">CWELCC Centers</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full border border-white shadow-sm"></div>
+              <span className="text-slate-600 font-medium">Other Centers</span>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* Instructions overlay - Top right (only show when no marker has ever been clicked) */}
       {!hasClickedMarker && (
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
           <div className="bg-gradient-to-r from-indigo-50 to-purple-50 backdrop-blur-xl rounded-2xl shadow-lg border border-indigo-200/60 p-4 animate-pulse">
             <div className="text-sm text-indigo-700 font-medium flex items-center space-x-2">
               <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"></div>
@@ -256,11 +447,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
 
       {/* Selected center info overlay - Top right (only show when center is selected) */}
       {selectedCenter && (
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
           <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-3">
             <div className="text-xs text-slate-600 font-medium">
               Press ESC or click map to close
-              Click a marker to view details
             </div>
           </div>
         </div>
