@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Star, Phone, ExternalLink, User, Globe, FileText, Trophy, DollarSign } from 'lucide-react';
+import { MapPin, Star, Phone, ExternalLink, User, Globe, FileText, Trophy, DollarSign, Languages, Utensils } from 'lucide-react';
 import { Center } from '../types/center';
 
 interface CenterCardProps {
@@ -83,11 +83,19 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
                 </div>
               )}
 
-              {/* Age Groups Badge */}
-              {center.programs.length > 0 && (
-                <div className="inline-flex items-center space-x-1.5 bg-gradient-to-r from-slate-50 to-gray-50 text-slate-600 px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-200/60 shadow-sm">
-                  <User className="h-3.5 w-3.5" />
-                  <span>{center.programs.map(p => p.age_group).join(', ')}</span>
+              {/* Languages Badge */}
+              {center.languages_spoken.length > 0 && (
+                <div className="inline-flex items-center space-x-1.5 bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 px-3 py-1.5 rounded-xl text-xs font-bold border border-amber-200/60 shadow-sm">
+                  <Languages className="h-3.5 w-3.5" />
+                  <span>{center.languages_spoken.slice(0, 2).join(', ')}{center.languages_spoken.length > 2 ? ` +${center.languages_spoken.length - 2}` : ''}</span>
+                </div>
+              )}
+
+              {/* Dietary Services Badge */}
+              {center.dietary_services.length > 0 && (
+                <div className="inline-flex items-center space-x-1.5 bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200/60 shadow-sm">
+                  <Utensils className="h-3.5 w-3.5" />
+                  <span>{center.dietary_services.slice(0, 2).join(', ')}{center.dietary_services.length > 2 ? ` +${center.dietary_services.length - 2}` : ''}</span>
                 </div>
               )}
             </div>
