@@ -99,7 +99,7 @@ export const MapPlaceholder: React.FC<MapPlaceholderProps> = ({
   // Render the actual map
   try {
     return (
-      <div className="h-full w-full">
+      <div className="h-full w-full bg-slate-50">
         <MapComponent 
           centers={centers}
           filteredCenters={filteredCenters}
