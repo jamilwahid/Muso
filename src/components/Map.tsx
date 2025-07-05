@@ -167,52 +167,41 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                     : 'hover:scale-110'
                 }`}
               >
-                {/* Modern Pin Design */}
-                <div className={`relative transition-all duration-300 ${
-                  isSelected
-                    ? 'drop-shadow-2xl'
-                    : 'drop-shadow-lg hover:drop-shadow-xl'
-                }`}>
+                {/* MapPin Icon as Marker */}
+                <div className={`relative transition-all duration-300`}>
                   {/* Pin Shadow */}
-                  <div className={`absolute blur-sm transition-all duration-300 ${
+                  <div className={`absolute transition-all duration-300 ${
                     isSelected 
-                      ? 'top-2 left-1 w-7 h-7 bg-black/30' 
-                      : 'top-1.5 left-0.5 w-6 h-6 bg-black/20'
-                  }`} style={{
-                    clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)'
-                  }}></div>
-                  
-                  {/* Main Pin Shape */}
-                  <div className={`relative transition-all duration-300 ${
-                    isSelected
-                      ? 'w-7 h-7 bg-gradient-to-br from-indigo-500 to-purple-600'
-                      : 'w-6 h-6 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600'
-                  }`} style={{
-                    clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)'
-                  }}>
-                    {/* Pin Icon */}
-                    <div className={`absolute inset-0 flex items-start justify-center transition-all duration-300 ${
-                      isSelected ? 'pt-1' : 'pt-0.5'
-                    }`}>
-                      <MapPin className={`text-white transition-all duration-300 ${
-                        isSelected ? 'h-4 w-4' : 'h-3.5 w-3.5'
-                      }`} />
-                    </div>
+                      ? 'top-1 left-1 blur-md opacity-40' 
+                      : 'top-0.5 left-0.5 blur-sm opacity-30'
+                  }`}>
+                    <MapPin className={`text-black transition-all duration-300 ${
+                      isSelected ? 'h-8 w-8' : 'h-7 w-7'
+                    }`} />
                   </div>
+                  
+                  {/* Main MapPin Icon */}
+                  <MapPin className={`relative transition-all duration-300 ${
+                    isSelected
+                      ? 'h-8 w-8 text-indigo-600 drop-shadow-xl'
+                      : center.CWELCC_participant
+                      ? 'h-7 w-7 text-purple-600 drop-shadow-lg hover:text-purple-500'
+                      : 'h-7 w-7 text-emerald-600 drop-shadow-lg hover:text-emerald-500'
+                  }`} />
                 </div>
                 
                 {/* Pulse animation for selected marker */}
                 {isSelected && (
-                  <div className="absolute top-0 left-0 w-7 h-7 bg-indigo-400 animate-ping opacity-50" style={{
-                    clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)'
-                  }}></div>
+                  <div className="absolute top-0 left-0 animate-ping opacity-50">
+                    <MapPin className="h-8 w-8 text-indigo-400" />
+                  </div>
                 )}
                 
                 {/* Glow effect for selected marker */}
                 {isSelected && (
-                  <div className="absolute top-0 left-0 w-7 h-7 bg-indigo-400 opacity-40 blur-sm" style={{
-                    clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)'
-                  }}></div>
+                  <div className="absolute top-0 left-0 opacity-30 blur-sm">
+                    <MapPin className="h-8 w-8 text-indigo-400" />
+                  </div>
                 )}
               </div>
             </Marker>
@@ -261,9 +250,26 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
       {/* Instructions overlay - Top right (only show when no center is selected) */}
       {!selectedCenter && (
         <div className="absolute top-4 right-4 z-10">
-          <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-3">
-            <div className="text-xs text-slate-600 font-medium">
-              Click a marker to view details
+          <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-3 space-y-2">
+            <div className="text-xs text-slate-600 font-medium mb-2">
+              Map Legend
+            </div>
+            <div className="space-y-1.5 text-xs">
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4 text-purple-600" />
+                <span className="text-slate-600 font-medium">CWELCC Centers</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4 text-emerald-600" />
+                <span className="text-slate-600 font-medium">Other Centers</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4 text-indigo-600" />
+                <span className="text-slate-600 font-medium">Selected</span>
+              </div>
+            </div>
+            <div className="text-xs text-slate-500 pt-1 border-t border-slate-200">
+              Click any marker to view details
             </div>
           </div>
         </div>
