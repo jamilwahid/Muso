@@ -73,6 +73,16 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
           
           {/* External Links - Below address */}
           <div className="mt-1 text-sm text-slate-500">
+            {center.center_contact.website && (
+              <button
+                onClick={handleWebsiteClick}
+                className="inline-flex items-center space-x-1 hover:text-blue-600 hover:underline transition-colors duration-200"
+              >
+                <Link className="h-3 w-3" />
+                <span>Website</span>
+              </button>
+            )}
+            {center.center_contact.website && <span className="mx-2">·</span>}
             <button 
               onClick={handleViewListing}
               className="inline-flex items-center space-x-1 hover:text-indigo-600 hover:underline transition-colors duration-200"
@@ -80,18 +90,6 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
               <Link className="h-3 w-3" />
               <span>Toronto.ca listing</span>
             </button>
-            {center.center_contact.website && (
-              <>
-                <span className="mx-2">·</span>
-                <button
-                  onClick={handleWebsiteClick}
-                  className="inline-flex items-center space-x-1 hover:text-blue-600 hover:underline transition-colors duration-200"
-                >
-                  <Link className="h-3 w-3" />
-                  <span>Website</span>
-                </button>
-              </>
-            )}
           </div>
         </div>
 
