@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Star, Phone, ExternalLink, User, Globe, FileText } from 'lucide-react';
+import { MapPin, Star, Phone, ExternalLink, User, Globe, FileText, Trophy, DollarSign } from 'lucide-react';
 import { Center } from '../types/center';
 
 interface CenterCardProps {
@@ -62,9 +62,34 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
               {center.center_name}
             </h3>
             
-            <div className="flex items-center text-sm text-slate-500 mb-1">
+            <div className="flex items-center text-sm text-slate-500 mb-3">
               <MapPin className="h-4 w-4 mr-2 text-slate-400" />
               <span className="font-medium">{formatAddress()}</span>
+            </div>
+
+            {/* Badges */}
+            <div className="flex flex-wrap gap-2 mb-3">
+              {center.CWELCC_participant && (
+                <div className="inline-flex items-center space-x-1.5 bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 px-3 py-1.5 rounded-xl text-xs font-bold border border-indigo-200/60 shadow-sm">
+                  <Trophy className="h-3.5 w-3.5" />
+                  <span>CWELCC</span>
+                </div>
+              )}
+              
+              {center.subsidy_available && (
+                <div className="inline-flex items-center space-x-1.5 bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 px-3 py-1.5 rounded-xl text-xs font-bold border border-emerald-200/60 shadow-sm">
+                  <DollarSign className="h-3.5 w-3.5" />
+                  <span>Subsidy</span>
+                </div>
+              )}
+
+              {/* Age Groups Badge */}
+              {center.programs.length > 0 && (
+                <div className="inline-flex items-center space-x-1.5 bg-gradient-to-r from-slate-50 to-gray-50 text-slate-600 px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-200/60 shadow-sm">
+                  <User className="h-3.5 w-3.5" />
+                  <span>{center.programs.map(p => p.age_group).join(', ')}</span>
+                </div>
+              )}
             </div>
           </div>
           
