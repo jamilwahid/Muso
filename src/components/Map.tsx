@@ -12,6 +12,8 @@ interface MapComponentProps {
 
 export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCenters }) => {
   const [selectedCenter, setSelectedCenter] = useState<Center | null>(null);
+  const [hoveredCenter, setHoveredCenter] = useState<Center | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [viewState, setViewState] = useState({
     longitude: -79.3832,
@@ -108,6 +110,26 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
     }
   }, [selectedCenter, calculateCardPosition]);
 
+  // Handle marker hover
+  const handleMarkerMouseEnter = useCallback((center: Center, event: any) => {
+    setHoveredCenter(center);
+    
+    // Calculate tooltip position based on mouse coordinates
+    const rect = event.target.getBoundingClientRect();
+    const mapContainer = mapRef.current?.getContainer();
+    if (mapContainer) {
+      const mapRect = mapContainer.getBoundingClientRect();
+      setTooltipPosition({
+        x: rect.left - mapRect.left + rect.width / 2,
+        y: rect.top - mapRect.top - 10 // Position above the marker
+      });
+    }
+  }, []);
+
+  const handleMarkerMouseLeave = useCallback(() => {
+    setHoveredCenter(null);
+    setTooltipPosition(null);
+  }, []);
   // Handle map background click - dismiss card
   const handleMapClick = useCallback(() => {
     setSelectedCenter(null);
@@ -166,6 +188,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                     ? 'scale-125 z-10'
                     : 'hover:scale-110'
                 }`}
+                onMouseEnter={(e) => handleMarkerMouseEnter(center, e)}
+                onMouseLeave={handleMarkerMouseLeave}
               >
                 {/* Pin Shadow */}
                 <div className={`absolute top-1 left-1 bg-black/20 rounded-full blur-sm transition-all duration-300 ${
@@ -198,6 +222,27 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         })}
       </Map>
 
+      {/* Hover Tooltip */}
+      {hoveredCenter && tooltipPosition && !selectedCenter && (
+        <div 
+          className="absolute z-40 pointer-events-none"
+          style={{
+            left: `${tooltipPosition.x}px`,
+            top: `${tooltipPosition.y}px`,
+            transform: 'translateX(-50%) translateY(-100%)'
+          }}
+        >
+          <div className="bg-slate-800 text-white px-3 py-2 rounded-lg shadow-lg text-sm font-medium max-w-xs">
+            <div className="truncate">
+              {hoveredCenter.center_name}
+            </div>
+            {/* Tooltip arrow */}
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2">
+              <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-slate-800"></div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Floating Card Overlay - Positioned based on marker location */}
       {selectedCenter && cardPosition && (
         <div 
