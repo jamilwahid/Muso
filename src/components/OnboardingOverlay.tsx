@@ -56,9 +56,9 @@ export const OnboardingOverlay: React.FC<OnboardingOverlayProps> = ({
     {
       id: 'map',
       title: 'Interactive Map',
-      description: 'The map shows all centers matching your current filters. Click any marker to see detailed information, contact details, and save centers to your favorites.',
+      description: 'Switch between Map and List views using the toggle in the top bar. The map shows all centers matching your current filters. Click any marker to see detailed information and contact details.',
       icon: <MapPin className="h-6 w-6" />,
-      action: 'Try clicking a marker after this tour to see center details!'
+      action: 'Try switching between Map and List views, then click a marker!'
     },
     {
       id: 'ready',

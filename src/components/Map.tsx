@@ -15,12 +15,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   const [hoveredCenter, setHoveredCenter] = useState<Center | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
-  const [showMapHint, setShowMapHint] = useState(() => {
-    // Only show hint if tour is completed but user hasn't clicked a marker
-    const tourCompleted = localStorage.getItem('muso-tour-completed') === 'true';
-    const hasClickedMarker = localStorage.getItem('muso-clicked-marker') === 'true';
-    return tourCompleted && !hasClickedMarker;
-  });
+  const [showMapHint, setShowMapHint] = useState(false);
   const [showDismissHint, setShowDismissHint] = useState(false);
   const [viewState, setViewState] = useState({
     longitude: -79.3832,

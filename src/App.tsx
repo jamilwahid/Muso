@@ -11,9 +11,10 @@ import centersData from './data/centers.json';
 
 function App() {
   const [centers] = useState<Center[]>(centersData as Center[]);
+  const [currentView, setCurrentView] = useState<'map' | 'list'>('map');
   const [showOnboarding, setShowOnboarding] = useState(() => {
     // Check if user has seen onboarding before
-    return localStorage.getItem('muso-onboarding-completed') !== 'true';
+    return false; // Start with false, will be triggered by help button
   });
   const [filters, setFilters] = useState<Filters>({
     CWELCC_participant: null,
@@ -47,14 +48,11 @@ function App() {
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
     localStorage.setItem('muso-onboarding-completed', 'true');
-    // Also mark that they've seen the tour, so map hints work properly
-    localStorage.setItem('muso-tour-completed', 'true');
   };
 
   const handleOnboardingSkip = () => {
     setShowOnboarding(false);
     localStorage.setItem('muso-onboarding-completed', 'true');
-    localStorage.setItem('muso-tour-completed', 'true');
   };
 
   const handleShowOnboarding = () => {
@@ -88,15 +86,44 @@ function App() {
           </div>
           
           {/* Summary Section */}
-          <div className="px-6 py-2.5 bg-white/40 backdrop-blur-sm">
+          <div className="px-6 py-2.5 bg-white/40 backdrop-blur-sm border-b border-slate-200/40">
             <div className="max-w-7xl mx-auto">
-              <div className="text-center">
+              <div className="flex items-center justify-between">
+                {/* Results count */}
                 <div className="text-sm font-medium text-slate-600">
                   {hasActiveFilters ? (
                     <>Showing {filteredCenters.length.toLocaleString()}/{centers.length.toLocaleString()} centers</>
                   ) : (
                     <>Showing {centers.length.toLocaleString()} centers</>
                   )}
+                </div>
+                
+                {/* View Switcher */}
+                <div className="flex items-center bg-white/80 backdrop-blur-sm rounded-xl p-1 shadow-sm border border-slate-200/60">
+                  <button
+                    onClick={() => setCurrentView('map')}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      currentView === 'map'
+                        ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    <MapPin className="h-4 w-4" />
+                    <span>Map</span>
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('list')}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      currentView === 'list'
+                        ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                    </svg>
+                    <span>List</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -105,49 +132,51 @@ function App() {
       </div>
       
       {/* Main Content Area - Adjusted top position */}
-      <div className="fixed top-[209px] left-0 right-0 bottom-[80px] flex flex-col lg:flex-row">
-        {/* Map Section - 60% - Fixed */}
-        <div className="w-full lg:w-3/5 h-1/2 lg:h-full border-b lg:border-b-0 lg:border-r border-slate-200/60">
-          <MapPlaceholder 
-            centers={centers}
-            filteredCount={filteredCenters.length} 
-            filteredCenters={filteredCenters}
-          />
-        </div>
-
-        {/* Results Section - 40% - Only this scrolls */}
-        <div className="w-full lg:w-2/5 h-1/2 lg:h-full bg-white/60 backdrop-blur-sm overflow-y-auto">
-          <div className="p-4 lg:p-6">
-            {filteredCenters.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-white/20 max-w-md mx-auto">
-                  <div className="text-slate-400 mb-6">
-                    <div className="w-20 h-20 mx-auto bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center shadow-inner">
-                      <span className="text-3xl">🔍</span>
-                    </div>
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-3">No centers match your filters</h3>
-                  <p className="text-slate-600 mb-6 leading-relaxed">Try adjusting your search criteria to see more results that fit your family's needs.</p>
-                  <button
-                    onClick={clearAllFilters}
-                    className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-2xl font-bold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-                  >
-                    Show all centers
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4 lg:space-y-6">
-                {filteredCenters.map(center => (
-                  <CenterCard
-                    key={center.center_id}
-                    center={center}
-                  />
-                ))}
-              </div>
-            )}
+      <div className="fixed top-[239px] left-0 right-0 bottom-[80px]">
+        {currentView === 'map' ? (
+          /* Map View */
+          <div className="h-full w-full">
+            <MapPlaceholder 
+              centers={centers}
+              filteredCount={filteredCenters.length} 
+              filteredCenters={filteredCenters}
+            />
           </div>
-        </div>
+        ) : (
+          /* List View */
+          <div className="h-full w-full bg-white/60 backdrop-blur-sm overflow-y-auto">
+            <div className="p-4 lg:p-6 max-w-4xl mx-auto">
+              {filteredCenters.length === 0 ? (
+                <div className="text-center py-16">
+                  <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-white/20 max-w-md mx-auto">
+                    <div className="text-slate-400 mb-6">
+                      <div className="w-20 h-20 mx-auto bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center shadow-inner">
+                        <span className="text-3xl">🔍</span>
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-3">No centers match your filters</h3>
+                    <p className="text-slate-600 mb-6 leading-relaxed">Try adjusting your search criteria to see more results that fit your family's needs.</p>
+                    <button
+                      onClick={clearAllFilters}
+                      className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-2xl font-bold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                    >
+                      Show all centers
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4 lg:space-y-6">
+                  {filteredCenters.map(center => (
+                    <CenterCard
+                      key={center.center_id}
+                      center={center}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       
       {/* Fixed Footer */}
