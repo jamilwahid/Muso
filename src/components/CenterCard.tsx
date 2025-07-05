@@ -72,25 +72,27 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
           </div>
           
           {/* External Links - Below address */}
-          <div className="mt-2 space-y-1">
-            {/* Toronto.ca listing link - Always shown */}
+          <div className="mt-1 text-sm text-slate-500">
             <button
               onClick={handleViewListing}
-              className="flex items-center space-x-1.5 text-sm text-slate-500 hover:text-indigo-600 transition-colors duration-200 group"
+              className="hover:text-indigo-600 hover:underline transition-colors duration-200"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <ExternalLink className="h-3.5 w-3.5 group-hover:text-indigo-600" />
-              <span>View full details on Toronto.ca</span>
+              📄 Toronto.ca listing
             </button>
-            
-            {/* Center website link - Only if available */}
             {center.center_contact.website && (
-              <button
-                onClick={handleWebsiteClick}
-                className="flex items-center space-x-1.5 text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200 group"
-              >
-                <ExternalLink className="h-3.5 w-3.5 group-hover:text-blue-600" />
-                <span>Visit center's website</span>
-              </button>
+              <>
+                <span className="mx-2">·</span>
+                <button
+                  onClick={handleWebsiteClick}
+                  className="hover:text-blue-600 hover:underline transition-colors duration-200"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  🌐 Website
+                </button>
+              </>
             )}
           </div>
         </div>
