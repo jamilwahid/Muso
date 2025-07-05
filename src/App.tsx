@@ -48,9 +48,9 @@ function App() {
       
       {/* Fixed Filter Bar with Summary */}
       <div className="fixed top-[89px] left-0 right-0 z-30">
-        <div className="bg-slate-50/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
+        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60">
           {/* Filter Controls */}
-          <div className="px-6 py-6">
+          <div className="px-6 py-5">
             <FilterBar
               filters={filters}
               onFiltersChange={setFilters}
@@ -59,14 +59,14 @@ function App() {
           </div>
           
           {/* Summary Section */}
-          <div className="px-6 py-3 bg-white/60 backdrop-blur-sm border-t border-slate-200/40">
+          <div className="px-6 py-2.5 bg-white/40 backdrop-blur-sm">
             <div className="max-w-7xl mx-auto">
               <div className="text-center">
                 <div className="text-sm font-medium text-slate-600">
                   {hasActiveFilters ? (
-                    <>Showing {filteredCenters.filter(c => c.location.latitude && c.location.longitude).length.toLocaleString()} of {centers.filter(c => c.location.latitude && c.location.longitude).length.toLocaleString()} centers on map</>
+                    <>Showing {filteredCenters.length.toLocaleString()}/{centers.length.toLocaleString()} centers</>
                   ) : (
-                    <>Showing {centers.filter(c => c.location.latitude && c.location.longitude).length.toLocaleString()} centers on map</>
+                    <>Showing {centers.length.toLocaleString()} centers</>
                   )}
                 </div>
               </div>
@@ -76,7 +76,7 @@ function App() {
       </div>
       
       {/* Main Content Area - Adjusted top position */}
-      <div className="fixed top-[219px] left-0 right-0 bottom-[80px]">
+      <div className="fixed top-[209px] left-0 right-0 bottom-[80px]">
         {/* Map Section - Full width and height */}
         <div className="w-full h-full">
           <MapPlaceholder 

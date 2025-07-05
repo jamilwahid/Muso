@@ -13,8 +13,6 @@ interface MapComponentProps {
 export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCenters }) => {
   const [selectedCenter, setSelectedCenter] = useState<Center | null>(null);
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
-  const [hasClickedMarker, setHasClickedMarker] = useState(false);
-  const [showIntroText, setShowIntroText] = useState(true);
   const [viewState, setViewState] = useState({
     longitude: -79.3832,
     latitude: 43.6532,
@@ -94,12 +92,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   const handleMarkerClick = useCallback((center: Center, event: any) => {
     event.originalEvent.stopPropagation();
     
-    // Mark that user has clicked a marker (for intro text)
-    if (!hasClickedMarker) {
-      setHasClickedMarker(true);
-      setShowIntroText(false);
-    }
-    
     if (selectedCenter?.center_id === center.center_id) {
       // If clicking the already selected marker, deselect it
       setSelectedCenter(null);
@@ -114,7 +106,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         setCardPosition(position);
       }, 100);
     }
-  }, [selectedCenter, calculateCardPosition, hasClickedMarker]);
+  }, [selectedCenter, calculateCardPosition]);
 
   // Handle map background click - dismiss card
   const handleMapClick = useCallback(() => {
@@ -143,14 +135,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
     }
   }, [viewState, selectedCenter, calculateCardPosition]);
 
-  // Fade in intro text on mount
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowIntroText(true);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <div className="relative h-full w-full">
       <Map
@@ -158,7 +142,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         onClick={handleMapClick}
-        mapStyle="mapbox://styles/mapbox/streets-v12"
+        mapStyle="mapbox://styles/mapbox/light-v11"
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%' }}
         attributionControl={true}
@@ -188,13 +172,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                   isSelected ? 'w-10 h-10' : 'w-8 h-8'
                 }`}></div>
                 
-                {/* Main Pin - Color coded by CWELCC status */}
+                {/* Main Pin - Unified design */}
                 <div className={`relative rounded-full border-3 border-white shadow-lg flex items-center justify-center transition-all duration-300 ${
                   isSelected
                     ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200 ring-opacity-75'
-                    : center.CWELCC_participant
-                    ? 'w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500'
-                    : 'w-8 h-8 bg-gradient-to-br from-slate-500 to-slate-600 hover:from-slate-400 hover:to-slate-500'
+                    : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600'
                 }`}>
                   <MapPin className={`text-white transition-all duration-300 ${
                     isSelected ? 'h-5 w-5' : 'h-4 w-4'
@@ -235,33 +217,31 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         </div>
       )}
 
-      {/* Map Legend - Top right */}
-      <div className="absolute top-4 right-4 z-10">
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-3">
-          <div className="space-y-2 text-xs">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full border border-white"></div>
-              <span className="text-slate-600 font-medium">CWELCC Centers</span>
+      {/* Stats Overlay - Bottom left */}
+      <div className="absolute bottom-4 left-4 z-10">
+        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-4">
+          <div className="text-center">
+            <div className="text-lg font-bold text-slate-800">
+              {centersWithCoords.length}
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gradient-to-br from-slate-500 to-slate-600 rounded-full border border-white"></div>
-              <span className="text-slate-600 font-medium">Other Centers</span>
+            <div className="text-xs text-slate-600 font-medium">
+              Centers on Map
             </div>
+            {selectedCenter && (
+              <div className="text-xs text-indigo-600 font-medium mt-1">
+                1 Selected
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Onboarding Intro Text - Only show if no marker has been clicked */}
-      {!hasClickedMarker && showIntroText && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
-          <div className={`bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6 text-center max-w-sm transition-all duration-1000 ${
-            showIntroText ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-          }`}>
-            <div className="text-slate-700 font-medium mb-2">
-              Welcome to Muso! 👋
-            </div>
-            <div className="text-sm text-slate-600">
-              Click any marker to view childcare center details
+      {/* Instructions overlay - Top right (only show when no center is selected) */}
+      {!selectedCenter && (
+        <div className="absolute top-4 right-4 z-10">
+          <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-3">
+            <div className="text-xs text-slate-600 font-medium">
+              Click a marker to view details
             </div>
           </div>
         </div>
