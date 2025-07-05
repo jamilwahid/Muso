@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import Map, { Marker, Popup } from 'react-map-gl';
 import { MapPin } from 'lucide-react';
 import { Center } from '../types/center';
@@ -26,13 +26,64 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
     );
   }, [filteredCenters]);
 
+  // Handle marker click - toggle selection
   const handleMarkerClick = useCallback((center: Center) => {
-    setSelectedCenter(center);
-  }, []);
+    if (selectedCenter?.center_id === center.center_id) {
+      // If clicking the already selected marker, deselect it
+      setSelectedCenter(null);
+    } else {
+      // Select the new marker
+      setSelectedCenter(center);
+      
+      // Optionally fly to marker if it's near the edge of viewport
+      const { longitude, latitude } = center.location;
+      if (longitude && latitude) {
+        // Simple check if marker is near viewport edges (within 20% of bounds)
+        const bounds = {
+          north: viewState.latitude + (0.5 / Math.pow(2, viewState.zoom - 8)),
+          south: viewState.latitude - (0.5 / Math.pow(2, viewState.zoom - 8)),
+          east: viewState.longitude + (0.5 / Math.pow(2, viewState.zoom - 8)),
+          west: viewState.longitude - (0.5 / Math.pow(2, viewState.zoom - 8))
+        };
+        
+        const margin = 0.2; // 20% margin
+        const latRange = bounds.north - bounds.south;
+        const lngRange = bounds.east - bounds.west;
+        
+        const isNearEdge = 
+          latitude > bounds.north - (latRange * margin) ||
+          latitude < bounds.south + (latRange * margin) ||
+          longitude > bounds.east - (lngRange * margin) ||
+          longitude < bounds.west + (lngRange * margin);
+        
+        if (isNearEdge) {
+          setViewState(prev => ({
+            ...prev,
+            longitude,
+            latitude,
+            zoom: Math.max(prev.zoom, 12) // Ensure minimum zoom level
+          }));
+        }
+      }
+    }
+  }, [selectedCenter, viewState]);
 
+  // Handle map background click - dismiss card
   const handleMapClick = useCallback(() => {
     setSelectedCenter(null);
   }, []);
+
+  // Handle keyboard events - ESC to dismiss
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && selectedCenter) {
+        setSelectedCenter(null);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedCenter]);
 
   // Determine if a center is filtered out (for visual distinction)
   const isCenterFiltered = useCallback((center: Center) => {
@@ -59,6 +110,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
           )
           .map(center => {
             const isFiltered = isCenterFiltered(center);
+            const isSelected = selectedCenter?.center_id === center.center_id;
             
             return (
               <Marker
@@ -74,27 +126,38 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                 }}
               >
                 <div 
-                  className={`relative cursor-pointer transition-all duration-300 transform hover:scale-110 ${
-                    isFiltered ? 'opacity-30' : 'opacity-100'
+                  className={`relative cursor-pointer transition-all duration-300 transform ${
+                    isFiltered 
+                      ? 'opacity-30 scale-75' 
+                      : isSelected
+                      ? 'scale-125 z-10'
+                      : 'hover:scale-110'
                   }`}
                 >
                   {/* Pin Shadow */}
-                  <div className="absolute top-1 left-1 w-8 h-8 bg-black/20 rounded-full blur-sm"></div>
+                  <div className={`absolute top-1 left-1 bg-black/20 rounded-full blur-sm transition-all duration-300 ${
+                    isSelected ? 'w-10 h-10' : 'w-8 h-8'
+                  }`}></div>
                   
-                  {/* Main Pin */}
-                  <div className={`relative w-8 h-8 rounded-full border-3 border-white shadow-lg flex items-center justify-center ${
-                    selectedCenter?.center_id === center.center_id
-                      ? 'bg-gradient-to-br from-amber-400 to-orange-500 ring-4 ring-amber-200'
-                      : center.CWELCC_participant
-                      ? 'bg-gradient-to-br from-purple-500 to-indigo-600'
-                      : 'bg-gradient-to-br from-emerald-500 to-teal-600'
+                  {/* Main Pin - Unified design */}
+                  <div className={`relative rounded-full border-3 border-white shadow-lg flex items-center justify-center transition-all duration-300 ${
+                    isSelected
+                      ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200 ring-opacity-75'
+                      : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600'
                   }`}>
-                    <MapPin className="h-4 w-4 text-white" />
+                    <MapPin className={`text-white transition-all duration-300 ${
+                      isSelected ? 'h-5 w-5' : 'h-4 w-4'
+                    }`} />
                   </div>
                   
-                  {/* Pulse animation for selected */}
-                  {selectedCenter?.center_id === center.center_id && (
-                    <div className="absolute inset-0 w-8 h-8 bg-amber-400 rounded-full animate-ping opacity-75"></div>
+                  {/* Pulse animation for selected marker */}
+                  {isSelected && (
+                    <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full animate-ping opacity-75"></div>
+                  )}
+                  
+                  {/* Subtle glow for selected marker */}
+                  {isSelected && (
+                    <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full opacity-30 blur-md"></div>
                   )}
                 </div>
               </Marker>
@@ -107,7 +170,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
             longitude={selectedCenter.location.longitude}
             latitude={selectedCenter.location.latitude}
             anchor="bottom"
-            offset={[0, -40]}
+            offset={[0, -50]}
             closeButton={false}
             closeOnClick={false}
             className="map-popup"
@@ -122,27 +185,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         )}
       </Map>
 
-      {/* Map Controls Overlay */}
-      <div className="absolute top-4 right-4 z-10">
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-3">
-          <div className="space-y-2 text-xs">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full border border-white"></div>
-              <span className="text-slate-600 font-medium">CWELCC Centers</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full border border-white"></div>
-              <span className="text-slate-600 font-medium">Other Centers</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full border border-white"></div>
-              <span className="text-slate-600 font-medium">Selected</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Overlay */}
+      {/* Stats Overlay - Bottom left */}
       <div className="absolute bottom-4 left-4 z-10">
         <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-4">
           <div className="text-center">
@@ -152,6 +195,23 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
             <div className="text-xs text-slate-600 font-medium">
               Centers on Map
             </div>
+            {selectedCenter && (
+              <div className="text-xs text-indigo-600 font-medium mt-1">
+                1 Selected
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Instructions overlay - Top right */}
+      <div className="absolute top-4 right-4 z-10">
+        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-3">
+          <div className="space-y-1 text-xs text-slate-600">
+            <div className="font-medium">Click a marker to view details</div>
+            {selectedCenter && (
+              <div className="text-indigo-600">Press ESC to close</div>
+            )}
           </div>
         </div>
       </div>
