@@ -13,6 +13,7 @@ interface MapComponentProps {
 export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCenters }) => {
   const [selectedCenter, setSelectedCenter] = useState<Center | null>(null);
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
+  const [hasClickedMarker, setHasClickedMarker] = useState(false);
   const [viewState, setViewState] = useState({
     longitude: -79.3832,
     latitude: 43.6532,
@@ -92,6 +93,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   const handleMarkerClick = useCallback((center: Center, event: any) => {
     event.originalEvent.stopPropagation();
     
+    // Mark that user has clicked a marker (for onboarding)
+    if (!hasClickedMarker) {
+      setHasClickedMarker(true);
+    }
+    
     if (selectedCenter?.center_id === center.center_id) {
       // If clicking the already selected marker, deselect it
       setSelectedCenter(null);
@@ -106,7 +112,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         setCardPosition(position);
       }, 100);
     }
-  }, [selectedCenter, calculateCardPosition]);
+  }, [selectedCenter, calculateCardPosition, hasClickedMarker]);
 
   // Handle map background click - dismiss card
   const handleMapClick = useCallback(() => {
@@ -142,7 +148,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         onClick={handleMapClick}
-        mapStyle="mapbox://styles/mapbox/light-v11"
+        mapStyle="mapbox://styles/mapbox/streets-v12"
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%' }}
         attributionControl={true}
@@ -236,11 +242,24 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         </div>
       </div>
 
-      {/* Instructions overlay - Top right (only show when no center is selected) */}
-      {!selectedCenter && (
+      {/* Instructions overlay - Top right (only show when no marker has ever been clicked) */}
+      {!hasClickedMarker && (
+        <div className="absolute top-4 right-4 z-10">
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 backdrop-blur-xl rounded-2xl shadow-lg border border-indigo-200/60 p-4 animate-pulse">
+            <div className="text-sm text-indigo-700 font-medium flex items-center space-x-2">
+              <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"></div>
+              <span>Click a marker to view details</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Selected center info overlay - Top right (only show when center is selected) */}
+      {selectedCenter && (
         <div className="absolute top-4 right-4 z-10">
           <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-3">
             <div className="text-xs text-slate-600 font-medium">
+              Press ESC or click map to close
               Click a marker to view details
             </div>
           </div>
