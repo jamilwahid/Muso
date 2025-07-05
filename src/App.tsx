@@ -76,15 +76,15 @@ function App() {
       </div>
       
       {/* Main Content Area - Adjusted top position */}
-      <div className="fixed top-[209px] left-0 right-0 bottom-[80px] flex">
+      <div className="fixed top-[209px] left-0 right-0 bottom-[80px] flex flex-col lg:flex-row">
         {/* Map Section - 60% - Fixed */}
-        <div className="w-3/5 border-r border-slate-200/60 h-full">
+        <div className="w-full lg:w-3/5 h-1/2 lg:h-full border-b lg:border-b-0 lg:border-r border-slate-200/60">
           <MapPlaceholder filteredCount={filteredCenters.length} />
         </div>
 
         {/* Results Section - 40% - Only this scrolls */}
-        <div className="w-2/5 bg-white/60 backdrop-blur-sm h-full overflow-y-auto">
-          <div className="p-6">
+        <div className="w-full lg:w-2/5 h-1/2 lg:h-full bg-white/60 backdrop-blur-sm overflow-y-auto">
+          <div className="p-4 lg:p-6">
             {filteredCenters.length === 0 ? (
               <div className="text-center py-16">
                 <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-white/20 max-w-md mx-auto">
@@ -104,7 +104,7 @@ function App() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4 lg:space-y-6">
                 {filteredCenters.map(center => (
                   <CenterCard
                     key={center.center_id}

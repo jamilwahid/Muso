@@ -55,24 +55,25 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
   };
 
   return (
-    <div className="group bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
-      <div className="space-y-5">
-        {/* Header with Title and Top-Level Badges */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-start">
-            <div className="flex-1 pr-4">
-              <h3 className="text-lg font-bold text-slate-800 mb-2">
+    <div className="group bg-white/90 backdrop-blur-sm border border-slate-200/60 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
+      {/* Mobile-optimized padding */}
+      <div className="p-4 sm:p-6 space-y-4">
+        {/* Header Section - Stack on mobile */}
+        <div className="space-y-3">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg sm:text-xl font-bold text-slate-800 mb-2 leading-tight">
                 {center.center_name}
               </h3>
               
-              <div className="flex items-center text-sm text-slate-500">
-                <MapPin className="h-4 w-4 mr-2 text-slate-400" />
-                <span className="font-medium">{formatAddress()}</span>
+              <div className="flex items-start text-sm text-slate-500">
+                <MapPin className="h-4 w-4 mr-2 text-slate-400 flex-shrink-0 mt-0.5" />
+                <span className="font-medium leading-relaxed">{formatAddress()}</span>
               </div>
             </div>
             
-            {/* Rating */}
-            <div className={`flex items-center space-x-1 px-3 py-2 rounded-xl ${
+            {/* Rating - Moved to top right on mobile */}
+            <div className={`flex items-center space-x-1 px-3 py-2 rounded-xl self-start ${
               avgRating 
                 ? 'bg-amber-50 border border-amber-200/60' 
                 : 'bg-slate-50 border border-slate-200/60'
@@ -92,136 +93,138 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
             </div>
           </div>
 
-          {/* Prominent CWELCC and Subsidy Badges */}
-          <div className="flex items-center space-x-3">
-            {center.CWELCC_participant && (
-              <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
-                <span>CWELCC</span>
-              </div>
-            )}
-            
-            {center.subsidy_available && (
-              <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
-                <span>Subsidy</span>
-              </div>
-            )}
-          </div>
+          {/* CWELCC and Subsidy Badges - Stack on mobile */}
+          {(center.CWELCC_participant || center.subsidy_available) && (
+            <div className="flex flex-wrap gap-2">
+              {center.CWELCC_participant && (
+                <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
+                  <span>CWELCC</span>
+                </div>
+              )}
+              
+              {center.subsidy_available && (
+                <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
+                  <span>Subsidy</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-
-        {/* Horizontal Divider */}
-        <div className="border-t border-slate-200/60"></div>
 
         {/* Language and Dietary Tags Section */}
-        <div className="space-y-4">
-          {/* Language Tags */}
-          {center.languages_spoken.length > 0 && (
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Languages className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-semibold text-slate-700">Languages Spoken</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {center.languages_spoken.slice(0, 3).map((language, index) => (
-                  <div key={`lang-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
-                    {language}
+        {(center.languages_spoken.length > 0 || center.dietary_services.length > 0) && (
+          <>
+            <div className="border-t border-slate-200/60"></div>
+            
+            <div className="space-y-3">
+              {/* Language Tags */}
+              {center.languages_spoken.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Languages className="h-4 w-4 text-amber-600" />
+                    <span className="text-sm font-semibold text-slate-700">Languages</span>
                   </div>
-                ))}
-                {center.languages_spoken.length > 3 && (
-                  <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
-                    +{center.languages_spoken.length - 3} more
+                  <div className="flex flex-wrap gap-2">
+                    {center.languages_spoken.slice(0, 2).map((language, index) => (
+                      <div key={`lang-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2.5 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
+                        {language}
+                      </div>
+                    ))}
+                    {center.languages_spoken.length > 2 && (
+                      <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2.5 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
+                        +{center.languages_spoken.length - 2} more
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
+
+              {/* Dietary Services Tags */}
+              {center.dietary_services.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Utensils className="h-4 w-4 text-purple-600" />
+                    <span className="text-sm font-semibold text-slate-700">Dietary</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {center.dietary_services.slice(0, 2).map((service, index) => (
+                      <div key={`diet-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2.5 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
+                        {service}
+                      </div>
+                    ))}
+                    {center.dietary_services.length > 2 && (
+                      <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2.5 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
+                        +{center.dietary_services.length - 2} more
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </>
+        )}
 
-          {/* Dietary Services Tags */}
-          {center.dietary_services.length > 0 && (
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Utensils className="h-4 w-4 text-purple-600" />
-                <span className="text-sm font-semibold text-slate-700">Dietary Services</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {center.dietary_services.slice(0, 3).map((service, index) => (
-                  <div key={`diet-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
-                    {service}
-                  </div>
-                ))}
-                {center.dietary_services.length > 3 && (
-                  <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
-                    +{center.dietary_services.length - 3} more
-                  </div>
-                )}
-              </div>
+        {/* Action Buttons Section - Mobile-optimized layout */}
+        <div className="border-t border-slate-200/60 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            {/* Phone Button - Full width on mobile */}
+            <div className="flex-1">
+              {center.center_contact.phone ? (
+                <a 
+                  href={`tel:${formatPhoneForTel(center.center_contact.phone)}`}
+                  className="inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-3 rounded-xl text-sm font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl w-full sm:w-auto touch-manipulation"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Phone className="h-4 w-4" />
+                  <span className="truncate">{center.center_contact.phone}</span>
+                </a>
+              ) : (
+                <div className="inline-flex items-center justify-center space-x-2 bg-slate-100 text-slate-400 px-4 py-3 rounded-xl text-sm font-medium cursor-not-allowed w-full sm:w-auto">
+                  <Phone className="h-4 w-4" />
+                  <span>No phone</span>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* Action Buttons Section */}
-        <div className="flex items-center justify-between pt-4 border-t border-slate-200/60">
-          {/* Phone Button */}
-          <div className="flex-1">
-            {center.center_contact.phone ? (
-              <a 
-                href={`tel:${formatPhoneForTel(center.center_contact.phone)}`}
-                className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Phone className="h-4 w-4" />
-                <span>{center.center_contact.phone}</span>
-              </a>
-            ) : (
-              <div className="inline-flex items-center space-x-2 bg-slate-100 text-slate-400 px-4 py-2.5 rounded-xl text-sm font-medium cursor-not-allowed">
-                <Phone className="h-4 w-4" />
-                <span>No phone</span>
-              </div>
-            )}
-          </div>
+            {/* Action Icons - Larger touch targets for mobile */}
+            <div className="flex items-center justify-center sm:justify-end space-x-3">
+              {/* Website Icon */}
+              {center.center_contact.website ? (
+                <button
+                  onClick={handleWebsiteClick}
+                  className="p-3 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 border border-blue-200/60 touch-manipulation"
+                  title="Visit website"
+                >
+                  <Globe className="h-5 w-5" />
+                </button>
+              ) : (
+                <div
+                  className="p-3 rounded-xl bg-slate-50 text-slate-300 border border-slate-200/60 cursor-not-allowed"
+                  title="Website unavailable"
+                >
+                  <Globe className="h-5 w-5" />
+                </div>
+              )}
 
-          {/* Action Icons */}
-          <div className="flex items-center space-x-2">
-            {/* Website Icon */}
-            {center.center_contact.website ? (
+              {/* Official Listing Icon */}
               <button
-                onClick={handleWebsiteClick}
-                className="p-2.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 border border-blue-200/60"
-                title="Visit center's website"
+                onClick={handleViewListing}
+                className="p-3 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 transition-all duration-200 border border-indigo-200/60 touch-manipulation"
+                title="View official listing"
               >
-                <Globe className="h-4 w-4" />
+                <ExternalLink className="h-5 w-5" />
               </button>
-            ) : (
-              <div
-                className="p-2.5 rounded-xl bg-slate-50 text-slate-300 border border-slate-200/60 cursor-not-allowed"
-                title="Website unavailable"
-              >
-                <Globe className="h-4 w-4" />
-              </div>
-            )}
 
-            {/* Official Listing Icon */}
-            <button
-              onClick={handleViewListing}
-              className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 transition-all duration-200 border border-indigo-200/60"
-              title="View official listing on Toronto.ca"
-            >
-              <ExternalLink className="h-4 w-4" />
-            </button>
-
-            {/* Save Icon */}
-            <div className="relative">
-              <button
-                onClick={handleSaveCenter}
-                className="relative p-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl border-2 border-white/20"
-                title="Save this center (Coming Soon)"
-              >
-                <Bookmark className="h-5 w-5" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full animate-pulse"></div>
-              </button>
-              
-              {/* Coming Soon Tooltip */}
-              <div className="absolute -top-8 right-0 bg-slate-800 text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                Coming Soon!
+              {/* Save Icon - Most prominent */}
+              <div className="relative">
+                <button
+                  onClick={handleSaveCenter}
+                  className="relative p-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl border-2 border-white/20 touch-manipulation"
+                  title="Save center (Coming Soon)"
+                >
+                  <Bookmark className="h-5 w-5" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full animate-pulse"></div>
+                </button>
               </div>
             </div>
           </div>
