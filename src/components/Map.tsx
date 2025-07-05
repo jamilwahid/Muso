@@ -207,11 +207,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                   }`} />
                 </div>
                 
-                {/* Pulse animation for selected marker */}
-                {isSelected && (
-                  <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full animate-ping opacity-75"></div>
-                )}
-                
                 {/* Subtle glow for selected marker */}
                 {isSelected && (
                   <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full opacity-30 blur-md"></div>
