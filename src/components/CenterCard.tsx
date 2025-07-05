@@ -95,16 +95,14 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
           {/* Prominent CWELCC and Subsidy Badges */}
           <div className="flex items-center space-x-3">
             {center.CWELCC_participant && (
-              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                <span>CWELCC Participant</span>
+              <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
+                <span>CWELCC</span>
               </div>
             )}
             
             {center.subsidy_available && (
-              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                <span>Subsidy Available</span>
+              <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
+                <span>Subsidy</span>
               </div>
             )}
           </div>
@@ -124,12 +122,12 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
               </div>
               <div className="flex flex-wrap gap-2">
                 {center.languages_spoken.slice(0, 3).map((language, index) => (
-                  <div key={`lang-${index}`} className="inline-flex items-center bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-amber-200/60">
+                  <div key={`lang-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
                     {language}
                   </div>
                 ))}
                 {center.languages_spoken.length > 3 && (
-                  <div className="inline-flex items-center bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-amber-200/60">
+                  <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-purple-200/60">
                     +{center.languages_spoken.length - 3} more
                   </div>
                 )}
@@ -211,13 +209,21 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
             </button>
 
             {/* Save Icon */}
-            <button
-              onClick={handleSaveCenter}
-              className="p-2.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700 transition-all duration-200 border border-rose-200/60"
-              title="Save this center"
-            >
-              <Bookmark className="h-4 w-4" />
-            </button>
+            <div className="relative">
+              <button
+                onClick={handleSaveCenter}
+                className="relative p-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl border-2 border-white/20"
+                title="Save this center (Coming Soon)"
+              >
+                <Bookmark className="h-5 w-5" />
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full animate-pulse"></div>
+              </button>
+              
+              {/* Coming Soon Tooltip */}
+              <div className="absolute -top-8 right-0 bg-slate-800 text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                Coming Soon!
+              </div>
+            </div>
           </div>
         </div>
       </div>
