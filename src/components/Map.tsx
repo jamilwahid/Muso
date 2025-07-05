@@ -167,30 +167,52 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                     : 'hover:scale-110'
                 }`}
               >
-                {/* Pin Shadow */}
-                <div className={`absolute top-1 left-1 bg-black/20 rounded-full blur-sm transition-all duration-300 ${
-                  isSelected ? 'w-10 h-10' : 'w-8 h-8'
-                }`}></div>
-                
-                {/* Main Pin - Unified design */}
-                <div className={`relative rounded-full border-3 border-white shadow-lg flex items-center justify-center transition-all duration-300 ${
+                {/* Modern Pin Design */}
+                <div className={`relative transition-all duration-300 ${
                   isSelected
-                    ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200 ring-opacity-75'
-                    : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600'
+                    ? 'drop-shadow-2xl'
+                    : 'drop-shadow-lg hover:drop-shadow-xl'
                 }`}>
-                  <MapPin className={`text-white transition-all duration-300 ${
-                    isSelected ? 'h-5 w-5' : 'h-4 w-4'
-                  }`} />
+                  {/* Pin Shadow */}
+                  <div className={`absolute blur-sm transition-all duration-300 ${
+                    isSelected 
+                      ? 'top-2 left-1 w-7 h-7 bg-black/30' 
+                      : 'top-1.5 left-0.5 w-6 h-6 bg-black/20'
+                  }`} style={{
+                    clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)'
+                  }}></div>
+                  
+                  {/* Main Pin Shape */}
+                  <div className={`relative transition-all duration-300 ${
+                    isSelected
+                      ? 'w-7 h-7 bg-gradient-to-br from-indigo-500 to-purple-600'
+                      : 'w-6 h-6 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600'
+                  }`} style={{
+                    clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)'
+                  }}>
+                    {/* Pin Icon */}
+                    <div className={`absolute inset-0 flex items-start justify-center transition-all duration-300 ${
+                      isSelected ? 'pt-1' : 'pt-0.5'
+                    }`}>
+                      <MapPin className={`text-white transition-all duration-300 ${
+                        isSelected ? 'h-4 w-4' : 'h-3.5 w-3.5'
+                      }`} />
+                    </div>
+                  </div>
                 </div>
                 
                 {/* Pulse animation for selected marker */}
                 {isSelected && (
-                  <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full animate-ping opacity-75"></div>
+                  <div className="absolute top-0 left-0 w-7 h-7 bg-indigo-400 animate-ping opacity-50" style={{
+                    clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)'
+                  }}></div>
                 )}
                 
-                {/* Subtle glow for selected marker */}
+                {/* Glow effect for selected marker */}
                 {isSelected && (
-                  <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full opacity-30 blur-md"></div>
+                  <div className="absolute top-0 left-0 w-7 h-7 bg-indigo-400 opacity-40 blur-sm" style={{
+                    clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)'
+                  }}></div>
                 )}
               </div>
             </Marker>
