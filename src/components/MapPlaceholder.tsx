@@ -17,8 +17,12 @@ export const MapPlaceholder: React.FC<MapPlaceholderProps> = ({
   const [mapError, setMapError] = useState(false);
   const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
+  // Debug: Log the token status (remove this after testing)
+  console.log('Mapbox token exists:', !!mapboxToken);
+  console.log('Token length:', mapboxToken?.length || 0);
+
   // Check if we have a Mapbox token
-  if (!mapboxToken) {
+  if (!mapboxToken || mapboxToken.trim() === '') {
     return (
       <div className="h-full bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 flex items-center justify-center relative overflow-hidden">
         {/* Background Pattern */}

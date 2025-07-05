@@ -46,11 +46,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         onMove={evt => setViewState(evt.viewState)}
         onClick={handleMapClick}
         mapStyle="mapbox://styles/mapbox/light-v11"
-        mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibXVzby1hcHAiLCJhIjoiY20zZzFqZGNzMDFhZzJrcHpxbGNxZGNwZCJ9.example'}
+        mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%' }}
-        attributionControl={false}
+        attributionControl={true}
         logoPosition="bottom-right"
-        interactiveLayerIds={[]}
       >
         {/* Render all centers with coordinates */}
         {centers
