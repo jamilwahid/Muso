@@ -1,5 +1,5 @@
-import React from 'react';
-import { MapPin, Star, Phone, ExternalLink, Globe, Bookmark, Languages, Utensils } from 'lucide-react';
+import React, { useState } from 'react';
+import { MapPin, Star, Phone, ExternalLink, Bookmark, Languages, Utensils, Link } from 'lucide-react';
 import { Center } from '../types/center';
 
 interface CenterCardProps {
@@ -7,6 +7,8 @@ interface CenterCardProps {
 }
 
 export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
+  const [isSaved, setIsSaved] = useState(false); // TODO: Connect to actual save state
+  
   const programsWithRating = center.programs.filter(p => p.quality_rating);
   const avgRating = programsWithRating.length > 0 
     ? programsWithRating.reduce((sum, p) => sum + (p.quality_rating || 0), 0) / programsWithRating.length
@@ -26,7 +28,8 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
 
   const handleSaveCenter = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // TODO: Implement save functionality
+    setIsSaved(!isSaved);
+    // TODO: Implement actual save functionality
     console.log('Save center:', center.center_id);
   };
 
@@ -93,7 +96,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
             </div>
           </div>
 
-          {/* CWELCC and Subsidy Badges - Stack on mobile */}
+          {/* CWELCC and Subsidy Badges - Same style as filter icons */}
           {(center.CWELCC_participant || center.subsidy_available) && (
             <div className="flex flex-wrap gap-2">
               {center.CWELCC_participant && (
@@ -111,17 +114,17 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
           )}
         </div>
 
-        {/* Language and Dietary Tags Section */}
+        {/* Language and Dietary Tags Section - Limited to 2 each with "+X more" */}
         {(center.languages_spoken.length > 0 || center.dietary_services.length > 0) && (
           <>
             <div className="border-t border-slate-200/60"></div>
             
             <div className="space-y-3">
-              {/* Language Tags */}
+              {/* Language Tags - Max 2 with "+X more" */}
               {center.languages_spoken.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <Languages className="h-4 w-4 text-amber-600" />
+                    <span className="text-sm">🌐</span>
                     <span className="text-sm font-semibold text-slate-700">Languages</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -139,11 +142,11 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
                 </div>
               )}
 
-              {/* Dietary Services Tags */}
+              {/* Dietary Services Tags - Max 2 with "+X more" */}
               {center.dietary_services.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <Utensils className="h-4 w-4 text-purple-600" />
+                    <span className="text-sm">🍽</span>
                     <span className="text-sm font-semibold text-slate-700">Dietary</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -167,7 +170,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
         {/* Action Buttons Section - Mobile-optimized layout */}
         <div className="border-t border-slate-200/60 pt-4">
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-            {/* Phone Button - Full width on mobile */}
+            {/* Phone Button - Green with phone number visible */}
             <div className="flex-1">
               {center.center_contact.phone ? (
                 <a 
@@ -195,37 +198,42 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
                   className="p-3 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 border border-blue-200/60 touch-manipulation"
                   title="Visit website"
                 >
-                  <Globe className="h-5 w-5" />
+                  <ExternalLink className="h-5 w-5" />
                 </button>
               ) : (
                 <div
                   className="p-3 rounded-xl bg-slate-50 text-slate-300 border border-slate-200/60 cursor-not-allowed"
                   title="Website unavailable"
                 >
-                  <Globe className="h-5 w-5" />
+                  <ExternalLink className="h-5 w-5" />
                 </div>
               )}
 
-              {/* Official Listing Icon */}
+              {/* Official Listing Button - Clearer external gov page link */}
               <button
                 onClick={handleViewListing}
-                className="p-3 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 transition-all duration-200 border border-indigo-200/60 touch-manipulation"
-                title="View official listing"
+                className="inline-flex items-center space-x-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 border border-indigo-200/60 touch-manipulation"
+                title="View official listing on Toronto.ca"
               >
-                <ExternalLink className="h-5 w-5" />
+                <Link className="h-4 w-4" />
+                <span className="hidden sm:inline">View listing</span>
               </button>
 
-              {/* Save Icon - Most prominent */}
-              <div className="relative">
-                <button
-                  onClick={handleSaveCenter}
-                  className="relative p-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl border-2 border-white/20 touch-manipulation"
-                  title="Save center (Coming Soon)"
-                >
-                  <Bookmark className="h-5 w-5" />
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full animate-pulse"></div>
-                </button>
-              </div>
+              {/* Save Icon - Clear saved/unsaved state */}
+              <button
+                onClick={handleSaveCenter}
+                className={`relative p-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl border-2 touch-manipulation ${
+                  isSaved 
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-white/20 hover:from-indigo-600 hover:to-purple-700' 
+                    : 'bg-white text-indigo-600 border-indigo-200/60 hover:bg-indigo-50'
+                }`}
+                title={isSaved ? "Saved to My List" : "Save to My List"}
+              >
+                <Bookmark className={`h-5 w-5 ${isSaved ? 'fill-current' : ''}`} />
+                {!isSaved && (
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full"></div>
+                )}
+              </button>
             </div>
           </div>
         </div>
