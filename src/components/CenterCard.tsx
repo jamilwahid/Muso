@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Star, Phone, ExternalLink, Bookmark, Languages, Utensils, ArrowUpRightSquare as SquareArrowOutUpRight } from 'lucide-react';
+import { MapPin, Star, Phone, ExternalLink, Bookmark, Languages, Utensils, Link } from 'lucide-react';
 import { Center } from '../types/center';
 
 interface CenterCardProps {
@@ -77,7 +77,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
               onClick={handleViewListing}
               className="inline-flex items-center space-x-1 hover:text-indigo-600 hover:underline transition-colors duration-200"
             >
-              <link className="h-3 w-3" />
+              <Link className="h-3 w-3" />
               <span>Toronto.ca listing</span>
             </button>
             {center.center_contact.website && (
@@ -87,7 +87,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
                   onClick={handleWebsiteClick}
                   className="inline-flex items-center space-x-1 hover:text-blue-600 hover:underline transition-colors duration-200"
                 >
-                  <link className="h-3 w-3" />
+                  <Link className="h-3 w-3" />
                   <span>Website</span>
                 </button>
               </>
