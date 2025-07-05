@@ -79,7 +79,11 @@ function App() {
       <div className="fixed top-[209px] left-0 right-0 bottom-[80px] flex flex-col lg:flex-row">
         {/* Map Section - 60% - Fixed */}
         <div className="w-full lg:w-3/5 h-1/2 lg:h-full border-b lg:border-b-0 lg:border-r border-slate-200/60">
-          <MapPlaceholder filteredCount={filteredCenters.length} />
+          <MapPlaceholder 
+            centers={centers}
+            filteredCount={filteredCenters.length} 
+            filteredCenters={filteredCenters}
+          />
         </div>
 
         {/* Results Section - 40% - Only this scrolls */}
