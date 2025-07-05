@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import Map, { Marker, Popup } from 'react-map-gl';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import Map, { Marker, Popup, useMap } from 'react-map-gl';
 import { MapPin } from 'lucide-react';
 import { Center } from '../types/center';
 import { CenterCard } from './CenterCard';
@@ -12,13 +12,17 @@ interface MapComponentProps {
 
 export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCenters }) => {
   const [selectedCenter, setSelectedCenter] = useState<Center | null>(null);
+  const [cardPosition, setCardPosition] = useState<{ x: number; y: number; anchor: string } | null>(null);
   const [viewState, setViewState] = useState({
     longitude: -79.3832,
     latitude: 43.6532,
     zoom: 10.5
   });
+  
+  const mapRef = useRef<any>(null);
+  const { current: map } = useMap();
 
-  // Filter centers that have valid coordinates
+  // Only show filtered centers that have valid coordinates
   const centersWithCoords = useMemo(() => {
     return filteredCenters.filter(center => 
       center.location.latitude !== null && 
@@ -26,51 +30,84 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
     );
   }, [filteredCenters]);
 
-  // Handle marker click - toggle selection
-  const handleMarkerClick = useCallback((center: Center) => {
+  // Calculate optimal card position based on marker screen coordinates
+  const calculateCardPosition = useCallback((center: Center) => {
+    if (!map || !center.location.latitude || !center.location.longitude) return null;
+
+    try {
+      // Get marker's screen coordinates
+      const markerScreenCoords = map.project([center.location.longitude, center.location.latitude]);
+      const mapContainer = map.getContainer();
+      const containerRect = mapContainer.getBoundingClientRect();
+      
+      const markerX = markerScreenCoords.x;
+      const markerY = markerScreenCoords.y;
+      
+      // Card dimensions (approximate)
+      const cardWidth = 400;
+      const cardHeight = 300;
+      const margin = 20;
+      
+      // Determine optimal position
+      let x = markerX;
+      let y = markerY;
+      let anchor = 'bottom';
+      
+      // Check if card would overflow on the right
+      if (markerX + cardWidth + margin > containerRect.width) {
+        // Position to the left of marker
+        x = markerX - cardWidth - margin;
+        anchor = 'right';
+      } else {
+        // Position to the right of marker
+        x = markerX + margin;
+        anchor = 'left';
+      }
+      
+      // Check vertical positioning
+      if (markerY - cardHeight - margin < 0) {
+        // Not enough space above, position below
+        y = markerY + 40; // Account for marker height
+        anchor = anchor === 'left' ? 'top-left' : anchor === 'right' ? 'top-right' : 'top';
+      } else {
+        // Position above marker
+        y = markerY - cardHeight - margin;
+        anchor = anchor === 'left' ? 'bottom-left' : anchor === 'right' ? 'bottom-right' : 'bottom';
+      }
+      
+      // Ensure card stays within viewport bounds
+      x = Math.max(margin, Math.min(x, containerRect.width - cardWidth - margin));
+      y = Math.max(margin, Math.min(y, containerRect.height - cardHeight - margin));
+      
+      return { x, y, anchor };
+    } catch (error) {
+      console.warn('Error calculating card position:', error);
+      return null;
+    }
+  }, [map]);
+
+  // Handle marker click - toggle selection and calculate position
+  const handleMarkerClick = useCallback((center: Center, event: any) => {
     if (selectedCenter?.center_id === center.center_id) {
       // If clicking the already selected marker, deselect it
       setSelectedCenter(null);
+      setCardPosition(null);
     } else {
       // Select the new marker
       setSelectedCenter(center);
       
-      // Optionally fly to marker if it's near the edge of viewport
-      const { longitude, latitude } = center.location;
-      if (longitude && latitude) {
-        // Simple check if marker is near viewport edges (within 20% of bounds)
-        const bounds = {
-          north: viewState.latitude + (0.5 / Math.pow(2, viewState.zoom - 8)),
-          south: viewState.latitude - (0.5 / Math.pow(2, viewState.zoom - 8)),
-          east: viewState.longitude + (0.5 / Math.pow(2, viewState.zoom - 8)),
-          west: viewState.longitude - (0.5 / Math.pow(2, viewState.zoom - 8))
-        };
-        
-        const margin = 0.2; // 20% margin
-        const latRange = bounds.north - bounds.south;
-        const lngRange = bounds.east - bounds.west;
-        
-        const isNearEdge = 
-          latitude > bounds.north - (latRange * margin) ||
-          latitude < bounds.south + (latRange * margin) ||
-          longitude > bounds.east - (lngRange * margin) ||
-          longitude < bounds.west + (lngRange * margin);
-        
-        if (isNearEdge) {
-          setViewState(prev => ({
-            ...prev,
-            longitude,
-            latitude,
-            zoom: Math.max(prev.zoom, 12) // Ensure minimum zoom level
-          }));
-        }
-      }
+      // Calculate card position after a brief delay to ensure map is ready
+      setTimeout(() => {
+        const position = calculateCardPosition(center);
+        setCardPosition(position);
+      }, 50);
     }
-  }, [selectedCenter, viewState]);
+  }, [selectedCenter, calculateCardPosition]);
 
   // Handle map background click - dismiss card
   const handleMapClick = useCallback(() => {
     setSelectedCenter(null);
+    setCardPosition(null);
   }, []);
 
   // Handle keyboard events - ESC to dismiss
@@ -78,6 +115,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && selectedCenter) {
         setSelectedCenter(null);
+        setCardPosition(null);
       }
     };
 
@@ -85,14 +123,18 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [selectedCenter]);
 
-  // Determine if a center is filtered out (for visual distinction)
-  const isCenterFiltered = useCallback((center: Center) => {
-    return !filteredCenters.some(fc => fc.center_id === center.center_id);
-  }, [filteredCenters]);
+  // Recalculate card position when map moves
+  useEffect(() => {
+    if (selectedCenter && map) {
+      const position = calculateCardPosition(selectedCenter);
+      setCardPosition(position);
+    }
+  }, [viewState, selectedCenter, calculateCardPosition, map]);
 
   return (
     <div className="relative h-full w-full">
       <Map
+        ref={mapRef}
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         onClick={handleMapClick}
@@ -102,88 +144,77 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         attributionControl={true}
         logoPosition="bottom-right"
       >
-        {/* Render all centers with coordinates */}
-        {centers
-          .filter(center => 
-            center.location.latitude !== null && 
-            center.location.longitude !== null
-          )
-          .map(center => {
-            const isFiltered = isCenterFiltered(center);
-            const isSelected = selectedCenter?.center_id === center.center_id;
-            
-            return (
-              <Marker
-                key={center.center_id}
-                longitude={center.location.longitude!}
-                latitude={center.location.latitude!}
-                anchor="bottom"
-                onClick={(e) => {
-                  e.originalEvent.stopPropagation();
-                  if (!isFiltered) {
-                    handleMarkerClick(center);
-                  }
-                }}
+        {/* Only render filtered centers with coordinates */}
+        {centersWithCoords.map(center => {
+          const isSelected = selectedCenter?.center_id === center.center_id;
+          
+          return (
+            <Marker
+              key={center.center_id}
+              longitude={center.location.longitude!}
+              latitude={center.location.latitude!}
+              anchor="bottom"
+              onClick={(e) => {
+                e.originalEvent.stopPropagation();
+                handleMarkerClick(center, e);
+              }}
+            >
+              <div 
+                className={`relative cursor-pointer transition-all duration-300 transform ${
+                  isSelected
+                    ? 'scale-125 z-10'
+                    : 'hover:scale-110'
+                }`}
               >
-                <div 
-                  className={`relative cursor-pointer transition-all duration-300 transform ${
-                    isFiltered 
-                      ? 'opacity-30 scale-75' 
-                      : isSelected
-                      ? 'scale-125 z-10'
-                      : 'hover:scale-110'
-                  }`}
-                >
-                  {/* Pin Shadow */}
-                  <div className={`absolute top-1 left-1 bg-black/20 rounded-full blur-sm transition-all duration-300 ${
-                    isSelected ? 'w-10 h-10' : 'w-8 h-8'
-                  }`}></div>
-                  
-                  {/* Main Pin - Unified design */}
-                  <div className={`relative rounded-full border-3 border-white shadow-lg flex items-center justify-center transition-all duration-300 ${
-                    isSelected
-                      ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200 ring-opacity-75'
-                      : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600'
-                  }`}>
-                    <MapPin className={`text-white transition-all duration-300 ${
-                      isSelected ? 'h-5 w-5' : 'h-4 w-4'
-                    }`} />
-                  </div>
-                  
-                  {/* Pulse animation for selected marker */}
-                  {isSelected && (
-                    <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full animate-ping opacity-75"></div>
-                  )}
-                  
-                  {/* Subtle glow for selected marker */}
-                  {isSelected && (
-                    <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full opacity-30 blur-md"></div>
-                  )}
+                {/* Pin Shadow */}
+                <div className={`absolute top-1 left-1 bg-black/20 rounded-full blur-sm transition-all duration-300 ${
+                  isSelected ? 'w-10 h-10' : 'w-8 h-8'
+                }`}></div>
+                
+                {/* Main Pin - Unified design */}
+                <div className={`relative rounded-full border-3 border-white shadow-lg flex items-center justify-center transition-all duration-300 ${
+                  isSelected
+                    ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200 ring-opacity-75'
+                    : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600'
+                }`}>
+                  <MapPin className={`text-white transition-all duration-300 ${
+                    isSelected ? 'h-5 w-5' : 'h-4 w-4'
+                  }`} />
                 </div>
-              </Marker>
-            );
-          })}
-
-        {/* Selected Center Popup */}
-        {selectedCenter && selectedCenter.location.latitude && selectedCenter.location.longitude && (
-          <Popup
-            longitude={selectedCenter.location.longitude}
-            latitude={selectedCenter.location.latitude}
-            anchor="bottom"
-            offset={[0, -50]}
-            closeButton={false}
-            closeOnClick={false}
-            className="map-popup"
-            maxWidth="400px"
-          >
-            <div className="p-0 bg-transparent">
-              <div className="transform scale-95 origin-bottom">
-                <CenterCard center={selectedCenter} />
+                
+                {/* Pulse animation for selected marker */}
+                {isSelected && (
+                  <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full animate-ping opacity-75"></div>
+                )}
+                
+                {/* Subtle glow for selected marker */}
+                {isSelected && (
+                  <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full opacity-30 blur-md"></div>
+                )}
               </div>
-            </div>
-          </Popup>
-        )}
+            </Marker>
+          );
+        })}
       </Map>
+
+      {/* Floating Card Overlay - Positioned based on marker location */}
+      {selectedCenter && cardPosition && (
+        <div 
+          className="absolute z-50 pointer-events-none"
+          style={{
+            left: `${cardPosition.x}px`,
+            top: `${cardPosition.y}px`,
+            maxWidth: '400px',
+            width: 'auto'
+          }}
+        >
+          <div className="pointer-events-auto transform transition-all duration-300 ease-out animate-in fade-in slide-in-from-bottom-2">
+            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
+              <CenterCard center={selectedCenter} />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Overlay - Bottom left */}
       <div className="absolute bottom-4 left-4 z-10">
