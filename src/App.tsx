@@ -4,12 +4,17 @@ import { FilterBar } from './components/FilterBar';
 import { MapPlaceholder } from './components/MapPlaceholder';
 import { CenterCard } from './components/CenterCard';
 import { Footer } from './components/Footer';
+import { OnboardingOverlay } from './components/OnboardingOverlay';
 import { useFilters } from './hooks/useFilters';
 import { Center, Filters } from './types/center';
 import centersData from './data/centers.json';
 
 function App() {
   const [centers] = useState<Center[]>(centersData as Center[]);
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    // Check if user has seen onboarding before
+    return localStorage.getItem('muso-onboarding-completed') !== 'true';
+  });
   const [filters, setFilters] = useState<Filters>({
     CWELCC_participant: null,
     subsidy_available: null,
@@ -39,15 +44,32 @@ function App() {
                           filters.dietary_services.length > 0 ||
                           filters.postal_codes.length > 0;
 
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('muso-onboarding-completed', 'true');
+  };
+
+  const handleOnboardingSkip = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('muso-onboarding-completed', 'true');
+  };
+
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
+      {/* Onboarding Overlay */}
+      <OnboardingOverlay
+        isVisible={showOnboarding}
+        onComplete={handleOnboardingComplete}
+        onSkip={handleOnboardingSkip}
+      />
+      
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-40">
         <Header />
       </div>
       
       {/* Fixed Filter Bar with Summary */}
-      <div className="fixed top-[89px] left-0 right-0 z-30">
+      <div className="fixed top-[89px] left-0 right-0 z-30" data-onboarding="filter-bar">
         <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60">
           {/* Filter Controls */}
           <div className="px-6 py-5">
@@ -76,7 +98,7 @@ function App() {
       </div>
       
       {/* Main Content Area - Adjusted top position */}
-      <div className="fixed top-[209px] left-0 right-0 bottom-[80px]">
+      <div className="fixed top-[209px] left-0 right-0 bottom-[80px]" data-onboarding="map-container">
         {/* Map Section - Full width and height */}
         <div className="w-full h-full">
           <MapPlaceholder 

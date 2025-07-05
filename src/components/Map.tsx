@@ -15,8 +15,13 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   const [hoveredCenter, setHoveredCenter] = useState<Center | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
-  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
-  const [hasClickedMarker, setHasClickedMarker] = useState(false);
+  const [showMapHint, setShowMapHint] = useState(() => {
+    // Only show hint if main onboarding is completed but user hasn't clicked a marker
+    const onboardingCompleted = localStorage.getItem('muso-onboarding-completed') === 'true';
+    const hasClickedMarker = localStorage.getItem('muso-clicked-marker') === 'true';
+    return onboardingCompleted && !hasClickedMarker;
+  });
+  const [showDismissHint, setShowDismissHint] = useState(false);
   const [viewState, setViewState] = useState({
     longitude: -79.3832,
     latitude: 43.6532,
@@ -25,30 +30,16 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   
   const mapRef = useRef<any>(null);
 
-  // Check localStorage for onboarding state on mount
+  // Auto-dismiss map hint after 8 seconds
   useEffect(() => {
-    const seenOnboarding = localStorage.getItem('muso-seen-onboarding');
-    const clickedMarker = localStorage.getItem('muso-clicked-marker');
-    
-    if (seenOnboarding === 'true') {
-      setHasSeenOnboarding(true);
-    }
-    if (clickedMarker === 'true') {
-      setHasClickedMarker(true);
-    }
-  }, []);
-
-  // Auto-dismiss initial onboarding after 5 seconds
-  useEffect(() => {
-    if (!hasSeenOnboarding) {
+    if (showMapHint) {
       const timer = setTimeout(() => {
-        setHasSeenOnboarding(true);
-        localStorage.setItem('muso-seen-onboarding', 'true');
-      }, 5000);
+        setShowMapHint(false);
+      }, 8000);
       
       return () => clearTimeout(timer);
     }
-  }, [hasSeenOnboarding]);
+  }, [showMapHint]);
 
   // Only show filtered centers that have valid coordinates
   const centersWithCoords = useMemo(() => {
@@ -121,16 +112,17 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   const handleMarkerClick = useCallback((center: Center, event: any) => {
     event.originalEvent.stopPropagation();
     
-    // Mark that user has clicked a marker (for onboarding)
-    if (!hasClickedMarker) {
-      setHasClickedMarker(true);
+    // Mark that user has clicked a marker and hide hints
+    const hasClickedBefore = localStorage.getItem('muso-clicked-marker') === 'true';
+    if (!hasClickedBefore) {
       localStorage.setItem('muso-clicked-marker', 'true');
-    }
-    
-    // Also mark onboarding as seen when they click
-    if (!hasSeenOnboarding) {
-      setHasSeenOnboarding(true);
-      localStorage.setItem('muso-seen-onboarding', 'true');
+      setShowMapHint(false);
+      setShowDismissHint(true);
+      
+      // Auto-hide dismiss hint after 5 seconds
+      setTimeout(() => {
+        setShowDismissHint(false);
+      }, 5000);
     }
     
     if (selectedCenter?.center_id === center.center_id) {
@@ -147,7 +139,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         setCardPosition(position);
       }, 100);
     }
-  }, [selectedCenter, calculateCardPosition, hasClickedMarker, hasSeenOnboarding]);
+  }, [selectedCenter, calculateCardPosition]);
 
   // Handle marker hover
   const handleMarkerMouseEnter = useCallback((center: Center, event: any) => {
@@ -316,22 +308,21 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
       </div>
 
       {/* Instructions overlay - Top right (only show when no center is selected) */}
-      {!selectedCenter && !hasSeenOnboarding && (
+      {!selectedCenter && showMapHint && (
         <div className="absolute top-4 right-4 z-10">
-          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl shadow-xl border border-white/20 p-4 animate-pulse">
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl shadow-xl border border-white/20 p-4">
             <div className="flex items-center space-x-3">
               <div className="bg-white/20 p-2 rounded-xl">
                 <MapPin className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-sm font-bold">Welcome to Muso!</div>
+                <div className="text-sm font-bold">Ready to explore?</div>
                 <div className="text-xs opacity-90">Click any marker to view center details</div>
               </div>
             </div>
             <button
               onClick={() => {
-                setHasSeenOnboarding(true);
-                localStorage.setItem('muso-seen-onboarding', 'true');
+                setShowMapHint(false);
               }}
               className="absolute top-2 right-2 text-white/70 hover:text-white transition-colors duration-200"
             >
@@ -344,7 +335,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
       )}
 
       {/* Dismissal instructions - Show when center is selected and user hasn't seen this before */}
-      {selectedCenter && !hasClickedMarker && (
+      {selectedCenter && showDismissHint && (
         <div className="absolute top-4 right-4 z-10">
           <div className="bg-slate-800 text-white rounded-2xl shadow-xl border border-white/20 p-4">
             <div className="flex items-center space-x-3">
@@ -360,8 +351,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
             </div>
             <button
               onClick={() => {
-                setHasClickedMarker(true);
-                localStorage.setItem('muso-clicked-marker', 'true');
+                setShowDismissHint(false);
               }}
               className="absolute top-2 right-2 text-white/70 hover:text-white transition-colors duration-200"
             >
