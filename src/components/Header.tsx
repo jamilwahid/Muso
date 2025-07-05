@@ -1,10 +1,18 @@
 import React from 'react';
-import { Baby } from 'lucide-react';
+import { Baby, HelpCircle } from 'lucide-react';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  onShowOnboarding?: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onShowOnboarding }) => {
   return (
     <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-5 h-[89px]">
-      <div className="flex items-center justify-center max-w-7xl mx-auto h-full">
+      <div className="flex items-center justify-between max-w-7xl mx-auto h-full">
+        {/* Left spacer for centering */}
+        <div className="w-10"></div>
+        
+        {/* Centered logo */}
         <div className="flex items-center space-x-4">
           <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-3 rounded-2xl shadow-lg">
             <Baby className="h-8 w-8 text-white" />
@@ -15,6 +23,17 @@ export const Header: React.FC = () => {
             </h1>
             <p className="text-sm text-slate-500 font-medium">Your sidekick in the childcare hunt</p>
           </div>
+        </div>
+        
+        {/* Help button */}
+        <div className="flex items-center">
+          <button
+            onClick={onShowOnboarding}
+            className="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group"
+            title="Show guided tour"
+          >
+            <HelpCircle className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
+          </button>
         </div>
       </div>
     </header>

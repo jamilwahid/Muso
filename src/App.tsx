@@ -54,6 +54,10 @@ function App() {
     localStorage.setItem('muso-onboarding-completed', 'true');
   };
 
+  const handleShowOnboarding = () => {
+    setShowOnboarding(true);
+  };
+
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
       {/* Onboarding Overlay */}
@@ -65,7 +69,7 @@ function App() {
       
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-40">
-        <Header />
+        <Header onShowOnboarding={handleShowOnboarding} />
       </div>
       
       {/* Fixed Filter Bar with Summary */}
