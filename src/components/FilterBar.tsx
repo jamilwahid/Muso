@@ -142,7 +142,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
         <div className="flex items-center space-x-3 flex-wrap gap-y-3">
           {/* Binary Toggle Filters - Now using Trophy for CWELCC */}
           <button
-            data-onboarding="cwelcc-filter"
             onClick={() => handleBinaryToggle('CWELCC_participant')}
             className={`group relative px-4 py-2.5 border rounded-xl text-sm font-medium transition-all duration-200 ${
               filters.CWELCC_participant === true
@@ -161,7 +160,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
           </button>
 
           <button
-            data-onboarding="subsidy-filter"
             onClick={() => handleBinaryToggle('subsidy_available')}
             className={`group relative px-4 py-2.5 border rounded-xl text-sm font-medium transition-all duration-200 ${
               filters.subsidy_available === true
@@ -180,7 +178,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
           </button>
 
           {/* Multi-select Dropdown Filters with Icons - Reordered */}
-          <div data-onboarding="exclusive-filters" className="contents">
           {[
             { 
               key: 'age_groups', 
@@ -332,7 +329,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
               </div>
             );
           })}
-          </div>
         </div>
       </div>
     </div>

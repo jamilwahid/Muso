@@ -105,14 +105,48 @@ function App() {
       </div>
       
       {/* Main Content Area - Adjusted top position */}
-      <div className="fixed top-[209px] left-0 right-0 bottom-[80px]" data-onboarding="map-container">
-        {/* Map Section - Full width and height */}
-        <div className="w-full h-full">
+      <div className="fixed top-[209px] left-0 right-0 bottom-[80px] flex flex-col lg:flex-row">
+        {/* Map Section - 60% - Fixed */}
+        <div className="w-full lg:w-3/5 h-1/2 lg:h-full border-b lg:border-b-0 lg:border-r border-slate-200/60">
           <MapPlaceholder 
             centers={centers}
             filteredCount={filteredCenters.length} 
             filteredCenters={filteredCenters}
           />
+        </div>
+
+        {/* Results Section - 40% - Only this scrolls */}
+        <div className="w-full lg:w-2/5 h-1/2 lg:h-full bg-white/60 backdrop-blur-sm overflow-y-auto">
+          <div className="p-4 lg:p-6">
+            {filteredCenters.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-white/20 max-w-md mx-auto">
+                  <div className="text-slate-400 mb-6">
+                    <div className="w-20 h-20 mx-auto bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center shadow-inner">
+                      <span className="text-3xl">🔍</span>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-800 mb-3">No centers match your filters</h3>
+                  <p className="text-slate-600 mb-6 leading-relaxed">Try adjusting your search criteria to see more results that fit your family's needs.</p>
+                  <button
+                    onClick={clearAllFilters}
+                    className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-2xl font-bold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  >
+                    Show all centers
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4 lg:space-y-6">
+                {filteredCenters.map(center => (
+                  <CenterCard
+                    key={center.center_id}
+                    center={center}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
       
