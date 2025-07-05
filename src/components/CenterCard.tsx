@@ -70,6 +70,29 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
             <MapPin className="h-3.5 w-3.5 mr-1.5 text-slate-400 flex-shrink-0 mt-0.5" />
             <span className="font-medium leading-relaxed">{formatAddress()}</span>
           </div>
+          
+          {/* External Links - Below address */}
+          <div className="mt-2 space-y-1">
+            {/* Toronto.ca listing link - Always shown */}
+            <button
+              onClick={handleViewListing}
+              className="flex items-center space-x-1.5 text-sm text-slate-500 hover:text-indigo-600 transition-colors duration-200 group"
+            >
+              <ExternalLink className="h-3.5 w-3.5 group-hover:text-indigo-600" />
+              <span>View full details on Toronto.ca</span>
+            </button>
+            
+            {/* Center website link - Only if available */}
+            {center.center_contact.website && (
+              <button
+                onClick={handleWebsiteClick}
+                className="flex items-center space-x-1.5 text-sm text-slate-500 hover:text-blue-600 transition-colors duration-200 group"
+              >
+                <ExternalLink className="h-3.5 w-3.5 group-hover:text-blue-600" />
+                <span>Visit center's website</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Badges Row - CWELCC, Subsidy, and Rating together */}
@@ -182,34 +205,6 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
 
             {/* Secondary Actions - Equal height and consistent spacing */}
             <div className="flex items-center justify-center sm:justify-end space-x-2">
-              {/* View Listing - Ghost button style to look more like a link */}
-              <button
-                onClick={handleViewListing}
-                className="inline-flex items-center space-x-1.5 text-indigo-600 hover:text-indigo-800 px-2.5 py-2 rounded-xl text-xs font-medium transition-all duration-200 hover:bg-indigo-50 hover:underline touch-manipulation h-10 border border-transparent hover:border-indigo-200"
-                title="View official listing on Toronto.ca"
-              >
-                <Link className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">View listing</span>
-              </button>
-
-              {/* Website Button - Icon with tooltip */}
-              {center.center_contact.website ? (
-                <button
-                  onClick={handleWebsiteClick}
-                  className="p-2 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 border border-blue-200/60 touch-manipulation h-10 w-10 flex items-center justify-center"
-                  title="Visit website"
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
-                </button>
-              ) : (
-                <div
-                  className="p-2 rounded-xl bg-slate-50 text-slate-300 border border-slate-200/60 cursor-not-allowed h-10 w-10 flex items-center justify-center"
-                  title="Website unavailable"
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
-                </div>
-              )}
-
               {/* Save Button - Icon with clear saved/unsaved state */}
               <button
                 onClick={handleSaveCenter}
