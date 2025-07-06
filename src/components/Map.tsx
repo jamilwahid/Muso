@@ -218,17 +218,14 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                 onMouseLeave={handleMarkerMouseLeave}
               >
                 {/* Pin Shadow */}
-                  className={`relative cursor-pointer transition-all duration-300 transform ${
-                  isSelected ? 'w-10 h-10' : 'w-8 h-8'
-                }`}></div>
-                
                 {/* Main Pin - Unified design */}
-                  data-onboarding={center === centersWithCoords[0] ? "map-marker" : undefined}
                 <div className={`relative rounded-full border-3 border-white shadow-lg flex items-center justify-center transition-all duration-300 ${
                   isSelected
                     ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200 ring-opacity-75'
                     : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600'
-                }`}>
+                }`}
+                data-onboarding={center === centersWithCoords[0] ? "map-marker" : undefined}
+                >
                   <MapPin className={`text-white transition-all duration-300 ${
                     isSelected ? 'h-5 w-5' : 'h-4 w-4'
                   }`} />
