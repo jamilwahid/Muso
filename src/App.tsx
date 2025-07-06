@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { MapPin } from 'lucide-react';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
 import { MapPlaceholder } from './components/MapPlaceholder';
