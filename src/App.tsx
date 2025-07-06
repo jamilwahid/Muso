@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { MapPin } from 'lucide-react';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
 import { MapPlaceholder } from './components/MapPlaceholder';
 import { CenterCard } from './components/CenterCard';
 import { Footer } from './components/Footer';
-import { OnboardingOverlay } from './components/OnboardingOverlay';
+import { OnboardingTour } from './components/OnboardingTour';
 import { useFilters } from './hooks/useFilters';
 import { Center, Filters } from './types/center';
 import centersData from './data/centers.json';
@@ -13,11 +14,7 @@ import centersData from './data/centers.json';
 function App() {
   const [centers] = useState<Center[]>(centersData as Center[]);
   const [currentView, setCurrentView] = useState<'map' | 'list'>('map');
-  const [showOnboarding, setShowOnboarding] = useState(() => {
-    // Show onboarding for first-time users
-    const hasSeenOnboarding = localStorage.getItem('muso-onboarding-completed') === 'true';
-    return !hasSeenOnboarding;
-  });
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [filters, setFilters] = useState<Filters>({
     CWELCC_participant: null,
     subsidy_available: null,
@@ -61,10 +58,22 @@ function App() {
     setShowOnboarding(true);
   };
 
+  // Check if user should see onboarding on first visit
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding') === 'true';
+    if (!hasSeenOnboarding) {
+      // Delay showing onboarding to let the app load
+      const timer = setTimeout(() => {
+        setShowOnboarding(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
-      {/* Onboarding Overlay */}
-      <OnboardingOverlay
+      {/* Onboarding Tour */}
+      <OnboardingTour
         isVisible={showOnboarding}
         onComplete={handleOnboardingComplete}
         onSkip={handleOnboardingSkip}
@@ -137,7 +146,7 @@ function App() {
       <div className="fixed top-[239px] left-0 right-0 bottom-[80px]">
         {currentView === 'map' ? (
           /* Map View */
-          <div className="h-full w-full">
+          <div className="h-full w-full" data-onboarding="map-area">
             <MapPlaceholder 
               centers={centers}
               filteredCount={filteredCenters.length} 

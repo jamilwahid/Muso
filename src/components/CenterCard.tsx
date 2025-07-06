@@ -205,6 +205,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
             <div className="flex items-center justify-center sm:justify-end space-x-2">
               {/* Save Button - Icon with clear saved/unsaved state */}
               <button
+                data-onboarding="save-button"
                 onClick={handleSaveCenter}
                 className={`relative p-2 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl border-2 touch-manipulation h-10 w-10 flex items-center justify-center ${
                   isSaved 
