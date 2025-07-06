@@ -115,7 +115,7 @@ function App() {
       </div>
       
       {/* Main Content Area - Adjusted top position */}
-      <div className="fixed top-[225px] left-0 right-0 bottom-[80px] relative">
+      <div className="fixed top-[225px] left-0 right-0 bottom-[80px]">
         {/* View Switcher - Floating on content area */}
         <ViewSwitcher 
           currentView={currentView}
@@ -124,7 +124,7 @@ function App() {
         
         {currentView === 'map' ? (
           /* Map View */
-          <div className="h-full w-full" data-onboarding="map-area">
+          <div className="absolute inset-0 w-full h-full" data-onboarding="map-area">
             <MapPlaceholder 
               centers={centers}
               filteredCount={filteredCenters.length} 
@@ -133,10 +133,12 @@ function App() {
           </div>
         ) : (
           /* List View */
+          <div className="absolute inset-0 w-full h-full">
           <ListView 
             filteredCenters={filteredCenters}
             clearAllFilters={clearAllFilters}
           />
+          </div>
         )}
       </div>
       

@@ -12,7 +12,7 @@ export const ListView: React.FC<ListViewProps> = ({
   clearAllFilters 
 }) => {
   return (
-    <div className="h-full w-full bg-gradient-to-br from-white/80 via-indigo-50/40 to-purple-50/30 backdrop-blur-sm overflow-y-auto">
+    <div className="w-full h-full bg-gradient-to-br from-white/80 via-indigo-50/40 to-purple-50/30 backdrop-blur-sm overflow-y-auto">
       <div className="px-6 lg:px-8 max-w-7xl mx-auto py-8">
         {filteredCenters.length === 0 ? (
           <div className="text-center py-20">
