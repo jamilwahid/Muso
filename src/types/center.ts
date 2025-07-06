@@ -36,5 +36,4 @@ export interface Filters {
   age_groups: string[];
   languages_spoken: string[];
   dietary_services: string[];
-  postal_codes: string[];
 }

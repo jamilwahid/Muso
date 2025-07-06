@@ -36,13 +36,6 @@ export const useFilters = (centers: Center[], filters: Filters) => {
         }
       }
 
-      // Postal codes filter
-      if (filters.postal_codes.length > 0) {
-        if (!center.location.postal_code || 
-            !filters.postal_codes.some(code => center.location.postal_code?.startsWith(code))) {
-          return false;
-        }
-      }
 
       return true;
     });
@@ -52,12 +45,8 @@ export const useFilters = (centers: Center[], filters: Filters) => {
     const languages = [...new Set(centers.flatMap(c => c.languages_spoken))].sort();
     const ageGroups = [...new Set(centers.flatMap(c => c.programs.map(p => p.age_group)))].sort();
     const dietaryServices = [...new Set(centers.flatMap(c => c.dietary_services))].sort();
-    const postalCodes = [...new Set(centers.map(c => c.location.postal_code).filter(Boolean) as string[])]
-      .map(code => code.substring(0, 3))
-      .filter((code, index, array) => array.indexOf(code) === index)
-      .sort();
 
-    return { languages, ageGroups, dietaryServices, postalCodes };
+    return { languages, ageGroups, dietaryServices };
   }, [centers]);
 
   return { filteredCenters, availableOptions };

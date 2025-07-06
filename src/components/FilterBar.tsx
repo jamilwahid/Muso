@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Check, DollarSign, Users, Languages, Utensils, MapPin, X, Search, Trophy, Sparkles } from 'lucide-react';
+import { ChevronDown, Check, DollarSign, Users, Languages, Utensils, X, Search, Landmark, Sparkles } from 'lucide-react';
 import { Filters } from '../types/center';
 
 interface FilterBarProps {
@@ -153,7 +153,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
               {filters.CWELCC_participant === true ? (
                 <Check className="h-4 w-4" />
               ) : (
-                <Trophy className="h-4 w-4" />
+                <Landmark className="h-4 w-4" />
               )}
               <span>CWELCC</span>
             </div>
@@ -184,13 +184,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
               label: 'Age Groups', 
               icon: Users,
               options: availableOptions.ageGroups,
-              isUnique: false
-            },
-            { 
-              key: 'postal_codes', 
-              label: 'Areas', 
-              icon: MapPin,
-              options: filteredPostalCodes,
               isUnique: false
             },
             { 
@@ -270,21 +263,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
                         </div>
                       )}
 
-                      {/* Search input for postal codes */}
-                      {key === 'postal_codes' && (
-                        <div className="px-3 pb-3 mb-2 border-b border-slate-100">
-                          <div className="relative">
-                            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
-                            <input
-                              type="text"
-                              placeholder="Type postal code (e.g., M4K, M1V)..."
-                              value={postalCodeSearch}
-                              onChange={(e) => handlePostalCodeSearch(e.target.value)}
-                              className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white/80"
-                            />
-                          </div>
-                        </div>
-                      )}
 
                       {options.map(option => (
                         <label key={option} className="flex items-center space-x-3 p-3 hover:bg-slate-50 cursor-pointer rounded-xl transition-colors duration-150 group">
@@ -316,13 +294,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
                         </label>
                       ))}
 
-                      {/* No results message for postal code search */}
-                      {key === 'postal_codes' && postalCodeSearch.length > 0 && filteredPostalCodes.length === 0 && (
-                        <div className="px-3 py-6 text-center text-slate-500">
-                          <div className="text-sm">No postal codes found matching "{postalCodeSearch}"</div>
-                          <div className="text-xs mt-1">Try searching with 3 characters (e.g., M4K)</div>
-                        </div>
-                      )}
                     </div>
                   </div>
                 )}

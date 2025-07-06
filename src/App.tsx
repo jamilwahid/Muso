@@ -20,8 +20,7 @@ function App() {
     subsidy_available: null,
     age_groups: [],
     languages_spoken: [],
-    dietary_services: [],
-    postal_codes: []
+    dietary_services: []
   });
 
   const { filteredCenters, availableOptions } = useFilters(centers, filters);
@@ -32,8 +31,7 @@ function App() {
       subsidy_available: null,
       age_groups: [],
       languages_spoken: [],
-      dietary_services: [],
-      postal_codes: []
+      dietary_services: []
     });
   };
 
@@ -41,8 +39,7 @@ function App() {
                           filters.subsidy_available !== null ||
                           filters.age_groups.length > 0 ||
                           filters.languages_spoken.length > 0 ||
-                          filters.dietary_services.length > 0 ||
-                          filters.postal_codes.length > 0;
+                          filters.dietary_services.length > 0;
 
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
