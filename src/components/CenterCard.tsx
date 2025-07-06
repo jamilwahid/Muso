@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { MapPin, Star, Phone, ExternalLink, Bookmark, Languages, Utensils, Link, Sparkles, Clock } from 'lucide-react';
-import { Center } from '../types/center';
+import { Center, Filters } from '../types/center';
 
 interface CenterCardProps {
   center: Center;
+  activeFilters?: Filters;
 }
 
-export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
+export const CenterCard: React.FC<CenterCardProps> = ({ center, activeFilters }) => {
   const [showComingSoon, setShowComingSoon] = useState(false);
   
   const programsWithRating = center.programs.filter(p => p.quality_rating);
@@ -59,6 +60,20 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
     return postalCode ? `${baseAddress}, ${postalCode}` : baseAddress;
   };
 
+  // Helper function to get matching items and create badge data
+  const getMatchingBadges = (centerItems: string[], filterItems: string[]) => {
+    if (!activeFilters || filterItems.length === 0) {
+      return { matchingItems: [], hasMatches: false };
+    }
+    
+    const matchingItems = centerItems.filter(item => filterItems.includes(item));
+    return { matchingItems, hasMatches: matchingItems.length > 0 };
+  };
+
+  // Get matching languages and dietary services
+  const languageBadges = getMatchingBadges(center.languages_spoken, activeFilters?.languages_spoken || []);
+  const dietaryBadges = getMatchingBadges(center.dietary_services, activeFilters?.dietary_services || []);
+
   return (
     <div className="group bg-white/90 backdrop-blur-sm border border-slate-200/60 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
       <div className="p-3 sm:p-4">
@@ -97,17 +112,14 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
 
         {/* Badges Row - CWELCC, Subsidy, and Rating together */}
         <div className="flex flex-wrap items-center gap-1.5 mb-2">
-          {center.CWELCC_participant && (
-<div className="inline-flex items-center bg-gray-50 text-gray-900 px-2 py-1 rounded-lg text-xs font-medium border border-gray-300 shadow-sm">
-
-
+          {center.CWELCC_participant && activeFilters?.CWELCC_participant && (
+            <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
               <span>CWELCC</span>
             </div>
           )}
           
-          {center.subsidy_available && (
-<div className="inline-flex items-center bg-amber-50 text-amber-800 px-2 py-1 rounded-lg text-xs font-medium border border-amber-200">
-
+          {center.subsidy_available && activeFilters?.subsidy_available && (
+            <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
               <span>Subsidy</span>
             </div>
           )}
@@ -133,24 +145,24 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
         <div className="border-t border-slate-100 my-2"></div>
 
         {/* Language and Dietary Tags Section - Improved spacing and grouping */}
-        {(center.languages_spoken.length > 0 || center.dietary_services.length > 0) && (
+        {(languageBadges.hasMatches || dietaryBadges.hasMatches) && (
           <div className="mb-2 space-y-2">
             {/* Language Tags - Using same icon as filter UI */}
-            {center.languages_spoken.length > 0 && (
+            {languageBadges.hasMatches && (
               <div className="space-y-1">
                 <div className="flex items-center space-x-1.5">
                   <Languages className="h-3.5 w-3.5 text-slate-400" />
                   <span className="text-sm font-medium text-slate-600">Languages</span>
                 </div>
                 <div className="flex flex-wrap gap-1 ml-5">
-                  {center.languages_spoken.slice(0, 2).map((language, index) => (
+                  {languageBadges.matchingItems.slice(0, 2).map((language, index) => (
                     <div key={`lang-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
                       {language}
                     </div>
                   ))}
-                  {center.languages_spoken.length > 2 && (
-                    <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                      +{center.languages_spoken.length - 2} more
+                  {languageBadges.matchingItems.length > 2 && (
+                    <div className="inline-flex items-center bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs font-medium border border-gray-200 shadow-sm">
+                      +{languageBadges.matchingItems.length - 2} more
                     </div>
                   )}
                 </div>
@@ -158,21 +170,21 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
             )}
 
             {/* Dietary Services Tags - Using same icon as filter UI */}
-            {center.dietary_services.length > 0 && (
+            {dietaryBadges.hasMatches && (
               <div className="space-y-1">
                 <div className="flex items-center space-x-1.5">
                   <Utensils className="h-3.5 w-3.5 text-slate-400" />
                   <span className="text-sm font-medium text-slate-600">Dietary</span>
                 </div>
                 <div className="flex flex-wrap gap-1 ml-5">
-                  {center.dietary_services.slice(0, 2).map((service, index) => (
+                  {dietaryBadges.matchingItems.slice(0, 2).map((service, index) => (
                     <div key={`diet-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
                       {service}
                     </div>
                   ))}
-                  {center.dietary_services.length > 2 && (
-                    <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                      +{center.dietary_services.length - 2} more
+                  {dietaryBadges.matchingItems.length > 2 && (
+                    <div className="inline-flex items-center bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs font-medium border border-gray-200 shadow-sm">
+                      +{dietaryBadges.matchingItems.length - 2} more
                     </div>
                   )}
                 </div>

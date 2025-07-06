@@ -5,11 +5,13 @@ import { Center, Filters } from '../types/center';
 interface ListViewProps {
   filteredCenters: Center[];
   clearAllFilters: () => void;
+  activeFilters: Filters;
 }
 
 export const ListView: React.FC<ListViewProps> = ({ 
   filteredCenters, 
-  clearAllFilters 
+  clearAllFilters,
+  activeFilters
 }) => {
   return (
     <div className="w-full h-full bg-gradient-to-br from-white/80 via-indigo-50/40 to-purple-50/30 backdrop-blur-sm overflow-y-auto">
@@ -44,7 +46,7 @@ export const ListView: React.FC<ListViewProps> = ({
                     animationDelay: `${index * 50}ms`
                   }}
                 >
-                  <CenterCard center={center} />
+                  <CenterCard center={center} activeFilters={activeFilters} />
                 </div>
               ))}
             </div>

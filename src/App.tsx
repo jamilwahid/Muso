@@ -130,6 +130,7 @@ function App() {
           <ListView 
             filteredCenters={filteredCenters}
             clearAllFilters={clearAllFilters}
+            activeFilters={filters}
           />
           </div>
         )}
