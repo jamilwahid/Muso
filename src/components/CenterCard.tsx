@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Star, Phone, ExternalLink, Bookmark, Languages, Utensils, Link } from 'lucide-react';
+import { MapPin, Star, Phone, ExternalLink, Bookmark, Languages, Utensils, Link, Sparkles, Clock } from 'lucide-react';
 import { Center } from '../types/center';
 
 interface CenterCardProps {
@@ -7,7 +7,7 @@ interface CenterCardProps {
 }
 
 export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
-  const [isSaved, setIsSaved] = useState(false); // TODO: Connect to actual save state
+  const [showComingSoon, setShowComingSoon] = useState(false);
   
   const programsWithRating = center.programs.filter(p => p.quality_rating);
   const avgRating = programsWithRating.length > 0 
@@ -28,9 +28,11 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
 
   const handleSaveCenter = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsSaved(!isSaved);
-    // TODO: Implement actual save functionality
-    console.log('Save center:', center.center_id);
+    setShowComingSoon(true);
+    // Auto-hide the tooltip after 3 seconds
+    setTimeout(() => {
+      setShowComingSoon(false);
+    }, 3000);
   };
 
   // Format phone number for tel: link (remove all non-digits and format)
@@ -203,22 +205,59 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
 
             {/* Secondary Actions - Equal height and consistent spacing */}
             <div className="flex items-center justify-center sm:justify-end space-x-2">
-              {/* Save Button - Icon with clear saved/unsaved state */}
-              <button
+              {/* Save Button - Coming Soon Feature */}
+              <div className="relative">
+                <button
                 data-onboarding="save-button"
                 onClick={handleSaveCenter}
-                className={`relative p-2 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl border-2 touch-manipulation h-10 w-10 flex items-center justify-center ${
-                  isSaved 
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-white/20 hover:from-indigo-600 hover:to-purple-700' 
-                    : 'bg-white text-indigo-600 border-indigo-200/60 hover:bg-indigo-50'
-                }`}
-                title={isSaved ? "Saved to My List" : "Save to My List"}
-              >
-                <Bookmark className={`h-3.5 w-3.5 ${isSaved ? 'fill-current' : ''}`} />
-                {!isSaved && (
-                  <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full"></div>
+                  className="relative p-2 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl border-2 touch-manipulation h-10 w-10 flex items-center justify-center bg-gradient-to-r from-amber-500 to-orange-500 text-white border-white/20 hover:from-amber-600 hover:to-orange-600 group overflow-hidden"
+                  title="Save to My List - Coming Soon!"
+                >
+                  {/* Animated background sparkles */}
+                  <div className="absolute inset-0 opacity-30">
+                    <Sparkles className="h-2 w-2 absolute top-1 left-1 animate-pulse" />
+                    <Sparkles className="h-1.5 w-1.5 absolute bottom-1 right-1 animate-pulse delay-300" />
+                  </div>
+                  
+                  <Bookmark className="h-3.5 w-3.5 relative z-10" />
+                  
+                  {/* Pulsing "new feature" indicator */}
+                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-gradient-to-r from-pink-400 to-red-500 rounded-full animate-pulse"></div>
+                  
+                  {/* Shimmer effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                </button>
+                
+                {/* Coming Soon Tooltip */}
+                {showComingSoon && (
+                  <div className="absolute bottom-full right-0 mb-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-pink-500 text-white px-4 py-3 rounded-2xl shadow-2xl border border-white/20 backdrop-blur-xl min-w-[280px]">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+                          <Clock className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <div className="font-bold text-sm mb-1">🚀 Coming Soon!</div>
+                          <div className="text-xs opacity-90 leading-relaxed">
+                            Save centers to your personal list, compare favorites, and get notifications about availability!
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Tooltip arrow */}
+                      <div className="absolute top-full right-4 transform">
+                        <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-orange-500"></div>
+                      </div>
+                      
+                      {/* Animated sparkles */}
+                      <div className="absolute inset-0 pointer-events-none">
+                        <Sparkles className="h-3 w-3 absolute top-2 right-2 text-white/60 animate-pulse" />
+                        <Sparkles className="h-2 w-2 absolute bottom-2 left-2 text-white/40 animate-pulse delay-500" />
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </button>
+              </div>
             </div>
           </div>
         </div>

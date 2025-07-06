@@ -63,12 +63,12 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({
     },
     {
       id: 'save-button',
-      title: 'Save to My List',
-      description: 'Tap the bookmark to save centers to your list and compare them later. Build your shortlist of favorites!',
+      title: 'Save Feature Coming Soon! 🚀',
+      description: 'Soon you\'ll be able to save centers to your personal list, compare favorites, and get notifications about availability. Click to see what\'s coming!',
       target: '[data-onboarding="save-button"]',
-      icon: <Heart className="h-5 w-5" />,
+      icon: <Sparkles className="h-5 w-5" />,
       placement: 'top',
-      highlightClass: 'ring-4 ring-pink-300 ring-opacity-75',
+      highlightClass: 'ring-4 ring-amber-300 ring-opacity-75',
       waitForElement: true
     }
   ];
