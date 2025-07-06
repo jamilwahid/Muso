@@ -105,7 +105,8 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
           )}
           
           {center.subsidy_available && (
-            <div className="inline-flex items-center bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs font-medium border border-gray-200">
+<div className="inline-flex items-center bg-amber-50 text-amber-800 px-2 py-1 rounded-lg text-xs font-medium border border-amber-200">
+
               <span>Subsidy</span>
             </div>
           )}
