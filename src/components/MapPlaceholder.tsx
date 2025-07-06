@@ -5,13 +5,11 @@ import { Center } from '../types/center';
 
 interface MapPlaceholderProps {
   centers: Center[];
-  filteredCount: number;
   filteredCenters: Center[];
 }
 
 export const MapPlaceholder: React.FC<MapPlaceholderProps> = ({ 
   centers, 
-  filteredCount, 
   filteredCenters 
 }) => {
   const [mapError, setMapError] = useState(false);
