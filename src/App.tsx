@@ -14,8 +14,9 @@ function App() {
   const [centers] = useState<Center[]>(centersData as Center[]);
   const [currentView, setCurrentView] = useState<'map' | 'list'>('map');
   const [showOnboarding, setShowOnboarding] = useState(() => {
-    // Check if user has seen onboarding before
-    return false; // Start with false, will be triggered by help button
+    // Show onboarding for first-time users
+    const hasSeenOnboarding = localStorage.getItem('muso-onboarding-completed') === 'true';
+    return !hasSeenOnboarding;
   });
   const [filters, setFilters] = useState<Filters>({
     CWELCC_participant: null,
