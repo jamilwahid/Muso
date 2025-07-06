@@ -239,7 +239,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
                         <div>
                           <div className="font-bold text-sm mb-1">🚀 Coming Soon!</div>
                           <div className="text-xs opacity-90 leading-relaxed">
-                            Save your favorite centers, track your shortlist, and stay on top of next steps — <em>all in one place</em>!
+                            Save your favorite centers, track your shortlist, and stay on top of next steps — <em>all in one place</em> !
                           </div>
                         </div>
                       </div>
