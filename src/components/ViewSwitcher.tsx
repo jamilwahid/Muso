@@ -11,7 +11,7 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
   onViewChange 
 }) => {
   return (
-    <div className="absolute top-4 right-4 z-20" style={{ right: '1rem' }}>
+    <div className="absolute top-4 right-4 z-20">
       <div className="flex items-center bg-white/90 backdrop-blur-xl rounded-xl p-1 shadow-lg border border-white/30">
         <button
           onClick={() => onViewChange('map')}

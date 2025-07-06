@@ -281,6 +281,25 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         </div>
       )}
 
+      {/* Stats Overlay - Bottom left */}
+      <div className="absolute bottom-4 left-4 z-10">
+        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-4">
+          <div className="text-center">
+            <div className="text-lg font-bold text-slate-800">
+              {centersWithCoords.length}
+            </div>
+            <div className="text-xs text-slate-600 font-medium">
+              Centers on Map
+            </div>
+            {selectedCenter && (
+              <div className="text-xs text-indigo-600 font-medium mt-1">
+                1 Selected
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Instructions overlay - Top right (only show when no center is selected) */}
       {!selectedCenter && showMapHint && (
         <div className="absolute top-4 right-4 z-10">
