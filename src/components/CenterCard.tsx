@@ -98,7 +98,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
         {/* Badges Row - CWELCC, Subsidy, and Rating together */}
         <div className="flex flex-wrap items-center gap-1.5 mb-2">
           {center.CWELCC_participant && (
-            <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
+            <div className="inline-flex items-center bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs font-medium border border-gray-200">
               <span>CWELCC</span>
             </div>
           )}
