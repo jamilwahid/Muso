@@ -156,30 +156,7 @@ function App() {
         ) : (
           /* List View */
           <div className="h-full w-full bg-gradient-to-br from-white/80 via-indigo-50/40 to-purple-50/30 backdrop-blur-sm overflow-y-auto">
-            {/* Hero Section */}
-            <div className="bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-xl border-b border-white/20 mb-8">
-              <div className="max-w-7xl mx-auto px-6 py-12 text-center">
-                <div className="space-y-4">
-                  <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-800 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                    Discover Your Perfect Childcare Match
-                  </h2>
-                  <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-                    {filteredCenters.length === centers.length 
-                      ? `Explore ${centers.length.toLocaleString()} quality childcare centers across Toronto`
-                      : `${filteredCenters.length.toLocaleString()} centers match your criteria`
-                    }
-                  </p>
-                  {hasActiveFilters && (
-                    <div className="flex items-center justify-center space-x-2 text-sm text-indigo-600">
-                      <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></div>
-                      <span className="font-medium">Filtered results • Adjust filters above to see more options</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            
-            <div className="px-6 lg:px-8 max-w-7xl mx-auto pb-8">
+            <div className="px-6 lg:px-8 max-w-7xl mx-auto py-8">
               {filteredCenters.length === 0 ? (
                 <div className="text-center py-20">
                   <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-white/30 max-w-lg mx-auto">
@@ -200,50 +177,6 @@ function App() {
                 </div>
               ) : (
                 <>
-                  {/* Results Summary */}
-                  <div className="mb-8">
-                    <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-lg border border-white/30 p-6">
-                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-                        <div className="flex items-center space-x-4">
-                          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-3 rounded-2xl">
-                            <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-6 4h6" />
-                            </svg>
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold text-slate-800">
-                              {filteredCenters.length.toLocaleString()} {filteredCenters.length === 1 ? 'Center' : 'Centers'} Found
-                            </h3>
-                            <p className="text-slate-600">
-                              {hasActiveFilters ? 'Matching your selected criteria' : 'Available across Toronto'}
-                            </p>
-                          </div>
-                        </div>
-                        
-                        {/* Quick Stats */}
-                        <div className="flex items-center space-x-6 text-sm">
-                          <div className="text-center">
-                            <div className="font-bold text-lg text-indigo-600">
-                              {filteredCenters.filter(c => c.CWELCC_participant).length}
-                            </div>
-                            <div className="text-slate-500">CWELCC</div>
-                          </div>
-                          <div className="text-center">
-                            <div className="font-bold text-lg text-purple-600">
-                              {filteredCenters.filter(c => c.subsidy_available).length}
-                            </div>
-                            <div className="text-slate-500">Subsidy</div>
-                          </div>
-                          <div className="text-center">
-                            <div className="font-bold text-lg text-emerald-600">
-                              {filteredCenters.filter(c => c.languages_spoken.length > 1).length}
-                            </div>
-                            <div className="text-slate-500">Multilingual</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Grid Layout */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
