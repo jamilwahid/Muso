@@ -111,10 +111,10 @@ export const OnboardingOverlay: React.FC<OnboardingOverlayProps> = ({
   return (
     <>
       {/* Simple backdrop */}
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" />
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999]" />
 
       {/* Centered modal */}
-      <div className="fixed inset-0 z-60 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
         <div className={`w-full max-w-lg transition-all duration-200 ${isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
           <div className="bg-white/98 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 overflow-hidden">
             
@@ -237,7 +237,7 @@ export const OnboardingOverlay: React.FC<OnboardingOverlayProps> = ({
 
       {/* Auto-advance indicator */}
       {currentStepData.id === 'welcome' && (
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-60">
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[10001]">
           <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 px-4 py-2">
             <div className="text-sm text-slate-600 flex items-center space-x-2">
               <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></div>
