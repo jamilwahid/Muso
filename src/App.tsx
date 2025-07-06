@@ -60,7 +60,7 @@ function App() {
 
   // Check if user should see onboarding on first visit
   useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding') === 'true';
+    const hasSeenOnboarding = localStorage.getItem('muso-onboarding-completed') === 'true';
     if (!hasSeenOnboarding) {
       // Delay showing onboarding to let the app load
       const timer = setTimeout(() => {
