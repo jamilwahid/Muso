@@ -18,15 +18,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [showMapHint, setShowMapHint] = useState(false);
   const [showDismissHint, setShowDismissHint] = useState(false);
-  const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const [viewState, setViewState] = useState({
-    longitude: -79.3832,
-    latitude: 43.6532,
-    zoom: 10.5
-  });
-  
-  // Store initial view state for reset functionality
-  const initialViewState = useRef({
     longitude: -79.3832,
     latitude: 43.6532,
     zoom: 10.5
@@ -57,86 +49,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
     );
   }, [filteredCenters]);
 
-  // Calculate bounds for filtered centers
-  const calculateBounds = useCallback(() => {
-    if (centersWithCoords.length === 0) {
-      return initialViewState.current;
-    }
-
-    // If only one center, zoom to it with reasonable zoom level
-    if (centersWithCoords.length === 1) {
-      const center = centersWithCoords[0];
-      return {
-        longitude: center.location.longitude!,
-        latitude: center.location.latitude!,
-        zoom: 13
-      };
-    }
-
-    const lngs = centersWithCoords.map(c => c.location.longitude!);
-    const lats = centersWithCoords.map(c => c.location.latitude!);
-    
-    const minLng = Math.min(...lngs);
-    const maxLng = Math.max(...lngs);
-    const minLat = Math.min(...lats);
-    const maxLat = Math.max(...lats);
-    
-    // Calculate center
-    const centerLng = (minLng + maxLng) / 2;
-    const centerLat = (minLat + maxLat) / 2;
-    
-    // Calculate zoom based on the span of coordinates
-    const lngSpan = maxLng - minLng;
-    const latSpan = maxLat - minLat;
-    const maxSpan = Math.max(lngSpan, latSpan);
-    
-    // More conservative zoom calculation
-    let zoom = 11; // Default for Toronto area
-    if (maxSpan < 0.005) zoom = 14;      // Very close together
-    else if (maxSpan < 0.02) zoom = 13;   // Close together
-    else if (maxSpan < 0.05) zoom = 12;   // Moderate spread
-    else if (maxSpan < 0.1) zoom = 11;    // Wide spread
-    else if (maxSpan < 0.2) zoom = 10;    // Very wide spread
-    else zoom = 9;                        // City-wide view
-    
-    return {
-      longitude: centerLng,
-      latitude: centerLat,
-      zoom: Math.min(Math.max(zoom, 9), 14) // Clamp between 9 and 14
-    };
-  }, [centersWithCoords]);
-
-  // Check if current view shows all filtered results
-  const isViewOptimal = useCallback(() => {
-    if (!mapRef.current || centersWithCoords.length === 0) return true;
-    
-    try {
-      const map = mapRef.current.getMap();
-      const bounds = map.getBounds();
-      
-      // Check if all filtered centers are visible
-      const allVisible = centersWithCoords.every(center => {
-        return bounds.contains([center.location.longitude!, center.location.latitude!]);
-      });
-      
-      return allVisible;
-    } catch (error) {
-      return true; // If we can't determine, assume it's optimal
-    }
-  }, [centersWithCoords, viewState]);
-
   // Handle map movement to track user interaction
   const handleMove = useCallback((evt: any) => {
     setViewState(evt.viewState);
-    setHasUserInteracted(true);
   }, []);
-
-  // Reset map view to show all filtered results
-  const handleRecenter = useCallback(() => {
-    const optimalView = calculateBounds();
-    setViewState(optimalView);
-    setHasUserInteracted(false);
-  }, [calculateBounds]);
 
   // Zoom controls
   const handleZoomIn = useCallback(() => {
@@ -144,7 +60,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
       ...prev,
       zoom: Math.min(prev.zoom + 1, 18)
     }));
-    setHasUserInteracted(true);
   }, []);
 
   const handleZoomOut = useCallback(() => {
@@ -152,15 +67,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
       ...prev,
       zoom: Math.max(prev.zoom - 1, 1)
     }));
-    setHasUserInteracted(true);
   }, []);
 
   // Determine if zoom buttons should be enabled
   const canZoomIn = viewState.zoom < 18;
   const canZoomOut = viewState.zoom > 1;
-  
-  // Determine if recenter button should be shown
-  const showRecenter = hasUserInteracted && !isViewOptimal();
 
   // Calculate optimal card position based on marker screen coordinates
   const calculateCardPosition = useCallback((center: Center) => {
@@ -397,10 +308,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
 
       {/* Map Navigation Controls */}
       <MapControls
-        onRecenter={handleRecenter}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
-        showRecenter={showRecenter}
         canZoomIn={canZoomIn}
         canZoomOut={canZoomOut}
       />
