@@ -63,6 +63,16 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
       return initialViewState.current;
     }
 
+    // If only one center, zoom to it with reasonable zoom level
+    if (centersWithCoords.length === 1) {
+      const center = centersWithCoords[0];
+      return {
+        longitude: center.location.longitude!,
+        latitude: center.location.latitude!,
+        zoom: 13
+      };
+    }
+
     const lngs = centersWithCoords.map(c => c.location.longitude!);
     const lats = centersWithCoords.map(c => c.location.latitude!);
     
@@ -71,29 +81,28 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
     const minLat = Math.min(...lats);
     const maxLat = Math.max(...lats);
     
-    // Add padding
-    const lngPadding = (maxLng - minLng) * 0.1;
-    const latPadding = (maxLat - minLat) * 0.1;
-    
+    // Calculate center
     const centerLng = (minLng + maxLng) / 2;
     const centerLat = (minLat + maxLat) / 2;
     
-    // Calculate appropriate zoom level based on bounds
-    const lngDiff = maxLng - minLng + lngPadding * 2;
-    const latDiff = maxLat - minLat + latPadding * 2;
-    const maxDiff = Math.max(lngDiff, latDiff);
+    // Calculate zoom based on the span of coordinates
+    const lngSpan = maxLng - minLng;
+    const latSpan = maxLat - minLat;
+    const maxSpan = Math.max(lngSpan, latSpan);
     
-    let zoom = 10.5;
-    if (maxDiff < 0.01) zoom = 14;
-    else if (maxDiff < 0.05) zoom = 12;
-    else if (maxDiff < 0.1) zoom = 11;
-    else if (maxDiff < 0.2) zoom = 10;
-    else zoom = 9;
+    // More conservative zoom calculation
+    let zoom = 11; // Default for Toronto area
+    if (maxSpan < 0.005) zoom = 14;      // Very close together
+    else if (maxSpan < 0.02) zoom = 13;   // Close together
+    else if (maxSpan < 0.05) zoom = 12;   // Moderate spread
+    else if (maxSpan < 0.1) zoom = 11;    // Wide spread
+    else if (maxSpan < 0.2) zoom = 10;    // Very wide spread
+    else zoom = 9;                        // City-wide view
     
     return {
       longitude: centerLng,
       latitude: centerLat,
-      zoom: Math.min(Math.max(zoom, 9), 15) // Clamp between 9 and 15
+      zoom: Math.min(Math.max(zoom, 9), 14) // Clamp between 9 and 14
     };
   }, [centersWithCoords]);
 
@@ -395,25 +404,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         canZoomIn={canZoomIn}
         canZoomOut={canZoomOut}
       />
-
-      {/* Stats Overlay - Bottom left */}
-      <div className="absolute bottom-4 left-4 z-10">
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-4">
-          <div className="text-center">
-            <div className="text-lg font-bold text-slate-800">
-              {centersWithCoords.length}
-            </div>
-            <div className="text-xs text-slate-600 font-medium">
-              Centers on Map
-            </div>
-            {selectedCenter && (
-              <div className="text-xs text-indigo-600 font-medium mt-1">
-                1 Selected
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
 
       {/* Instructions overlay - Top right (only show when no center is selected) */}
       {!selectedCenter && showMapHint && (

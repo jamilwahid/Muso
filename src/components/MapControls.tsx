@@ -19,25 +19,25 @@ export const MapControls: React.FC<MapControlsProps> = ({
   canZoomOut
 }) => {
   return (
-    <div className="absolute bottom-4 right-4 z-20 flex flex-col space-y-2">
+    <div className="absolute bottom-4 right-4 z-[100] flex flex-col space-y-2">
       {/* Recenter Button - Only show when needed */}
       {showRecenter && (
         <button
           onClick={onRecenter}
-          className="bg-white/95 backdrop-blur-xl hover:bg-white text-slate-700 hover:text-indigo-600 p-3 rounded-xl shadow-lg border border-white/30 transition-all duration-200 hover:shadow-xl group"
+          className="bg-white/95 backdrop-blur-xl hover:bg-white text-slate-700 hover:text-indigo-600 p-2 rounded-lg shadow-lg border border-white/30 transition-all duration-200 hover:shadow-xl group relative"
           title="Reset map view to show all results"
         >
-          <RotateCcw className="h-5 w-5 group-hover:rotate-180 transition-transform duration-300" />
+          <RotateCcw className="h-4 w-4 group-hover:rotate-180 transition-transform duration-300" />
         </button>
       )}
       
       {/* Zoom Controls */}
-      <div className="flex flex-col space-y-1 bg-white/95 backdrop-blur-xl rounded-xl shadow-lg border border-white/30 p-1">
+      <div className="flex flex-col space-y-1 bg-white/95 backdrop-blur-xl rounded-lg shadow-lg border border-white/30 p-1">
         {/* Zoom In */}
         <button
           onClick={onZoomIn}
           disabled={!canZoomIn}
-          className={`p-2.5 rounded-lg transition-all duration-200 ${
+          className={`p-2 rounded-md transition-all duration-200 relative ${
             canZoomIn
               ? 'text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 hover:shadow-sm'
               : 'text-slate-300 cursor-not-allowed'
@@ -54,7 +54,7 @@ export const MapControls: React.FC<MapControlsProps> = ({
         <button
           onClick={onZoomOut}
           disabled={!canZoomOut}
-          className={`p-2.5 rounded-lg transition-all duration-200 ${
+          className={`p-2 rounded-md transition-all duration-200 relative ${
             canZoomOut
               ? 'text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 hover:shadow-sm'
               : 'text-slate-300 cursor-not-allowed'
