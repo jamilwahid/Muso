@@ -1,11 +1,7 @@
 import React from 'react';
-import { Baby, HelpCircle } from 'lucide-react';
+import { Baby } from 'lucide-react';
 
-interface HeaderProps {
-  onShowOnboarding?: () => void;
-}
-
-export const Header: React.FC<HeaderProps> = ({ onShowOnboarding }) => {
+export const Header: React.FC = () => {
   return (
     <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-5 h-[89px]">
       <div className="flex items-center justify-between max-w-7xl mx-auto h-full">
@@ -25,16 +21,8 @@ export const Header: React.FC<HeaderProps> = ({ onShowOnboarding }) => {
           </div>
         </div>
         
-        {/* Help button */}
-        <div className="flex items-center">
-          <button
-            onClick={onShowOnboarding}
-            className="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group"
-            title="Show guided tour"
-          >
-            <HelpCircle className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
-          </button>
-        </div>
+        {/* Right spacer for centering */}
+        <div className="w-10"></div>
       </div>
     </header>
   );

@@ -208,7 +208,6 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
               {/* Save Button - Coming Soon Feature */}
               <div className="relative">
                 <button
-                data-onboarding="save-button"
                 onClick={handleSaveCenter}
                   className="relative p-2 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl border-2 touch-manipulation h-10 w-10 flex items-center justify-center bg-gradient-to-r from-amber-500 to-orange-500 text-white border-white/20 hover:from-amber-600 hover:to-orange-600 group overflow-hidden"
                   title="Save to My List - Coming Soon!"
