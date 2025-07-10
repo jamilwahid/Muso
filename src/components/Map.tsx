@@ -4,7 +4,7 @@ import { MapPin } from 'lucide-react';
 import { Center } from '../types/center';
 import { CenterCard } from './CenterCard';
 import { MapControls } from './MapControls';
-import { HomeBase } from './HomeBase';
+import { HomeAddress } from './HomeAddress';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface MapComponentProps {
@@ -19,6 +19,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [showMapHint, setShowMapHint] = useState(false);
   const [showDismissHint, setShowDismissHint] = useState(false);
+  const [homeLocation, setHomeLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [viewState, setViewState] = useState({
     longitude: -79.3832,
     latitude: 43.6532,
@@ -26,6 +27,39 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   });
   
   const mapRef = useRef<any>(null);
+
+  // Load home location from localStorage
+  useEffect(() => {
+    const savedHome = localStorage.getItem('muso-home-location');
+    if (savedHome) {
+      try {
+        const home = JSON.parse(savedHome);
+        setHomeLocation({ lat: home.lat, lng: home.lng });
+      } catch (e) {
+        console.warn('Failed to load home location for map');
+      }
+    }
+  }, []);
+
+  // Listen for home location changes
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedHome = localStorage.getItem('muso-home-location');
+      if (savedHome) {
+        try {
+          const home = JSON.parse(savedHome);
+          setHomeLocation({ lat: home.lat, lng: home.lng });
+        } catch (e) {
+          console.warn('Failed to load updated home location');
+        }
+      } else {
+        setHomeLocation(null);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Auto-dismiss map hint after 8 seconds
   useEffect(() => {
@@ -273,6 +307,25 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
             </Marker>
           );
         })}
+
+        {/* Home Location Marker */}
+        {homeLocation && (
+          <Marker
+            longitude={homeLocation.lng}
+            latitude={homeLocation.lat}
+            anchor="bottom"
+          >
+            <div className="relative cursor-pointer">
+              {/* Home Pin - Distinctive Design */}
+              <div className="relative w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full border-3 border-white shadow-lg flex items-center justify-center ring-4 ring-emerald-200 ring-opacity-75">
+                <Home className="h-5 w-5 text-white" />
+              </div>
+              
+              {/* Subtle glow */}
+              <div className="absolute inset-0 w-10 h-10 bg-emerald-400 rounded-full opacity-30 blur-md"></div>
+            </div>
+          </Marker>
+        )}
       </Map>
 
       {/* Hover Tooltip */}
@@ -323,9 +376,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         canZoomOut={canZoomOut}
       />
 
-      {/* Home Base Navigation */}
+      {/* Home Address Navigation */}
       <div className="absolute top-4 left-4 z-[100]">
-        <HomeBase onLocationSelect={handleLocationSelect} />
+        <HomeAddress onLocationSelect={handleLocationSelect} />
       </div>
 
       {/* Instructions overlay - Top right (only show when no center is selected) */}
