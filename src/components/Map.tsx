@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import Map, { Marker } from 'react-map-gl';
-import { MapPin } from 'lucide-react';
+import { MapPin, Home } from 'lucide-react';
 import { Center } from '../types/center';
 import { CenterCard } from './CenterCard';
 import { MapControls } from './MapControls';
