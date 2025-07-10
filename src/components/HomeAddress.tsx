@@ -210,7 +210,7 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
 
       {/* Set/Edit Home Address Modal */}
       {isModalOpen && (
-        <div className="fixed top-20 right-4 w-80 max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 max-h-[calc(100vh-6rem)] flex flex-col">
+        <div className="absolute top-full right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 z-[200] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 max-h-[calc(100vh-8rem)] flex flex-col">
           {/* Header */}
           <div className="p-4 border-b border-slate-100 flex-shrink-0">
             <div className="flex items-center justify-between">
