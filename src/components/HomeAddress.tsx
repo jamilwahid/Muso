@@ -77,8 +77,12 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
   const performSearch = async (query: string) => {
     setIsSearching(true);
     try {
+      // GTA bounding box coordinates (southwest and northeast corners)
+      // Southwest: Mississauga/Oakville area, Northeast: Markham/Pickering area
+      const gtaBbox = '-79.8,43.4,-79.0,43.9';
+      
       const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${import.meta.env.VITE_MAPBOX_TOKEN}&country=CA&proximity=-79.3832,43.6532&types=address,poi&limit=5`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${import.meta.env.VITE_MAPBOX_TOKEN}&country=CA&proximity=-79.3832,43.6532&bbox=${gtaBbox}&types=address,poi&limit=5`
       );
       
       if (response.ok) {
