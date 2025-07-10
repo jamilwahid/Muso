@@ -210,9 +210,9 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
 
       {/* Set/Edit Home Address Modal */}
       {isModalOpen && (
-        <div className="absolute top-full left-0 mt-3 w-80 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="fixed top-20 right-4 w-80 max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 max-h-[calc(100vh-6rem)] flex flex-col">
           {/* Header */}
-          <div className="p-4 border-b border-slate-100">
+          <div className="p-4 border-b border-slate-100 flex-shrink-0">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-slate-800 flex items-center space-x-2">
                 <Home className="h-5 w-5 text-emerald-600" />
@@ -229,7 +229,7 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
 
           {/* Current Home */}
           {homeLocation && (
-            <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-100">
+            <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-100 flex-shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="bg-emerald-500 p-2 rounded-xl">
@@ -254,7 +254,7 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
           )}
 
           {/* Search */}
-          <div className="p-4">
+          <div className="p-4 flex-shrink-0">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
               <input
@@ -273,7 +273,7 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
 
           {/* Search Results */}
           {searchResults.length > 0 && (
-            <div className="max-h-64 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto min-h-0">
               {searchResults.map((feature, index) => (
                 <div key={index} className="px-4 py-2">
                   <button
@@ -293,7 +293,7 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
 
           {/* Empty State */}
           {searchQuery.length >= 3 && searchResults.length === 0 && !isSearching && (
-            <div className="p-8 text-center">
+            <div className="p-8 text-center flex-1 flex flex-col justify-center">
               <div className="text-slate-400 mb-2">
                 <Search className="h-8 w-8 mx-auto" />
               </div>
@@ -303,7 +303,7 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
           )}
 
           {/* Helper Text */}
-          <div className="p-3 bg-gradient-to-r from-emerald-50 to-teal-50 border-t border-emerald-100">
+          <div className="p-3 bg-gradient-to-r from-emerald-50 to-teal-50 border-t border-emerald-100 flex-shrink-0">
             <div className="flex items-center space-x-2 text-xs text-emerald-700">
               <Home className="h-3.5 w-3.5 flex-shrink-0" />
               <span>💡 {homeLocation ? 'Update your home to recenter the map to a new area' : 'Set your home to quickly focus the map on your neighborhood'}</span>
