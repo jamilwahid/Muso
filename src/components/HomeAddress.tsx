@@ -100,6 +100,9 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
     setHomeLocation(location);
     localStorage.setItem('muso-home-location', JSON.stringify(location));
     
+    // Trigger a custom event to notify the map component
+    window.dispatchEvent(new CustomEvent('homeLocationSet', { detail: location }));
+    
     // Navigate to home with appropriate zoom (12 to show 5-7 centers around)
     onLocationSelect(location.lng, location.lat, 12);
     

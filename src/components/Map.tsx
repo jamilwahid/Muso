@@ -43,12 +43,13 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
 
   // Listen for home location changes
   useEffect(() => {
-    const handleStorageChange = () => {
+    const handleHomeLocationUpdate = (event?: CustomEvent | StorageEvent) => {
       const savedHome = localStorage.getItem('muso-home-location');
       if (savedHome) {
         try {
           const home = JSON.parse(savedHome);
           setHomeLocation({ lat: home.lat, lng: home.lng });
+          console.log('Home location updated:', home); // Debug log
         } catch (e) {
           console.warn('Failed to load updated home location');
         }
@@ -57,8 +58,14 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    // Listen for both storage changes and custom events
+    window.addEventListener('storage', handleHomeLocationUpdate);
+    window.addEventListener('homeLocationSet', handleHomeLocationUpdate as EventListener);
+    
+    return () => {
+      window.removeEventListener('storage', handleHomeLocationUpdate);
+      window.removeEventListener('homeLocationSet', handleHomeLocationUpdate as EventListener);
+    };
   }, []);
 
   // Auto-dismiss map hint after 8 seconds
@@ -315,14 +322,17 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
             latitude={homeLocation.lat}
             anchor="bottom"
           >
-            <div className="relative cursor-pointer">
+            <div className="relative cursor-pointer transform transition-all duration-300">
               {/* Home Pin - Distinctive Design */}
-              <div className="relative w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full border-3 border-white shadow-lg flex items-center justify-center ring-4 ring-emerald-200 ring-opacity-75">
+              <div className="relative w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full border-4 border-white shadow-xl flex items-center justify-center ring-4 ring-emerald-200 ring-opacity-75 z-50">
                 <Home className="h-5 w-5 text-white" />
               </div>
               
               {/* Subtle glow */}
-              <div className="absolute inset-0 w-10 h-10 bg-emerald-400 rounded-full opacity-30 blur-md"></div>
+              <div className="absolute inset-0 w-12 h-12 bg-emerald-400 rounded-full opacity-40 blur-lg -z-10"></div>
+              
+              {/* Pulsing animation */}
+              <div className="absolute inset-0 w-12 h-12 bg-emerald-300 rounded-full opacity-20 animate-ping -z-20"></div>
             </div>
           </Marker>
         )}
