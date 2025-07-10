@@ -230,25 +230,14 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
           {/* Current Home */}
           {homeLocation && (
             <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-100 flex-shrink-0">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-emerald-500 p-2 rounded-xl">
-                    <Home className="h-4 w-4 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-emerald-800">{homeLocation.name}</div>
-                    <div className="text-sm text-emerald-600">{homeLocation.address}</div>
-                  </div>
+              <div className="flex items-center space-x-3">
+                <div className="bg-emerald-500 p-2 rounded-xl">
+                  <Home className="h-4 w-4 text-white" />
                 </div>
-                <button
-                  onClick={() => {
-                    handleGoHome();
-                    setIsModalOpen(false);
-                  }}
-                  className="bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-emerald-600 transition-colors duration-200"
-                >
-                  Go
-                </button>
+                <div>
+                  <div className="font-semibold text-emerald-800">{homeLocation.name}</div>
+                  <div className="text-sm text-emerald-600">{homeLocation.address}</div>
+                </div>
               </div>
             </div>
           )}
