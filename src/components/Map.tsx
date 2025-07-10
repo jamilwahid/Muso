@@ -49,12 +49,13 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         try {
           const home = JSON.parse(savedHome);
           setHomeLocation({ lat: home.lat, lng: home.lng });
-          console.log('Home location updated:', home); // Debug log
+          console.log('Home location updated and will be visible:', home);
         } catch (e) {
           console.warn('Failed to load updated home location');
         }
       } else {
         setHomeLocation(null);
+        console.log('Home location cleared');
       }
     };
 
@@ -321,18 +322,22 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
             longitude={homeLocation.lng}
             latitude={homeLocation.lat}
             anchor="bottom"
+            style={{ zIndex: 1000 }}
           >
             <div className="relative cursor-pointer transform transition-all duration-300">
               {/* Home Pin - Distinctive Design */}
-              <div className="relative w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full border-4 border-white shadow-xl flex items-center justify-center ring-4 ring-emerald-200 ring-opacity-75 z-50">
-                <Home className="h-5 w-5 text-white" />
+              <div className="relative w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full border-4 border-white shadow-2xl flex items-center justify-center ring-4 ring-emerald-300 ring-opacity-60">
+                <Home className="h-6 w-6 text-white drop-shadow-sm" />
               </div>
               
-              {/* Subtle glow */}
-              <div className="absolute inset-0 w-12 h-12 bg-emerald-400 rounded-full opacity-40 blur-lg -z-10"></div>
+              {/* Enhanced glow */}
+              <div className="absolute inset-0 w-14 h-14 bg-emerald-400 rounded-full opacity-50 blur-xl"></div>
               
-              {/* Pulsing animation */}
-              <div className="absolute inset-0 w-12 h-12 bg-emerald-300 rounded-full opacity-20 animate-ping -z-20"></div>
+              {/* Pulsing animation - more prominent */}
+              <div className="absolute inset-0 w-14 h-14 bg-emerald-300 rounded-full opacity-30 animate-ping"></div>
+              
+              {/* Additional pulse for visibility */}
+              <div className="absolute inset-0 w-16 h-16 bg-emerald-200 rounded-full opacity-20 animate-pulse"></div>
             </div>
           </Marker>
         )}
