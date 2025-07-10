@@ -4,7 +4,6 @@ import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
 import { MapPlaceholder } from './components/MapPlaceholder';
 import { ListView } from './components/ListView';
-import { ViewSwitcher } from './components/ViewSwitcher';
 import { Footer } from './components/Footer';
 import { useFilters } from './hooks/useFilters';
 import { Center, Filters } from './types/center';
@@ -79,12 +78,6 @@ function App() {
       
       {/* Main Content Area - Adjusted top position */}
       <div className="fixed top-[225px] left-0 right-0 bottom-[80px]">
-        {/* View Switcher - Floating on content area */}
-        <ViewSwitcher 
-          currentView={currentView}
-          onViewChange={setCurrentView}
-        />
-        
         {currentView === 'map' ? (
           /* Map View */
           <div className="absolute inset-0 w-full h-full">

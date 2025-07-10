@@ -382,8 +382,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         canZoomOut={canZoomOut}
       />
 
-      {/* Home Address Navigation */}
-      <div className="absolute top-4 left-4 z-[100]">
+      {/* Home Address Navigation - Moved to top-right */}
+      <div className="absolute top-4 right-4 z-[100]">
         <HomeAddress onLocationSelect={handleLocationSelect} />
       </div>
 
