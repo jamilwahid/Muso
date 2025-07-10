@@ -325,19 +325,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
             style={{ zIndex: 1000 }}
           >
             <div className="relative cursor-pointer transform transition-all duration-300">
-              {/* Home Pin - Distinctive Design */}
-              <div className="relative w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full border-4 border-white shadow-2xl flex items-center justify-center ring-4 ring-emerald-300 ring-opacity-60">
-                <Home className="h-6 w-6 text-white drop-shadow-sm" />
+              {/* Home Pin - Same size as center markers */}
+              <div className="relative w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full border-3 border-white shadow-lg flex items-center justify-center">
+                <Home className="h-5 w-5 text-white" />
               </div>
-              
-              {/* Enhanced glow */}
-              <div className="absolute inset-0 w-14 h-14 bg-emerald-400 rounded-full opacity-50 blur-xl"></div>
-              
-              {/* Pulsing animation - more prominent */}
-              <div className="absolute inset-0 w-14 h-14 bg-emerald-300 rounded-full opacity-30 animate-ping"></div>
-              
-              {/* Additional pulse for visibility */}
-              <div className="absolute inset-0 w-16 h-16 bg-emerald-200 rounded-full opacity-20 animate-pulse"></div>
             </div>
           </Marker>
         )}
