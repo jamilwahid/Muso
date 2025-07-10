@@ -4,6 +4,7 @@ import { MapPin } from 'lucide-react';
 import { Center } from '../types/center';
 import { CenterCard } from './CenterCard';
 import { MapControls } from './MapControls';
+import { HomeBase } from './HomeBase';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface MapComponentProps {
@@ -52,6 +53,16 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   // Handle map movement to track user interaction
   const handleMove = useCallback((evt: any) => {
     setViewState(evt.viewState);
+  }, []);
+
+  // Handle location selection from HomeBase
+  const handleLocationSelect = useCallback((longitude: number, latitude: number, zoom: number = 15) => {
+    setViewState(prev => ({
+      ...prev,
+      longitude,
+      latitude,
+      zoom
+    }));
   }, []);
 
   // Zoom controls
@@ -311,6 +322,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         canZoomIn={canZoomIn}
         canZoomOut={canZoomOut}
       />
+
+      {/* Home Base Navigation */}
+      <div className="absolute top-4 left-4 z-[100]">
+        <HomeBase onLocationSelect={handleLocationSelect} />
+      </div>
 
       {/* Instructions overlay - Top right (only show when no center is selected) */}
       {!selectedCenter && showMapHint && (
