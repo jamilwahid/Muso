@@ -13,7 +13,7 @@ interface FilterBarProps {
 
 export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, availableOptions }) => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [postalCodeSearch, setPostalCodeSearch] = useState('');
+  const [searchTerms, setSearchTerms] = useState<{ [key: string]: string }>({});
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {
@@ -53,29 +53,21 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
       ...filters,
       [key]: []
     });
-    if (key === 'postal_codes') {
-      setPostalCodeSearch('');
-    }
+    // Clear search term when clearing filter
+    setSearchTerms(prev => ({ ...prev, [key]: '' }));
   };
 
-  const handlePostalCodeSearch = (searchTerm: string) => {
-    setPostalCodeSearch(searchTerm);
+  const handleSearchChange = (key: string, searchTerm: string) => {
+    setSearchTerms(prev => ({ ...prev, [key]: searchTerm }));
+  };
+
+  const getFilteredOptions = (key: string, options: string[]) => {
+    const searchTerm = searchTerms[key] || '';
+    if (!searchTerm) return options;
     
-    // Auto-select matching postal codes
-    if (searchTerm.length >= 3) {
-      const matchingCodes = availableOptions.postalCodes.filter(code => 
-        code.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      
-      if (matchingCodes.length > 0) {
-        // Add matching codes that aren't already selected
-        const newCodes = [...new Set([...filters.postal_codes, ...matchingCodes])];
-        onFiltersChange({
-          ...filters,
-          postal_codes: newCodes
-        });
-      }
-    }
+    return options.filter(option => 
+      option.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   };
 
   const getFilterButtonContent = (label: string, values: string[], count: number, isUnique = false) => {
@@ -119,20 +111,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
             <span>Dietary services</span>
           </div>
         );
-      case 'postal_codes':
-        return 'Postal code';
-      case 'age_groups':
-        return 'Age groups';
       default:
         return `Select ${key}`;
     }
   };
-
-  const filteredPostalCodes = postalCodeSearch.length > 0 
-    ? availableOptions.postalCodes.filter(code => 
-        code.toLowerCase().includes(postalCodeSearch.toLowerCase())
-      )
-    : availableOptions.postalCodes;
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -220,6 +202,20 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
                 {openDropdown === key && (
                   <div className="absolute top-full left-0 mt-2 w-72 bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-2xl shadow-xl z-50 max-h-80 overflow-hidden">
                     <div className="p-2 max-h-80 overflow-y-auto">
+                      {/* Search Input */}
+                      <div className="px-3 py-2 border-b border-slate-100 mb-2">
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                          <input
+                            type="text"
+                            placeholder={`Search ${label.toLowerCase()}...`}
+                            value={searchTerms[key] || ''}
+                            onChange={(e) => handleSearchChange(key, e.target.value)}
+                            className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                          />
+                        </div>
+                      </div>
+
                       <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100 mb-2 flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <Icon className="h-3.5 w-3.5" />
@@ -255,7 +251,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
                       )}
 
 
-                      {options.map(option => (
+                      {getFilteredOptions(key, options).map(option => (
                         <label key={option} className="flex items-center space-x-3 p-3 hover:bg-slate-50 cursor-pointer rounded-xl transition-colors duration-150 group">
                           <div className="relative">
                             <input
@@ -284,6 +280,17 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
                           </span>
                         </label>
                       ))}
+
+                      {/* No results message */}
+                      {getFilteredOptions(key, options).length === 0 && searchTerms[key] && (
+                        <div className="px-3 py-8 text-center">
+                          <div className="text-slate-400 mb-2">
+                            <Search className="h-6 w-6 mx-auto" />
+                          </div>
+                          <div className="text-sm text-slate-500">No results found</div>
+                          <div className="text-xs text-slate-400 mt-1">Try a different search term</div>
+                        </div>
+                      )}
 
                     </div>
                   </div>
