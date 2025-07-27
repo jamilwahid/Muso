@@ -21,6 +21,11 @@ function App() {
 
   const { filteredCenters, availableOptions } = useFilters(centers, filters);
 
+  // Calculate centers with infant programs for accurate count display
+  const centersWithInfantPrograms = centers.filter(center => 
+    center.programs.some(p => p.age_group.toLowerCase().includes('infant'))
+  );
+
   const clearAllFilters = () => {
     setFilters({
       CWELCC_participant: null,
@@ -62,7 +67,7 @@ function App() {
                 {/* Results count */}
                 <div className="text-sm font-medium text-slate-600">
                   {hasActiveFilters ? (
-                    <>Showing {filteredCenters.length.toLocaleString()}/{centers.length.toLocaleString()} centers</>
+                    <>Showing {filteredCenters.length.toLocaleString()}/{centersWithInfantPrograms.length.toLocaleString()} centers</>
                   ) : (
                     <>Showing {filteredCenters.length.toLocaleString()} centers</>
                   )}
