@@ -63,14 +63,11 @@ function App() {
                 <div className="text-sm font-medium text-slate-600">
                   {hasActiveFilters ? (
                     <>Showing {filteredCenters.length.toLocaleString()}/{centers.length.toLocaleString()} centers</>
-                  <>Showing {filteredCenters.length.toLocaleString()}/{filteredCenters.length.toLocaleString()} centers</>
-                    <>Showing {centers.length.toLocaleString()} centers</>
-                  <>Showing {filteredCenters.length.toLocaleString()} centers</>
+                  ) : (
+                    <>Showing {filteredCenters.length.toLocaleString()} centers</>
+                  )}
                 </div>
               </div>
-            )
-            }
-            </div>
           </div>
         </div>
       </div>
