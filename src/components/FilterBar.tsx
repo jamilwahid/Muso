@@ -7,9 +7,7 @@ interface FilterBarProps {
   onFiltersChange: (filters: Filters) => void;
   availableOptions: {
     languages: string[];
-    ageGroups: string[];
     dietaryServices: string[];
-    postalCodes: string[];
   };
 }
 
@@ -179,13 +177,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
 
           {/* Multi-select Dropdown Filters with Icons - Reordered */}
           {[
-            { 
-              key: 'age_groups', 
-              label: 'Age Groups', 
-              icon: Users,
-              options: availableOptions.ageGroups,
-              isUnique: false
-            },
             { 
               key: 'languages_spoken', 
               label: 'Languages', 

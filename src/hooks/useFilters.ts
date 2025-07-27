@@ -4,6 +4,14 @@ import { Center, Filters } from '../types/center';
 export const useFilters = (centers: Center[], filters: Filters) => {
   const filteredCenters = useMemo(() => {
     return centers.filter(center => {
+      // Only show centers that have infant programs
+      const hasInfantProgram = center.programs.some(p => 
+        p.age_group.toLowerCase().includes('infant')
+      );
+      if (!hasInfantProgram) {
+        return false;
+      }
+
       // CWELCC filter - only filter when explicitly set to true
       if (filters.CWELCC_participant === true && !center.CWELCC_participant) {
         return false;
@@ -12,14 +20,6 @@ export const useFilters = (centers: Center[], filters: Filters) => {
       // Subsidy filter - only filter when explicitly set to true
       if (filters.subsidy_available === true && !center.subsidy_available) {
         return false;
-      }
-
-      // Age groups filter
-      if (filters.age_groups.length > 0) {
-        const centerAgeGroups = center.programs.map(p => p.age_group);
-        if (!filters.age_groups.some(age => centerAgeGroups.includes(age))) {
-          return false;
-        }
       }
 
       // Languages filter
@@ -43,10 +43,9 @@ export const useFilters = (centers: Center[], filters: Filters) => {
 
   const availableOptions = useMemo(() => {
     const languages = [...new Set(centers.flatMap(c => c.languages_spoken))].sort();
-    const ageGroups = [...new Set(centers.flatMap(c => c.programs.map(p => p.age_group)))].sort();
     const dietaryServices = [...new Set(centers.flatMap(c => c.dietary_services))].sort();
 
-    return { languages, ageGroups, dietaryServices };
+    return { languages, dietaryServices };
   }, [centers]);
 
   return { filteredCenters, availableOptions };

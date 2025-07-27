@@ -15,7 +15,6 @@ function App() {
   const [filters, setFilters] = useState<Filters>({
     CWELCC_participant: null,
     subsidy_available: null,
-    age_groups: [],
     languages_spoken: [],
     dietary_services: []
   });
@@ -26,7 +25,6 @@ function App() {
     setFilters({
       CWELCC_participant: null,
       subsidy_available: null,
-      age_groups: [],
       languages_spoken: [],
       dietary_services: []
     });
@@ -34,7 +32,6 @@ function App() {
 
   const hasActiveFilters = filters.CWELCC_participant !== null || 
                           filters.subsidy_available !== null ||
-                          filters.age_groups.length > 0 ||
                           filters.languages_spoken.length > 0 ||
                           filters.dietary_services.length > 0;
 

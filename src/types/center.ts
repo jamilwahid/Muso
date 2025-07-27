@@ -33,7 +33,6 @@ export interface Program {
 export interface Filters {
   CWELCC_participant: boolean | null;
   subsidy_available: boolean | null;
-  age_groups: string[];
   languages_spoken: string[];
   dietary_services: string[];
 }
