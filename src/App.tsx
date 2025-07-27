@@ -68,6 +68,8 @@ function App() {
                   <>Showing {filteredCenters.length.toLocaleString()} centers</>
                 </div>
               </div>
+            )
+            }
             </div>
           </div>
         </div>
