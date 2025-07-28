@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Star, Phone, ExternalLink, Bookmark, BookmarkCheck, Languages, Utensils, Link, Heart } from 'lucide-react';
+import { MapPin, Star, Phone, ExternalLink, Languages, Utensils, Link, Heart } from 'lucide-react';
 import { Center } from '../types/center';
 import { useFavorites } from '../hooks/useFavorites';
 
@@ -71,11 +71,6 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
             <h3 className="text-base sm:text-lg font-bold text-slate-800 leading-tight flex-1 pr-2">
               {center.center_name}
             </h3>
-            {isCurrentlyFavorited && (
-              <div className="flex-shrink-0">
-                <Heart className="h-4 w-4 text-pink-500 fill-current" />
-              </div>
-            )}
           </div>
           
           <div className="flex items-start text-xs sm:text-sm text-slate-500">
@@ -215,7 +210,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
 
             {/* Secondary Actions - Equal height and consistent spacing */}
             <div className="flex items-center justify-center sm:justify-end space-x-2">
-              {/* Save/Unsave Button */}
+              {/* Favorite Button with Heart Icon */}
               <button
                 onClick={handleSaveCenter}
                 className={`relative p-2 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl border-2 touch-manipulation h-10 w-10 flex items-center justify-center group ${
@@ -225,11 +220,9 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
                 }`}
                 title={isCurrentlyFavorited ? "Remove from favorites" : "Add to favorites"}
               >
-                {isCurrentlyFavorited ? (
-                  <BookmarkCheck className="h-3.5 w-3.5 relative z-10" />
-                ) : (
-                  <Bookmark className="h-3.5 w-3.5 relative z-10" />
-                )}
+                <Heart className={`h-3.5 w-3.5 relative z-10 ${
+                  isCurrentlyFavorited ? 'fill-current' : ''
+                }`} />
                 
                 {/* Shimmer effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
