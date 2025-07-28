@@ -35,7 +35,7 @@ export const useFavorites = () => {
 
   const isFavorite = (centerId: string): boolean => {
     const result = favorites.includes(centerId);
-    console.log(`Checking if ${centerId} is favorite:`, result, 'Current favorites:', favorites);
+    // console.log(`Checking if ${centerId} is favorite:`, result, 'Current favorites:', favorites);
     return result;
   };
 

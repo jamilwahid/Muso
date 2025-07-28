@@ -281,6 +281,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
           const isSelected = selectedCenter?.center_id === center.center_id;
           const isCenterFavorited = isFavorite(center.center_id);
           
+          // Debug logging
+          console.log(`Center ${center.center_name} (${center.center_id}):`, {
+            isCenterFavorited,
+            isSelected
+          });
           return (
             <Marker
               key={center.center_id}
@@ -303,8 +308,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                   isSelected
                     ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200 ring-opacity-75'
                     : isCenterFavorited
-                    ? 'w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700'
-                    : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600'
+                    ? 'w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600'
+                    : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800'
                 }`}>
                   <MapPin className={`text-white transition-all duration-300 ${
                     isSelected ? 'h-5 w-5' : 'h-4 w-4'
@@ -318,7 +323,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                 
                 {/* Subtle glow for favorited marker */}
                 {isCenterFavorited && !isSelected && (
-                  <div className="absolute inset-0 w-8 h-8 bg-pink-400 rounded-full opacity-30 blur-sm -z-10"></div>
+                  <div className="absolute inset-0 w-8 h-8 bg-pink-400 rounded-full opacity-40 blur-sm animate-pulse"></div>
                 )}
               </div>
             </Marker>
