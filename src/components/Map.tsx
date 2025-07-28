@@ -298,13 +298,12 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                 onMouseEnter={(e) => handleMarkerMouseEnter(center, e)}
                 onMouseLeave={handleMarkerMouseLeave}
               >
-                {/* Pin Shadow */}
                 {/* Main Pin - Unified design */}
                 <div className={`relative rounded-full border-3 border-white shadow-lg flex items-center justify-center transition-all duration-300 ${
                   isSelected
                     ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200 ring-opacity-75'
                     : isFavorited
-                    ? 'w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 ring-2 ring-pink-200 ring-opacity-60'
+                    ? 'w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700'
                     : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600'
                 }`}>
                   <MapPin className={`text-white transition-all duration-300 ${
@@ -319,7 +318,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                 
                 {/* Subtle glow for favorited marker */}
                 {isFavorited && !isSelected && (
-                  <div className="absolute inset-0 w-8 h-8 bg-pink-400 rounded-full opacity-25 blur-sm"></div>
+                  <div className="absolute inset-0 w-8 h-8 bg-pink-400 rounded-full opacity-30 blur-sm -z-10"></div>
                 )}
               </div>
             </Marker>

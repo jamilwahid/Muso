@@ -30,6 +30,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
 
   const handleSaveCenter = (e: React.MouseEvent) => {
     e.stopPropagation();
+    console.log('Save button clicked for center:', center.center_id);
     toggleFavorite(center.center_id);
   };
 
