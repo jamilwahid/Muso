@@ -1,8 +1,24 @@
-import { useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
+interface FavoritesContextType {
+  favorites: string[];
+  isFavorite: (centerId: string) => boolean;
+  addFavorite: (centerId: string) => void;
+  removeFavorite: (centerId: string) => void;
+  toggleFavorite: (centerId: string) => void;
+  clearAllFavorites: () => void;
+  favoritesCount: number;
+}
+
+const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 
 const FAVORITES_STORAGE_KEY = 'muso-favorites';
 
-export const useFavorites = () => {
+interface FavoritesProviderProps {
+  children: ReactNode;
+}
+
+export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }) => {
   const [favorites, setFavorites] = useState<string[]>([]);
 
   // Load favorites from localStorage on mount
@@ -35,7 +51,6 @@ export const useFavorites = () => {
 
   const isFavorite = (centerId: string): boolean => {
     const result = favorites.includes(centerId);
-    // console.log(`Checking if ${centerId} is favorite:`, result, 'Current favorites:', favorites);
     return result;
   };
 
@@ -70,7 +85,7 @@ export const useFavorites = () => {
     setFavorites([]);
   };
 
-  return {
+  const value: FavoritesContextType = {
     favorites,
     isFavorite,
     addFavorite,
@@ -79,4 +94,18 @@ export const useFavorites = () => {
     clearAllFavorites,
     favoritesCount: favorites.length
   };
+
+  return (
+    <FavoritesContext.Provider value={value}>
+      {children}
+    </FavoritesContext.Provider>
+  );
+};
+
+export const useFavorites = (): FavoritesContextType => {
+  const context = useContext(FavoritesContext);
+  if (context === undefined) {
+    throw new Error('useFavorites must be used within a FavoritesProvider');
+  }
+  return context;
 };

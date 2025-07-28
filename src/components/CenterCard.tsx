@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MapPin, Star, Phone, ExternalLink, Languages, Utensils, Link, Heart } from 'lucide-react';
 import { Center } from '../types/center';
-import { useFavorites } from '../hooks/useFavorites';
+import { useFavorites } from '../contexts/FavoritesContext';
 
 interface CenterCardProps {
   center: Center;

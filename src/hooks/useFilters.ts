@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Center, Filters } from '../types/center';
-import { useFavorites } from './useFavorites';
+import { useFavorites } from '../contexts/FavoritesContext';
 
 export const useFilters = (centers: Center[], filters: Filters) => {
   const { favorites } = useFavorites();

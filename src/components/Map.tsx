@@ -5,7 +5,7 @@ import { Center } from '../types/center';
 import { CenterCard } from './CenterCard';
 import { MapControls } from './MapControls';
 import { HomeAddress } from './HomeAddress';
-import { useFavorites } from '../hooks/useFavorites';
+import { useFavorites } from '../contexts/FavoritesContext';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface MapComponentProps {

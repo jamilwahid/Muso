@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Check, DollarSign, Users, Languages, Utensils, X, Search, Landmark, Sparkles, Heart } from 'lucide-react';
 import { Filters } from '../types/center';
-import { useFavorites } from '../hooks/useFavorites';
+import { useFavorites } from '../contexts/FavoritesContext';
 
 interface FilterBarProps {
   filters: Filters;
