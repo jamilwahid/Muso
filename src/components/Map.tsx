@@ -316,11 +316,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                   <MapPin className={`text-white transition-all duration-300 ${
                     isSelected ? 'h-5 w-5' : 'h-4 w-4'
                   }`} />
-                  
-                  {/* Debug indicator for favorited markers */}
-                  {isCenterFavorited && !isSelected && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-pink-400 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
-                  )}
                 </div>
                 
                 {/* Subtle glow for selected marker */}
