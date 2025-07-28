@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Check, DollarSign, Users, Languages, Utensils, X, Search, Landmark, Sparkles } from 'lucide-react';
+import { ChevronDown, Check, DollarSign, Users, Languages, Utensils, X, Search, Landmark, Sparkles, Heart } from 'lucide-react';
 import { Filters } from '../types/center';
+import { useFavorites } from '../hooks/useFavorites';
 
 interface FilterBarProps {
   filters: Filters;
@@ -12,6 +13,7 @@ interface FilterBarProps {
 }
 
 export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, availableOptions }) => {
+  const { favoritesCount } = useFavorites();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [searchTerms, setSearchTerms] = useState<{ [key: string]: string }>({});
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
@@ -33,6 +35,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
     onFiltersChange({
       ...filters,
       [key]: filters[key] === true ? null : true
+    });
+  };
+
+  const handleFavoritesToggle = () => {
+    onFiltersChange({
+      ...filters,
+      showFavoritesOnly: !filters.showFavoritesOnly
     });
   };
 
@@ -120,6 +129,34 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
     <div className="max-w-7xl mx-auto">
       <div className="flex items-center justify-center">
         <div className="flex items-center space-x-3 flex-wrap gap-y-3">
+          {/* Favorites Filter - Show only if there are favorites */}
+          {favoritesCount > 0 && (
+            <button
+              onClick={handleFavoritesToggle}
+              className={`group relative px-4 py-2.5 border rounded-xl text-sm font-medium transition-all duration-200 ${
+                filters.showFavoritesOnly
+                  ? 'border-pink-200 bg-gradient-to-r from-pink-50 to-rose-50 text-pink-700 shadow-sm ring-1 ring-pink-100'
+                  : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:border-slate-300'
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                {filters.showFavoritesOnly ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Heart className="h-4 w-4" />
+                )}
+                <span>My Favorites</span>
+                <div className={`px-2 py-0.5 rounded-full text-xs font-bold shadow-sm ${
+                  filters.showFavoritesOnly
+                    ? 'bg-white/90 text-pink-600'
+                    : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {favoritesCount}
+                </div>
+              </div>
+            </button>
+          )}
+
           {/* Binary Toggle Filters - Now using Trophy for CWELCC */}
           <button
             onClick={() => handleBinaryToggle('CWELCC_participant')}

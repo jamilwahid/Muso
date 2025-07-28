@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { MapPin, Star, Phone, ExternalLink, Bookmark, Languages, Utensils, Link, Sparkles, Clock } from 'lucide-react';
+import { MapPin, Star, Phone, ExternalLink, Bookmark, BookmarkCheck, Languages, Utensils, Link, Heart } from 'lucide-react';
 import { Center } from '../types/center';
+import { useFavorites } from '../hooks/useFavorites';
 
 interface CenterCardProps {
   center: Center;
 }
 
 export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
-  const [showComingSoon, setShowComingSoon] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const isCurrentlyFavorited = isFavorite(center.center_id);
   
   const programsWithRating = center.programs.filter(p => p.quality_rating);
   const avgRating = programsWithRating.length > 0 
@@ -28,11 +30,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
 
   const handleSaveCenter = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setShowComingSoon(true);
-    // Auto-hide the tooltip after 3 seconds
-    setTimeout(() => {
-      setShowComingSoon(false);
-    }, 3000);
+    toggleFavorite(center.center_id);
   };
 
   // Format phone number for tel: link (remove all non-digits and format)
@@ -60,13 +58,24 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
   };
 
   return (
-    <div className="group bg-white/90 backdrop-blur-sm border border-slate-200/60 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
+    <div className={`group bg-white/90 backdrop-blur-sm border rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${
+      isCurrentlyFavorited 
+        ? 'border-pink-200/80 ring-1 ring-pink-100/50' 
+        : 'border-slate-200/60'
+    }`}>
       <div className="p-3 sm:p-4">
         {/* Header Section - Name and Address with full horizontal space */}
         <div className="mb-2">
-          <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-1 leading-tight">
-            {center.center_name}
-          </h3>
+          <div className="flex items-start justify-between mb-1">
+            <h3 className="text-base sm:text-lg font-bold text-slate-800 leading-tight flex-1 pr-2">
+              {center.center_name}
+            </h3>
+            {isCurrentlyFavorited && (
+              <div className="flex-shrink-0">
+                <Heart className="h-4 w-4 text-pink-500 fill-current" />
+              </div>
+            )}
+          </div>
           
           <div className="flex items-start text-xs sm:text-sm text-slate-500">
             <MapPin className="h-3.5 w-3.5 mr-1.5 text-slate-400 flex-shrink-0 mt-0.5" />
@@ -205,12 +214,32 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
 
             {/* Secondary Actions - Equal height and consistent spacing */}
             <div className="flex items-center justify-center sm:justify-end space-x-2">
-              {/* Save Button - Coming Soon Feature */}
-              <div className="relative">
-                <button
+              {/* Save/Unsave Button */}
+              <button
                 onClick={handleSaveCenter}
-                  className="relative p-2 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl border-2 touch-manipulation h-10 w-10 flex items-center justify-center bg-gradient-to-r from-amber-500 to-orange-500 text-white border-white/20 hover:from-amber-600 hover:to-orange-600 group overflow-hidden"
-                  title="Save to My List - Coming Soon!"
+                className={`relative p-2 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl border-2 touch-manipulation h-10 w-10 flex items-center justify-center group ${
+                  isCurrentlyFavorited
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white border-white/20 hover:from-pink-600 hover:to-rose-600'
+                    : 'bg-gradient-to-r from-slate-500 to-slate-600 text-white border-white/20 hover:from-slate-600 hover:to-slate-700'
+                }`}
+                title={isCurrentlyFavorited ? "Remove from favorites" : "Add to favorites"}
+              >
+                {isCurrentlyFavorited ? (
+                  <BookmarkCheck className="h-3.5 w-3.5 relative z-10" />
+                ) : (
+                  <Bookmark className="h-3.5 w-3.5 relative z-10" />
+                )}
+                
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
                 >
                   {/* Animated background sparkles */}
                   <div className="absolute inset-0 opacity-30">

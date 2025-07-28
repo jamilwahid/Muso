@@ -35,4 +35,5 @@ export interface Filters {
   subsidy_available: boolean | null;
   languages_spoken: string[];
   dietary_services: string[];
+  showFavoritesOnly: boolean;
 }

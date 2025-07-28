@@ -1,9 +1,12 @@
 import { useMemo } from 'react';
 import { Center, Filters } from '../types/center';
+import { useFavorites } from './useFavorites';
 
 export const useFilters = (centers: Center[], filters: Filters) => {
+  const { favorites } = useFavorites();
+
   const filteredCenters = useMemo(() => {
-    return centers.filter(center => {
+    let filtered = centers.filter(center => {
       // Only show centers that have infant programs
       const hasInfantProgram = center.programs.some(p => 
         p.age_group.toLowerCase().includes('infant')
@@ -39,7 +42,14 @@ export const useFilters = (centers: Center[], filters: Filters) => {
 
       return true;
     });
-  }, [centers, filters]);
+
+    // Apply favorites filter if enabled
+    if (filters.showFavoritesOnly) {
+      filtered = filtered.filter(center => favorites.includes(center.center_id));
+    }
+
+    return filtered;
+  }, [centers, filters, favorites]);
 
   const availableOptions = useMemo(() => {
     const languages = [...new Set(centers.flatMap(c => c.languages_spoken))].sort();

@@ -16,7 +16,8 @@ function App() {
     CWELCC_participant: null,
     subsidy_available: null,
     languages_spoken: [],
-    dietary_services: []
+    dietary_services: [],
+    showFavoritesOnly: false
   });
 
   const { filteredCenters, availableOptions } = useFilters(centers, filters);
@@ -31,14 +32,16 @@ function App() {
       CWELCC_participant: null,
       subsidy_available: null,
       languages_spoken: [],
-      dietary_services: []
+      dietary_services: [],
+      showFavoritesOnly: false
     });
   };
 
   const hasActiveFilters = filters.CWELCC_participant !== null || 
                           filters.subsidy_available !== null ||
                           filters.languages_spoken.length > 0 ||
-                          filters.dietary_services.length > 0;
+                          filters.dietary_services.length > 0 ||
+                          filters.showFavoritesOnly;
 
 
   return (
