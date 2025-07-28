@@ -58,6 +58,7 @@ export const useFavorites = () => {
 
   const toggleFavorite = (centerId: string) => {
     console.log('Toggling favorite for:', centerId);
+    console.log('Current favorites before toggle:', favorites);
     if (isFavorite(centerId)) {
       removeFavorite(centerId);
     } else {

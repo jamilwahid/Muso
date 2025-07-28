@@ -16,7 +16,7 @@ interface MapComponentProps {
 export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCenters }) => {
   const [selectedCenter, setSelectedCenter] = useState<Center | null>(null);
   const [hoveredCenter, setHoveredCenter] = useState<Center | null>(null);
-  const { isFavorite } = useFavorites();
+  const { isFavorite, favorites } = useFavorites();
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [showMapHint, setShowMapHint] = useState(false);
@@ -92,7 +92,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
       !isNaN(center.location.latitude) &&
       !isNaN(center.location.longitude)
     );
-  }, [filteredCenters]);
+  }, [filteredCenters, favorites]); // Add favorites as dependency
 
   // Handle map movement to track user interaction
   const handleMove = useCallback((evt: any) => {
@@ -281,11 +281,11 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
           const isSelected = selectedCenter?.center_id === center.center_id;
           const isCenterFavorited = isFavorite(center.center_id);
           
-          // Debug logging
-          console.log(`Center ${center.center_name} (${center.center_id}):`, {
-            isCenterFavorited,
-            isSelected
-          });
+          // Debug logging - only log favorited centers to reduce noise
+          if (isCenterFavorited) {
+            console.log(`✨ FAVORITED Center: ${center.center_name} (${center.center_id})`);
+          }
+          
           return (
             <Marker
               key={center.center_id}
@@ -303,17 +303,22 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                 onMouseEnter={(e) => handleMarkerMouseEnter(center, e)}
                 onMouseLeave={handleMarkerMouseLeave}
               >
-                {/* Main Pin - Unified design */}
+                {/* Main Pin - Debug the styling */}
                 <div className={`relative rounded-full border-3 border-white shadow-lg flex items-center justify-center transition-all duration-300 ${
                   isSelected
                     ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200 ring-opacity-75'
                     : isCenterFavorited
-                    ? 'w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600'
+                    ? 'w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 ring-2 ring-pink-300'
                     : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800'
                 }`}>
                   <MapPin className={`text-white transition-all duration-300 ${
                     isSelected ? 'h-5 w-5' : 'h-4 w-4'
                   }`} />
+                  
+                  {/* Debug indicator for favorited markers */}
+                  {isCenterFavorited && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-pink-500 rounded-full border border-white"></div>
+                  )}
                 </div>
                 
                 {/* Subtle glow for selected marker */}
@@ -321,9 +326,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                   <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full opacity-30 blur-md"></div>
                 )}
                 
-                {/* Subtle glow for favorited marker */}
+                {/* Enhanced glow for favorited marker */}
                 {isCenterFavorited && !isSelected && (
-                  <div className="absolute inset-0 w-8 h-8 bg-pink-400 rounded-full opacity-40 blur-sm animate-pulse"></div>
+                  <div className="absolute inset-0 w-10 h-10 bg-pink-400 rounded-full opacity-50 blur-md animate-pulse"></div>
                 )}
               </div>
             </Marker>
