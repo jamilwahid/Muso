@@ -16,7 +16,8 @@ interface MapComponentProps {
 export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCenters }) => {
   const [selectedCenter, setSelectedCenter] = useState<Center | null>(null);
   const [hoveredCenter, setHoveredCenter] = useState<Center | null>(null);
-  const { isFavorite, favorites, favoritesCount } = useFavorites();
+  const favoritesHook = useFavorites();
+  const { favorites, favoritesCount } = favoritesHook;
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [showMapHint, setShowMapHint] = useState(false);
@@ -280,7 +281,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         {/* Only render filtered centers with coordinates - Force re-render with key */}
         {centersWithCoords.map((center, index) => {
           const isSelected = selectedCenter?.center_id === center.center_id;
-          const isCenterFavorited = isFavorite(center.center_id);
+          const isCenterFavorited = favoritesHook.isFavorite(center.center_id);
           
           // Debug logging for favorited centers
           if (isCenterFavorited) {
