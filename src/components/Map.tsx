@@ -16,7 +16,7 @@ interface MapComponentProps {
 export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCenters }) => {
   const [selectedCenter, setSelectedCenter] = useState<Center | null>(null);
   const [hoveredCenter, setHoveredCenter] = useState<Center | null>(null);
-  const { isFavorite, favorites } = useFavorites();
+  const { isFavorite, favorites, favoritesCount } = useFavorites();
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [showMapHint, setShowMapHint] = useState(false);
@@ -84,6 +84,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
 
   // Only show filtered centers that have valid coordinates
   const centersWithCoords = useMemo(() => {
+    console.log('🔄 Map re-rendering with favorites:', favorites);
     return filteredCenters.filter(center => 
       center.location.latitude !== null && 
       center.location.longitude !== null &&
@@ -92,7 +93,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
       !isNaN(center.location.latitude) &&
       !isNaN(center.location.longitude)
     );
-  }, [filteredCenters, favorites]); // Add favorites as dependency
+  }, [filteredCenters, favorites, favoritesCount]); // Force re-render when favorites change
 
   // Handle map movement to track user interaction
   const handleMove = useCallback((evt: any) => {
@@ -276,19 +277,19 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         attributionControl={true}
         logoPosition="bottom-right"
       >
-        {/* Only render filtered centers with coordinates */}
-        {centersWithCoords.map(center => {
+        {/* Only render filtered centers with coordinates - Force re-render with key */}
+        {centersWithCoords.map((center, index) => {
           const isSelected = selectedCenter?.center_id === center.center_id;
           const isCenterFavorited = isFavorite(center.center_id);
           
-          // Debug logging - only log favorited centers to reduce noise
+          // Debug logging for favorited centers
           if (isCenterFavorited) {
-            console.log(`✨ FAVORITED Center: ${center.center_name} (${center.center_id})`);
+            console.log(`✨ FAVORITED Center on map: ${center.center_name} (${center.center_id})`);
           }
           
           return (
             <Marker
-              key={center.center_id}
+              key={`${center.center_id}-${isCenterFavorited ? 'fav' : 'normal'}-${favoritesCount}`}
               longitude={center.location.longitude!}
               latitude={center.location.latitude!}
               anchor="bottom"
@@ -306,9 +307,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                 {/* Main Pin - Debug the styling */}
                 <div className={`relative rounded-full border-3 border-white shadow-lg flex items-center justify-center transition-all duration-300 ${
                   isSelected
-                    ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200 ring-opacity-75'
+                    ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200'
                     : isCenterFavorited
-                    ? 'w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 ring-2 ring-pink-300'
+                    ? 'w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 ring-4 ring-pink-300 ring-opacity-75'
                     : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800'
                 }`}>
                   <MapPin className={`text-white transition-all duration-300 ${
@@ -316,8 +317,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                   }`} />
                   
                   {/* Debug indicator for favorited markers */}
-                  {isCenterFavorited && (
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-pink-500 rounded-full border border-white"></div>
+                  {isCenterFavorited && !isSelected && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-pink-400 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
                   )}
                 </div>
                 
@@ -328,7 +329,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
                 
                 {/* Enhanced glow for favorited marker */}
                 {isCenterFavorited && !isSelected && (
-                  <div className="absolute inset-0 w-10 h-10 bg-pink-400 rounded-full opacity-50 blur-md animate-pulse"></div>
+                  <div className="absolute inset-0 w-12 h-12 bg-pink-400 rounded-full opacity-60 blur-lg animate-pulse -translate-x-2 -translate-y-2"></div>
                 )}
               </div>
             </Marker>
