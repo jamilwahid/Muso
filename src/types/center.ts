@@ -35,5 +35,17 @@ export interface Filters {
   subsidy_available: boolean | null;
   languages_spoken: string[];
   dietary_services: string[];
-  showFavoritesOnly: boolean;
+}
+
+export interface FavoriteActions {
+  called: boolean;
+  applied: boolean;
+  visited: boolean;
+}
+
+export interface FavoriteCenterData {
+  center_id: string;
+  actions: FavoriteActions;
+  notes: string;
+  lastUpdated: string;
 }
