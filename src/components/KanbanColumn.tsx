@@ -9,7 +9,6 @@ interface KanbanColumnProps {
     title: string;
     description: string;
     icon: LucideIcon;
-    color: string;
   };
   centers: Array<{ center: Center; favoriteData: FavoriteCenterData }>;
   onDrop: (centerId: string, newStatus: KanbanStatus) => void;
@@ -38,64 +37,21 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, centers, onD
     }
   };
 
-  const getColorClasses = (color: string) => {
-    const colorMap = {
-      pink: {
-        header: 'from-pink-500 to-rose-500',
-        border: 'border-pink-200',
-        bg: 'from-pink-50 to-rose-50',
-        dragOver: 'border-pink-400 bg-pink-100/50'
-      },
-      blue: {
-        header: 'from-blue-500 to-indigo-500',
-        border: 'border-blue-200',
-        bg: 'from-blue-50 to-indigo-50',
-        dragOver: 'border-blue-400 bg-blue-100/50'
-      },
-      green: {
-        header: 'from-green-500 to-emerald-500',
-        border: 'border-green-200',
-        bg: 'from-green-50 to-emerald-50',
-        dragOver: 'border-green-400 bg-green-100/50'
-      },
-      purple: {
-        header: 'from-purple-500 to-violet-500',
-        border: 'border-purple-200',
-        bg: 'from-purple-50 to-violet-50',
-        dragOver: 'border-purple-400 bg-purple-100/50'
-      },
-      emerald: {
-        header: 'from-emerald-500 to-teal-500',
-        border: 'border-emerald-200',
-        bg: 'from-emerald-50 to-teal-50',
-        dragOver: 'border-emerald-400 bg-emerald-100/50'
-      },
-      amber: {
-        header: 'from-amber-500 to-yellow-500',
-        border: 'border-amber-200',
-        bg: 'from-amber-50 to-orange-50',
-        dragOver: 'border-amber-400 bg-amber-100/50'
-      }
-    };
-    return colorMap[color as keyof typeof colorMap] || colorMap.pink;
-  };
-
-  const colors = getColorClasses(column.color);
   const Icon = column.icon;
 
   return (
     <div
       className={`bg-white/60 backdrop-blur-sm rounded-2xl border-2 transition-all duration-300 ${
         isDragOver 
-          ? `${colors.dragOver} shadow-lg` 
-          : `${colors.border} hover:shadow-md`
+          ? 'border-indigo-400 bg-indigo-50/50 shadow-lg' 
+          : 'border-slate-200 hover:shadow-md'
       }`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
       {/* Column Header */}
-      <div className={`bg-gradient-to-r ${colors.header} text-white p-4 rounded-t-2xl`}>
+      <div className="bg-gradient-to-r from-slate-600 to-slate-700 text-white p-4 rounded-t-2xl">
         <div className="flex items-center space-x-3 mb-2">
           <Icon className="h-5 w-5" />
           <h3 className="font-bold text-lg">{column.title}</h3>
@@ -107,7 +63,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, centers, onD
       </div>
 
       {/* Column Content */}
-      <div className={`p-4 space-y-3 min-h-[500px] bg-gradient-to-b ${colors.bg} rounded-b-2xl`}>
+      <div className="p-4 space-y-3 min-h-[500px] bg-gradient-to-b from-slate-50/50 to-white/50 rounded-b-2xl">
         {centers.length === 0 ? (
           <div className="text-center py-8">
             <div className="text-slate-400 mb-2">
@@ -128,4 +84,4 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, centers, onD
       </div>
     </div>
   );
-};
+}

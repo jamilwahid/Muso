@@ -1,9 +1,8 @@
 import React from 'react';
-import { ShortlistCenterCard } from './ShortlistCenterCard';
 import { KanbanBoardView } from './KanbanBoardView';
 import { Center } from '../types/center';
 import { useFavorites } from '../contexts/FavoritesContext';
-import { Heart, Sparkles, List, Kanban } from 'lucide-react';
+import { Heart, Sparkles } from 'lucide-react';
 
 interface ShortlistViewProps {
   centers: Center[];
@@ -12,7 +11,6 @@ interface ShortlistViewProps {
 
 export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
   const { favorites } = useFavorites();
-  const [viewMode, setViewMode] = React.useState<'list' | 'board'>('list');
 
   // Get the full center data for each favorited center
   const favoritedCenters = favorites.map(favoriteData => {
@@ -23,36 +21,6 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
   return (
     <div className="w-full h-full bg-gradient-to-br from-white/80 via-pink-50/40 to-rose-50/30 backdrop-blur-sm overflow-y-auto">
       <div className="px-6 lg:px-8 max-w-7xl mx-auto py-8">
-        {/* View Toggle - Only show if there are favorites */}
-        {favoritedCenters.length > 0 && (
-          <div className="mb-8 flex justify-center">
-            <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/30 p-1 hidden lg:flex">
-              <button
-                onClick={() => setViewMode('list')}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  viewMode === 'list'
-                    ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg'
-                    : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <List className="h-4 w-4 mr-2 inline" />
-                List View
-              </button>
-              <button
-                onClick={() => setViewMode('board')}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  viewMode === 'board'
-                    ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg'
-                    : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <Kanban className="h-4 w-4 mr-2 inline" />
-                Board View
-              </button>
-            </div>
-          </div>
-        )}
-
         {favoritedCenters.length === 0 ? (
           <div className="text-center py-20">
             <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-white/30 max-w-lg mx-auto">
@@ -79,7 +47,6 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
             </div>
           </div>
         ) : (
-          /* Board View Only */
           <KanbanBoardView 
             centers={centers}
             favoritedCenters={favoritedCenters}
@@ -88,4 +55,4 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
       </div>
     </div>
   );
-};
+}
