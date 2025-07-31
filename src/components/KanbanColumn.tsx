@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { KanbanCard } from './KanbanCard';
 import { Center, FavoriteCenterData, KanbanStatus } from '../types/center';
-import { LucideIcon } from 'lucide-react';
+import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface KanbanColumnProps {
   column: {
