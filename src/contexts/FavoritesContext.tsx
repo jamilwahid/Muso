@@ -52,7 +52,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
             console.log('Loaded favorites from localStorage:', parsed);
             const migratedWithKanban = parsed.map((fav: any) => ({
               ...fav,
-              kanbanStatus: fav.kanbanStatus || 'interested'
+              kanbanStatus: fav.kanbanStatus || 'shortlisted'
             }));
             setFavorites(migratedWithKanban);
           }
@@ -91,7 +91,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
           actions: { called: false, applied: false, visited: false },
           notes: '',
           lastUpdated: new Date().toISOString(),
-          kanbanStatus: 'interested'
+          kanbanStatus: 'shortlisted'
         };
         const newFavorites = [...prev, newFavorite];
         console.log('New favorites after add:', newFavorites);

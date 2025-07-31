@@ -69,6 +69,12 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, centers, onD
         border: 'border-emerald-200',
         bg: 'from-emerald-50 to-teal-50',
         dragOver: 'border-emerald-400 bg-emerald-100/50'
+      },
+      amber: {
+        header: 'from-amber-500 to-yellow-500',
+        border: 'border-amber-200',
+        bg: 'from-amber-50 to-orange-50',
+        dragOver: 'border-amber-400 bg-amber-100/50'
       }
     };
     return colorMap[color as keyof typeof colorMap] || colorMap.pink;

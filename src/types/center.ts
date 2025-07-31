@@ -43,7 +43,7 @@ export interface FavoriteActions {
   visited: boolean;
 }
 
-export type KanbanStatus = 'interested' | 'contacted' | 'visited' | 'applied' | 'decided';
+export type KanbanStatus = 'shortlisted' | 'applied' | 'waitlist' | 'approved';
 
 export interface FavoriteCenterData {
   center_id: string;
