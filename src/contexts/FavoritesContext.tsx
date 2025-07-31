@@ -92,7 +92,6 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
           notes: '',
           lastUpdated: new Date().toISOString(),
           kanbanStatus: 'interested'
-          kanbanStatus: 'interested'
         };
         const newFavorites = [...prev, newFavorite];
         console.log('New favorites after add:', newFavorites);
