@@ -12,11 +12,18 @@ interface ShortlistViewProps {
 export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
   const { favorites } = useFavorites();
 
+  // Debug logging
+  console.log('ShortlistView - favorites:', favorites);
+  console.log('ShortlistView - centers:', centers.length);
+
   // Get the full center data for each favorited center
   const favoritedCenters = favorites.map(favoriteData => {
     const center = centers.find(c => c.center_id === favoriteData.center_id);
+    console.log('Looking for center:', favoriteData.center_id, 'found:', !!center);
     return center ? { center, favoriteData } : null;
   }).filter(Boolean) as Array<{ center: Center; favoriteData: any }>;
+
+  console.log('ShortlistView - favoritedCenters:', favoritedCenters);
 
   return (
     <div className="w-full h-full bg-gradient-to-br from-white/80 via-pink-50/40 to-rose-50/30 backdrop-blur-sm overflow-y-auto">
@@ -55,4 +62,3 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
       </div>
     </div>
   );
-}

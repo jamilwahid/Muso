@@ -39,7 +39,11 @@ const KANBAN_COLUMNS = [
 export const KanbanBoardView: React.FC<KanbanBoardViewProps> = ({ centers, favoritedCenters }) => {
   const { updateKanbanStatus } = useFavorites();
 
+  // Debug logging
+  console.log('KanbanBoardView - favoritedCenters:', favoritedCenters);
+
   const handleDrop = (centerId: string, newStatus: KanbanStatus) => {
+    console.log('Dropping center:', centerId, 'to status:', newStatus);
     updateKanbanStatus(centerId, newStatus);
   };
 
@@ -48,8 +52,11 @@ export const KanbanBoardView: React.FC<KanbanBoardViewProps> = ({ centers, favor
     acc[column.id] = favoritedCenters.filter(
       ({ favoriteData }) => favoriteData.kanbanStatus === column.id
     );
+    console.log(`Centers in ${column.id}:`, acc[column.id].length);
     return acc;
   }, {} as Record<KanbanStatus, Array<{ center: Center; favoriteData: FavoriteCenterData }>>);
+
+  console.log('Centers by status:', centersByStatus);
 
   return (
     <div className="w-full">

@@ -17,6 +17,9 @@ interface KanbanColumnProps {
 export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, centers, onDrop }) => {
   const [isDragOver, setIsDragOver] = useState(false);
 
+  // Debug logging
+  console.log(`KanbanColumn ${column.title} - centers:`, centers.length);
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(true);
@@ -32,6 +35,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, centers, onD
     setIsDragOver(false);
     
     const centerId = e.dataTransfer.getData('text/plain');
+    console.log('Column drop - centerId:', centerId, 'newStatus:', column.id);
     if (centerId) {
       onDrop(centerId, column.id);
     }
@@ -64,6 +68,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, centers, onD
 
       {/* Column Content */}
       <div className="p-4 space-y-3 min-h-[500px] bg-gradient-to-b from-slate-50/50 to-white/50 rounded-b-2xl">
+        {console.log(`Rendering ${centers.length} centers in ${column.title}`)}
         {centers.length === 0 ? (
           <div className="text-center py-8">
             <div className="text-slate-400 mb-2">
