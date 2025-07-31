@@ -62,3 +62,4 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
       </div>
     </div>
   );
+};
