@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-import { FavoriteCenterData, FavoriteActions } from '../types/center';
+import { FavoriteCenterData, FavoriteActions, KanbanStatus } from '../types/center';
 
 interface FavoritesContextType {
   favorites: FavoriteCenterData[];
@@ -10,6 +10,7 @@ interface FavoritesContextType {
   toggleFavorite: (centerId: string) => void;
   toggleAction: (centerId: string, actionKey: keyof FavoriteActions) => void;
   updateNotes: (centerId: string, newNotes: string) => void;
+  updateKanbanStatus: (centerId: string, newStatus: KanbanStatus) => void;
   clearAllFavorites: () => void;
   favoritesCount: number;
 }
@@ -39,15 +40,20 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
               center_id: centerId,
               actions: { called: false, applied: false, visited: false },
               notes: '',
-              lastUpdated: new Date().toISOString()
+              lastUpdated: new Date().toISOString(),
+              kanbanStatus: 'interested' as KanbanStatus
             }));
             console.log('Migrated favorites from old format:', migrated);
             setFavorites(migrated);
             localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(migrated));
           } else {
-            // New format
+            // New format - check if we need to add kanbanStatus to existing entries
             console.log('Loaded favorites from localStorage:', parsed);
-            setFavorites(parsed);
+            const migratedWithKanban = parsed.map((fav: any) => ({
+              ...fav,
+              kanbanStatus: fav.kanbanStatus || 'interested'
+            }));
+            setFavorites(migratedWithKanban);
           }
         }
       }
@@ -83,7 +89,8 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
           center_id: centerId,
           actions: { called: false, applied: false, visited: false },
           notes: '',
-          lastUpdated: new Date().toISOString()
+          lastUpdated: new Date().toISOString(),
+          kanbanStatus: 'interested'
         };
         const newFavorites = [...prev, newFavorite];
         console.log('New favorites after add:', newFavorites);
@@ -139,6 +146,20 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     }));
   };
 
+  const updateKanbanStatus = (centerId: string, newStatus: KanbanStatus) => {
+    console.log('Updating kanban status for center:', centerId, 'to:', newStatus);
+    setFavorites(prev => prev.map(fav => {
+      if (fav.center_id === centerId) {
+        return {
+          ...fav,
+          kanbanStatus: newStatus,
+          lastUpdated: new Date().toISOString()
+        };
+      }
+      return fav;
+    }));
+  };
+
   const clearAllFavorites = () => {
     setFavorites([]);
   };
@@ -151,6 +172,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     toggleFavorite,
     toggleAction,
     updateNotes,
+    updateKanbanStatus,
     clearAllFavorites,
     favoritesCount: favorites.length
   };
