@@ -11,6 +11,7 @@ interface FavoritesContextType {
   toggleAction: (centerId: string, actionKey: keyof FavoriteActions) => void;
   updateNotes: (centerId: string, newNotes: string) => void;
   updateKanbanStatus: (centerId: string, newStatus: KanbanStatus) => void;
+  updateKanbanStatus: (centerId: string, newStatus: KanbanStatus) => void;
   clearAllFavorites: () => void;
   favoritesCount: number;
 }
@@ -90,6 +91,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
           actions: { called: false, applied: false, visited: false },
           notes: '',
           lastUpdated: new Date().toISOString(),
+          kanbanStatus: 'interested'
           kanbanStatus: 'interested'
         };
         const newFavorites = [...prev, newFavorite];
@@ -172,6 +174,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     toggleFavorite,
     toggleAction,
     updateNotes,
+    updateKanbanStatus,
     updateKanbanStatus,
     clearAllFavorites,
     favoritesCount: favorites.length

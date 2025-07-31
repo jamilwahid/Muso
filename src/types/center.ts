@@ -51,4 +51,5 @@ export interface FavoriteCenterData {
   notes: string;
   lastUpdated: string;
   kanbanStatus: KanbanStatus;
+  kanbanStatus: KanbanStatus;
 }
