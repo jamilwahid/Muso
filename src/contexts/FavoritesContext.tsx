@@ -226,7 +226,6 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     addAttachment,
     removeAttachment,
     updateKanbanStatus,
-    updateKanbanStatus,
     clearAllFavorites,
     favoritesCount: favorites.length
   };
