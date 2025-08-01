@@ -322,57 +322,6 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
 
         {/* Scrollable Content Area */}
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-          {/* Languages and Dietary Services - Moved here and made more compact */}
-          {(center.languages_spoken.length > 0 || center.dietary_services.length > 0) && (
-            <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 shadow-sm border border-gray-100">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Languages */}
-                {center.languages_spoken.length > 0 && (
-                  <div>
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Languages className="h-4 w-4 text-slate-400" />
-                      <span className="text-sm font-medium text-slate-600">Languages</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {center.languages_spoken.slice(0, 3).map((language, index) => (
-                        <span key={`lang-${index}`} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
-                          {language}
-                        </span>
-                      ))}
-                      {center.languages_spoken.length > 3 && (
-                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
-                          +{center.languages_spoken.length - 3} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Dietary Services */}
-                {center.dietary_services.length > 0 && (
-                  <div>
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Utensils className="h-4 w-4 text-slate-400" />
-                      <span className="text-sm font-medium text-slate-600">Dietary Services</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {center.dietary_services.slice(0, 3).map((service, index) => (
-                        <span key={`diet-${index}`} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
-                          {service}
-                        </span>
-                      ))}
-                      {center.dietary_services.length > 3 && (
-                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
-                          +{center.dietary_services.length - 3} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
           {/* Contact Information */}
           <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 shadow-sm border border-gray-100">
             <h3 className="text-lg font-bold text-slate-800 mb-3 flex items-center space-x-2">
