@@ -37,7 +37,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ currentView, setCurren
           onClick={() => setCurrentView('map')}
           className={`relative group w-12 h-12 rounded-xl transition-all duration-200 flex items-center justify-center ${
             currentView === 'map'
-              ? 'bg-slate-100 text-slate-700 shadow-sm'
+              ? 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg'
               : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
           }`}
           title="Explore Centers"
@@ -47,7 +47,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ currentView, setCurren
           
           {/* Active indicator - Left border */}
           {currentView === 'map' && (
-            <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-slate-400 rounded-r-full"></div>
+            <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 rounded-r-full"></div>
           )}
           
           {/* Hover tooltip background */}
@@ -62,7 +62,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ currentView, setCurren
             onClick={() => setCurrentView('shortlist')}
             className={`relative group w-12 h-12 rounded-xl transition-all duration-200 flex items-center justify-center ${
               currentView === 'shortlist'
-                ? 'bg-slate-100 text-slate-700 shadow-sm'
+                ? 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg'
                 : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
             }`}
             title="My Favorites"
@@ -74,14 +74,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ currentView, setCurren
             
             {/* Active indicator - Left border */}
             {currentView === 'shortlist' && (
-              <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-slate-400 rounded-r-full"></div>
-            )}
-            
-            {/* Favorites Count Badge */}
-            {favoritesCount > 0 && (
-              <div className="absolute -top-1.5 -right-1.5 min-w-[20px] h-[20px] bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-md border-2 border-white">
-                <span className="px-1">{favoritesCount > 99 ? '99+' : favoritesCount}</span>
-              </div>
+              <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 rounded-r-full"></div>
             )}
             
             {/* Hover tooltip background */}
