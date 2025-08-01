@@ -202,7 +202,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
                 </button>
 
                 {openDropdown === key && (
-                  <div className="absolute top-full left-0 mt-2 w-72 bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-2xl shadow-xl z-50 max-h-80 overflow-hidden">
+                  <div className="absolute top-full left-0 mt-2 w-72 bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-2xl shadow-xl z-[9999] max-h-80 overflow-hidden">
                     <div className="p-2 max-h-80 overflow-y-auto">
                       {/* Search Input */}
                       <div className="px-3 py-2 border-b border-slate-100 mb-2">
