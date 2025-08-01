@@ -78,15 +78,10 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ currentView, setCurren
             )}
             
             {/* Favorites Count Badge */}
-            {favoritesCount > 0 && (
-              <div className="absolute -top-1.5 -right-1.5 min-w-[20px] h-[20px] bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-md border-2 border-white">
-                <span className="px-1">{favoritesCount > 99 ? '99+' : favoritesCount}</span>
-              </div>
-            )}
             
             {/* Hover tooltip background */}
             <div className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-              My Favorites
+              My Shortlist
             </div>
           </button>
         </div>
