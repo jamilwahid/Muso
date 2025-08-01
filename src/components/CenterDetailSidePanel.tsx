@@ -218,6 +218,55 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Languages and Dietary Services in Header */}
+          {(center.languages_spoken.length > 0 || center.dietary_services.length > 0) && (
+            <div className="mt-4 space-y-3">
+              {/* Languages */}
+              {center.languages_spoken.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Languages className="h-4 w-4 text-slate-400" />
+                    <span className="text-sm font-medium text-slate-600">Languages</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {center.languages_spoken.slice(0, 2).map((language, index) => (
+                      <span key={`lang-${index}`} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {language}
+                      </span>
+                    ))}
+                    {center.languages_spoken.length > 2 && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        +{center.languages_spoken.length - 2} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Dietary Services */}
+              {center.dietary_services.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Utensils className="h-4 w-4 text-slate-400" />
+                    <span className="text-sm font-medium text-slate-600">Dietary Services</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {center.dietary_services.slice(0, 2).map((service, index) => (
+                      <span key={`diet-${index}`} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {service}
+                      </span>
+                    ))}
+                    {center.dietary_services.length > 2 && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        +{center.dietary_services.length - 2} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="px-6 py-6 space-y-8">
@@ -322,8 +371,261 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
             <h3 className="text-sm font-medium text-gray-900 mb-3">Contact Information</h3>
             
             <div className="space-y-3">
+              {/* Contact Name */}
+              {center.center_contact.name && (
+                <div className="flex items-center space-x-2">
+                  <div className="text-sm font-medium text-gray-700">Contact:</div>
+                  <div className="text-sm text-gray-900">{center.center_contact.name}</div>
+                </div>
+              )}
+
+              {/* Phone Number - Plain text with tel link */}
               {center.center_contact.phone ? (
-                <a 
+                <div className="flex items-center space-x-2">
+                  <Phone className="h-4 w-4 text-gray-500" />
+                  <a 
+                    href={`tel:${formatPhoneForTel(center.center_contact.phone)}`}
+                    className="text-sm text-indigo-600 hover:text-indigo-700 hover:underline"
+                  >
+                    {center.center_contact.phone}
+                  </a>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Phone className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-500">No phone available</span>
+                </div>
+              )}
+
+              {/* Website */}
+              {center.center_contact.website && (
+                <div className="flex items-center space-x-2">
+                  <ExternalLink className="h-4 w-4 text-gray-500" />
+                  <a 
+                    href={center.center_contact.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-indigo-600 hover:text-indigo-700 hover:underline"
+                  >
+                    Visit Website
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Notes Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-900 mb-2">
+              Notes
+            </label>
+            
+            <textarea
+              value={notesValue}
+              onChange={handleNotesChange}
+              placeholder="Add your thoughts, questions, or important details about this center..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+              rows={8}
+            />
+          </div>
+
+          {/* File Attachments */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-sm font-medium text-gray-900">
+                Attachments
+              </label>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="inline-flex items-center space-x-2 text-sm font-medium text-indigo-600 hover:text-indigo-700"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Add Files</span>
+              </button>
+            </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              onChange={handleFileUpload}
+              className="hidden"
+              accept="image/*,.pdf,.doc,.docx,.txt"
+            />
+
+            {favoriteData.attachments.length > 0 ? (
+              <div className="space-y-2">
+                {favoriteData.attachments.map((attachment) => (
+                  <div key={attachment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-gray-200 rounded-lg">
+                        <FileText className="h-4 w-4 text-gray-500" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{attachment.name}</div>
+                        <div className="text-xs text-gray-500">
+                          {formatFileSize(attachment.size)} • {new Date(attachment.uploadedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleRemoveAttachment(attachment.id)}
+                      className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                <p className="text-sm text-gray-500">No files attached yet</p>
+                <p className="text-xs text-gray-400 mt-1">Click "Add Files" to upload documents</p>
+              </div>
+            )}
+          </div>
+
+          {/* City Support Notes */}
+          {center.city_support_notes && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="text-sm font-medium text-blue-900 mb-2">
+                City Support Notes
+              </h4>
+              <p className="text-sm text-blue-800">{center.city_support_notes}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
+            </div>
+          </div>
+
+          {/* Languages and Dietary Services */}
+          {(center.languages_spoken.length > 0 || center.dietary_services.length > 0) && (
+            <div className="space-y-4">
+              {center.languages_spoken.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900 mb-2 flex items-center space-x-2">
+                    <Languages className="h-4 w-4 text-gray-500" />
+                    <span>Languages Spoken</span>
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {center.languages_spoken.map((language, index) => (
+                      <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {language}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {center.dietary_services.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900 mb-2 flex items-center space-x-2">
+                    <Utensils className="h-4 w-4 text-gray-500" />
+                    <span>Dietary Services</span>
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {center.dietary_services.map((service, index) => (
+                      <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {service}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Notes Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-900 mb-2">
+              Notes
+            </label>
+            
+            <textarea
+              value={notesValue}
+              onChange={handleNotesChange}
+              placeholder="Add your thoughts, questions, or important details about this center..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+              rows={4}
+            />
+          </div>
+
+          {/* File Attachments */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-sm font-medium text-gray-900">
+                Attachments
+              </label>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="inline-flex items-center space-x-2 text-sm font-medium text-indigo-600 hover:text-indigo-700"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Add Files</span>
+              </button>
+            </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              onChange={handleFileUpload}
+              className="hidden"
+              accept="image/*,.pdf,.doc,.docx,.txt"
+            />
+
+            {favoriteData.attachments.length > 0 ? (
+              <div className="space-y-2">
+                {favoriteData.attachments.map((attachment) => (
+                  <div key={attachment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-gray-200 rounded-lg">
+                        <FileText className="h-4 w-4 text-gray-500" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{attachment.name}</div>
+                        <div className="text-xs text-gray-500">
+                          {formatFileSize(attachment.size)} • {new Date(attachment.uploadedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleRemoveAttachment(attachment.id)}
+                      className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                <p className="text-sm text-gray-500">No files attached yet</p>
+                <p className="text-xs text-gray-400 mt-1">Click "Add Files" to upload documents</p>
+              </div>
+            )}
+          </div>
+
+          {/* City Support Notes */}
+          {center.city_support_notes && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="text-sm font-medium text-blue-900 mb-2">
+                City Support Notes
+              </h4>
+              <p className="text-sm text-blue-800">{center.city_support_notes}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
                   href={`tel:${formatPhoneForTel(center.center_contact.phone)}`}
                   className="inline-flex items-center space-x-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
                 >
