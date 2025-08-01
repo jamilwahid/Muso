@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Home, MapPin, X, Loader2, Edit3 } from 'lucide-react';
+import { Search, Home, MapPin, X, Loader2, Edit3, Navigation } from 'lucide-react';
 
 interface HomeAddressProps {
   onLocationSelect: (longitude: number, latitude: number, zoom?: number) => void;
@@ -20,6 +20,7 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
   const [homeLocation, setHomeLocation] = useState<HomeLocation | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showWelcomePrompt, setShowWelcomePrompt] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const longPressTimer = useRef<NodeJS.Timeout | null>(null);
@@ -27,12 +28,19 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
   // Load saved home location from localStorage
   useEffect(() => {
     const savedHome = localStorage.getItem('muso-home-location');
+    const hasSeenWelcome = localStorage.getItem('muso-seen-welcome') === 'true';
+    
     if (savedHome) {
       try {
         setHomeLocation(JSON.parse(savedHome));
       } catch (e) {
         console.warn('Failed to load home location');
       }
+    } else if (!hasSeenWelcome) {
+      // Show welcome prompt for new users without home location
+      setTimeout(() => {
+        setShowWelcomePrompt(true);
+      }, 1500); // Delay to let the page load
     }
   }, []);
 
@@ -97,6 +105,17 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
     }
   };
 
+  const handleWelcomePromptClose = () => {
+    setShowWelcomePrompt(false);
+    localStorage.setItem('muso-seen-welcome', 'true');
+  };
+
+  const handleWelcomeSetHome = () => {
+    setShowWelcomePrompt(false);
+    setIsModalOpen(true);
+    localStorage.setItem('muso-seen-welcome', 'true');
+  };
+
   const handleSetHome = (feature: any) => {
     const location: HomeLocation = {
       name: feature.text,
@@ -115,6 +134,7 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
     onLocationSelect(location.lng, location.lat, 12);
     
     setIsModalOpen(false);
+    setShowWelcomePrompt(false);
     setShowMobileMenu(false);
     setSearchQuery('');
     setSearchResults([]);
@@ -162,6 +182,80 @@ export const HomeAddress: React.FC<HomeAddressProps> = ({ onLocationSelect }) =>
 
   return (
     <div className="relative" ref={containerRef}>
+      {/* Welcome Prompt Modal - Full screen overlay */}
+      {showWelcomePrompt && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[300] flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 max-w-lg w-full overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 text-white relative">
+              <button
+                onClick={handleWelcomePromptClose}
+                className="absolute top-4 right-4 p-1 rounded-lg hover:bg-white/20 transition-colors duration-200"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <div className="flex items-center space-x-4">
+                <div className="bg-white/20 p-3 rounded-2xl">
+                  <Navigation className="h-8 w-8" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold">Welcome to Muso!</h2>
+                  <p className="text-white/90 text-sm">Let's get you started</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              <div className="text-center space-y-4">
+                <div className="bg-gradient-to-br from-emerald-100 to-teal-100 p-4 rounded-2xl inline-block">
+                  <Home className="h-12 w-12 text-emerald-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-slate-800 mb-2">Set Your Home Address</h3>
+                  <p className="text-slate-600 leading-relaxed">
+                    Setting your home address helps us center the map on your neighborhood, 
+                    making it easier to find nearby childcare centers.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-4 border border-indigo-100">
+                <div className="flex items-center space-x-3 mb-2">
+                  <div className="bg-indigo-500 p-1.5 rounded-lg">
+                    <MapPin className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="font-semibold text-indigo-800">Why set your home?</span>
+                </div>
+                <ul className="text-sm text-indigo-700 space-y-1 ml-8">
+                  <li>• Instantly focus on your local area</li>
+                  <li>• Find centers within walking distance</li>
+                  <li>• Quick navigation back to your neighborhood</li>
+                </ul>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col space-y-3">
+                <button
+                  onClick={handleWelcomeSetHome}
+                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4 rounded-2xl font-bold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                >
+                  <Home className="h-5 w-5" />
+                  <span>Set My Home Address</span>
+                </button>
+                
+                <button
+                  onClick={handleWelcomePromptClose}
+                  className="w-full text-slate-600 hover:text-slate-800 px-6 py-3 rounded-2xl font-medium hover:bg-slate-50 transition-all duration-200"
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Home Button */}
       <div className="relative">
         <button
