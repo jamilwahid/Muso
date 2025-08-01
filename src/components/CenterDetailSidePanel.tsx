@@ -154,28 +154,56 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
                 <span className="font-medium leading-relaxed">{formatAddress()}</span>
               </div>
               
-              {/* Badges under address */}
+              {/* External Links - Below address */}
+              <div className="mt-1 text-sm text-slate-500">
+                {center.center_contact.website && (
+                  <button
+                    onClick={handleWebsiteClick}
+                    className="inline-flex items-center space-x-1 hover:text-blue-600 hover:underline transition-colors duration-200"
+                  >
+                    <Link className="h-3 w-3" />
+                    <span>Website</span>
+                  </button>
+                )}
+                {center.center_contact.website && <span className="mx-2">·</span>}
+                <a 
+                  href={center.center_listing_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-1 hover:text-indigo-600 hover:underline transition-colors duration-200"
+                >
+                  <Link className="h-3 w-3" />
+                  <span>Toronto.ca listing</span>
+                </a>
+              </div>
+              
+              {/* Badges Row - CWELCC, Subsidy, and Rating together */}
               <div className="flex flex-wrap items-center gap-2 mt-3">
                 {center.CWELCC_participant && (
-                  <div className="inline-flex items-center bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-3 py-1.5 rounded-lg text-sm font-semibold border border-purple-200">
-                    CWELCC Participant
+                  <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
+                    <span>CWELCC</span>
                   </div>
                 )}
                 
                 {center.subsidy_available && (
-                  <div className="inline-flex items-center bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 px-3 py-1.5 rounded-lg text-sm font-semibold border border-emerald-200">
-                    Subsidy Available
+                  <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
+                    <span>Subsidy</span>
                   </div>
                 )}
 
-                <div className="flex items-center space-x-2 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-3 py-1.5 rounded-lg text-sm font-semibold border border-amber-200">
-                  <Star className={`h-4 w-4 ${
+                {/* Rating Badge - Moved here next to other badges */}
+                <div className={`flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-medium border ${
+                  avgRating 
+                    ? 'bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border-purple-200/60' 
+                    : 'bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border-purple-200/60'
+                }`}>
+                  <Star className={`h-3 w-3 ${
                     avgRating 
-                      ? 'text-amber-500 fill-current' 
+                      ? 'text-amber-400 fill-current' 
                       : 'text-slate-400'
                   }`} />
                   <span>
-                    {avgRating ? `${avgRating.toFixed(1)} Rating` : 'No Rating'}
+                    {avgRating ? avgRating.toFixed(1) : 'N/A'}
                   </span>
                 </div>
               </div>
@@ -490,4 +518,11 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
       </div>
     </>
   );
+
+  const handleWebsiteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (center.center_contact.website) {
+      window.open(center.center_contact.website, '_blank');
+    }
+  };
 };
