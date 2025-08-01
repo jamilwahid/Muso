@@ -142,42 +142,42 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
   if (!isOpen) return null;
 
   return (
-    <>
-      {/* Backdrop */}
+    <div 
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      {/* Modal Container */}
       <div 
-        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[200]"
-        onClick={onClose}
-      />
-      
-      {/* Side Panel - Fixed to viewport */}
-      <div className="fixed right-0 top-0 h-screen w-full max-w-2xl bg-white shadow-2xl z-[201] flex flex-col">
+        className="bg-white rounded-3xl shadow-2xl border border-white/20 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header - Fixed */}
-        <div className="flex-shrink-0 bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex-shrink-0 bg-white border-b border-gray-200 px-6 py-6">
           <div className="flex items-start justify-between">
             <div className="flex-1 pr-4">
               <div className="flex items-center justify-between mb-2">
-                <h1 className="text-xl font-semibold text-gray-900">{center.center_name}</h1>
+                <h1 className="text-2xl font-bold text-gray-900">{center.center_name}</h1>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
                 >
-                  <X className="h-5 w-5 text-gray-500" />
+                  <X className="h-6 w-6 text-gray-500" />
                 </button>
               </div>
               
-              <div className="flex items-start text-sm text-gray-600 mb-3">
-                <MapPin className="h-4 w-4 mr-2 text-gray-400 flex-shrink-0 mt-0.5" />
+              <div className="flex items-start text-base text-gray-600 mb-4">
+                <MapPin className="h-5 w-5 mr-2 text-gray-400 flex-shrink-0 mt-0.5" />
                 <span className="leading-relaxed">{formatAddress()}</span>
               </div>
               
               {/* External Links */}
-              <div className="text-sm text-gray-500 mb-4">
+              <div className="text-base text-gray-500 mb-4">
                 {center.center_contact.website && (
                   <button
                     onClick={handleWebsiteClick}
                     className="inline-flex items-center space-x-1 hover:text-blue-600 hover:underline transition-colors duration-200"
                   >
-                    <Link className="h-3 w-3" />
+                    <Link className="h-4 w-4" />
                     <span>Website</span>
                   </button>
                 )}
@@ -188,7 +188,7 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
                   rel="noopener noreferrer"
                   className="inline-flex items-center space-x-1 hover:text-indigo-600 hover:underline transition-colors duration-200"
                 >
-                  <Link className="h-3 w-3" />
+                  <Link className="h-4 w-4" />
                   <span>Toronto.ca listing</span>
                 </a>
               </div>
@@ -196,18 +196,18 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
               {/* Badges */}
               <div className="flex flex-wrap items-center gap-2">
                 {center.CWELCC_participant && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
                     CWELCC
                   </span>
                 )}
                 
                 {center.subsidy_available && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
                     Subsidy
                   </span>
                 )}
 
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
                   <Star className={`h-3 w-3 mr-1 ${
                     avgRating 
                       ? 'text-amber-400 fill-current' 
@@ -221,22 +221,22 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
 
           {/* Languages and Dietary Services in Header */}
           {(center.languages_spoken.length > 0 || center.dietary_services.length > 0) && (
-            <div className="mt-4 space-y-3">
+            <div className="mt-6 space-y-4">
               {/* Languages */}
               {center.languages_spoken.length > 0 && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center space-x-2">
-                    <Languages className="h-4 w-4 text-slate-400" />
-                    <span className="text-sm font-medium text-slate-600">Languages</span>
+                    <Languages className="h-5 w-5 text-slate-400" />
+                    <span className="text-base font-medium text-slate-600">Languages</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {center.languages_spoken.slice(0, 2).map((language, index) => (
-                      <span key={`lang-${index}`} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      <span key={`lang-${index}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
                         {language}
                       </span>
                     ))}
                     {center.languages_spoken.length > 2 && (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
                         +{center.languages_spoken.length - 2} more
                       </span>
                     )}
@@ -246,19 +246,19 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
 
               {/* Dietary Services */}
               {center.dietary_services.length > 0 && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center space-x-2">
-                    <Utensils className="h-4 w-4 text-slate-400" />
-                    <span className="text-sm font-medium text-slate-600">Dietary Services</span>
+                    <Utensils className="h-5 w-5 text-slate-400" />
+                    <span className="text-base font-medium text-slate-600">Dietary Services</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {center.dietary_services.slice(0, 2).map((service, index) => (
-                      <span key={`diet-${index}`} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      <span key={`diet-${index}`} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
                         {service}
                       </span>
                     ))}
                     {center.dietary_services.length > 2 && (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
                         +{center.dietary_services.length - 2} more
                       </span>
                     )}
@@ -270,28 +270,28 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
         </div>
 
         {/* Status and Rating - Header Level - Fixed */}
-        <div className="flex-shrink-0 px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex-shrink-0 px-6 py-6 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Application Status */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-medium text-gray-700 mb-3">
                 Application Status
               </label>
               
               <div className="relative">
                 <button
                   onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-                  className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200 h-12"
+                  className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200 min-h-[48px]"
                 >
                   <div className="flex items-center space-x-3">
                     <div className={`w-3 h-3 rounded-full ${
                       currentStatus ? `bg-${currentStatus.color}-500` : 'bg-gray-400'
                     }`}></div>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-base font-medium text-gray-900">
                       {currentStatus?.label || 'Select Status'}
                     </span>
                   </div>
-                  <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
+                  <ChevronDown className={`h-5 w-5 text-gray-500 transition-transform ${
                     isStatusDropdownOpen ? 'rotate-180' : ''
                   }`} />
                 </button>
@@ -308,11 +308,11 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
                       >
                         <div className={`w-3 h-3 rounded-full bg-${status.color}-500`}></div>
                         <div className="text-left flex-1">
-                          <div className="text-sm font-medium text-gray-900">{status.label}</div>
+                          <div className="text-base font-medium text-gray-900">{status.label}</div>
                           <div className="text-xs text-gray-500">{status.description}</div>
                         </div>
                         {favoriteData.kanbanStatus === status.value && (
-                          <CheckCircle2 className="h-4 w-4 text-indigo-500" />
+                          <CheckCircle2 className="h-5 w-5 text-indigo-500" />
                         )}
                       </button>
                     ))}
@@ -323,22 +323,22 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
 
             {/* Personal Rating */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-medium text-gray-700 mb-3">
                 My Rating
               </label>
               
               <div className="relative">
                 <button
                   onClick={() => setIsRatingDropdownOpen(!isRatingDropdownOpen)}
-                  className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200 h-12"
+                  className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200 min-h-[48px]"
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="text-lg">{currentRating?.emoji || '⚪'}</span>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-xl">{currentRating?.emoji || '⚪'}</span>
+                    <span className="text-base font-medium text-gray-900">
                       {currentRating?.label || 'No rating'}
                     </span>
                   </div>
-                  <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
+                  <ChevronDown className={`h-5 w-5 text-gray-500 transition-transform ${
                     isRatingDropdownOpen ? 'rotate-180' : ''
                   }`} />
                 </button>
@@ -354,9 +354,9 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
                         }`}
                       >
                         <span className="text-lg">{option.emoji}</span>
-                        <span className="text-sm font-medium text-gray-900 flex-1 text-left">{option.label}</span>
+                        <span className="text-base font-medium text-gray-900 flex-1 text-left">{option.label}</span>
                         {favoriteData.personalRating === option.value && (
-                          <CheckCircle2 className="h-4 w-4 text-indigo-500" />
+                          <CheckCircle2 className="h-5 w-5 text-indigo-500" />
                         )}
                       </button>
                     ))}
@@ -368,51 +368,51 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
         </div>
 
         {/* Scrollable Content Area */}
-        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+        <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8">
           {/* Contact Information */}
-          <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center space-x-2">
-              <Phone className="h-5 w-5 text-slate-600" />
+          <div className="bg-gradient-to-r from-gray-50 to-white rounded-2xl p-8 shadow-sm border border-gray-100">
+            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center space-x-2">
+              <Phone className="h-6 w-6 text-slate-600" />
               <span>Contact Information</span>
             </h3>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
               {/* Contact Name */}
               {center.center_contact.name && (
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
-                  <div className="text-sm font-medium text-gray-700">Contact:</div>
-                  <div className="text-sm text-gray-900 font-medium">{center.center_contact.name}</div>
+                  <div className="text-base font-medium text-gray-700">Contact:</div>
+                  <div className="text-base text-gray-900 font-medium">{center.center_contact.name}</div>
                 </div>
               )}
 
               {/* Phone Number - Plain text with tel link */}
               {center.center_contact.phone ? (
                 <div className="flex items-center space-x-3">
-                  <Phone className="h-4 w-4 text-gray-500" />
+                  <Phone className="h-5 w-5 text-gray-500" />
                   <a 
                     href={`tel:${formatPhoneForTel(center.center_contact.phone)}`}
-                    className="text-sm text-indigo-600 hover:text-indigo-700 hover:underline font-medium"
+                    className="text-base text-indigo-600 hover:text-indigo-700 hover:underline font-medium"
                   >
                     {center.center_contact.phone}
                   </a>
                 </div>
               ) : (
                 <div className="flex items-center space-x-3">
-                  <Phone className="h-4 w-4 text-gray-400" />
-                  <span className="text-sm text-gray-500">No phone available</span>
+                  <Phone className="h-5 w-5 text-gray-400" />
+                  <span className="text-base text-gray-500">No phone available</span>
                 </div>
               )}
 
               {/* Website */}
               {center.center_contact.website && (
                 <div className="flex items-center space-x-3">
-                  <ExternalLink className="h-4 w-4 text-gray-500" />
+                  <ExternalLink className="h-5 w-5 text-gray-500" />
                   <a 
                     href={center.center_contact.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-indigo-600 hover:text-indigo-700 hover:underline font-medium"
+                    className="text-base text-indigo-600 hover:text-indigo-700 hover:underline font-medium"
                   >
                     Visit Website
                   </a>
@@ -422,9 +422,9 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
           </div>
 
           {/* Notes Section */}
-          <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center space-x-2">
-              <FileText className="h-5 w-5 text-slate-600" />
+          <div className="bg-gradient-to-r from-gray-50 to-white rounded-2xl p-8 shadow-sm border border-gray-100">
+            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center space-x-2">
+              <FileText className="h-6 w-6 text-slate-600" />
               <span>My Notes</span>
             </h3>
             
@@ -432,23 +432,23 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
               value={notesValue}
               onChange={handleNotesChange}
               placeholder="Add your thoughts, questions, or important details about this center..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none shadow-sm transition-all duration-200"
-              rows={8}
+              className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none shadow-sm transition-all duration-200 text-base"
+              rows={6}
             />
           </div>
 
           {/* File Attachments */}
-          <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-gradient-to-r from-gray-50 to-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-slate-800 flex items-center space-x-2">
-                <Upload className="h-5 w-5 text-slate-600" />
+              <h3 className="text-xl font-bold text-slate-800 flex items-center space-x-2">
+                <Upload className="h-6 w-6 text-slate-600" />
                 <span>Attachments</span>
               </h3>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center space-x-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition-all duration-200"
+                className="inline-flex items-center space-x-2 text-base font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-xl transition-all duration-200"
               >
-                <Upload className="h-4 w-4" />
+                <Upload className="h-5 w-5" />
                 <span>Add Files</span>
               </button>
             </div>
@@ -463,15 +463,15 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
             />
 
             {favoriteData.attachments.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {favoriteData.attachments.map((attachment) => (
-                  <div key={attachment.id} className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+                  <div key={attachment.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-gray-100 rounded-lg">
-                        <FileText className="h-4 w-4 text-gray-500" />
+                      <div className="p-2 bg-gray-100 rounded-xl">
+                        <FileText className="h-5 w-5 text-gray-500" />
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{attachment.name}</div>
+                        <div className="text-base font-medium text-gray-900">{attachment.name}</div>
                         <div className="text-xs text-gray-500">
                           {formatFileSize(attachment.size)} • {new Date(attachment.uploadedAt).toLocaleDateString()}
                         </div>
@@ -479,23 +479,23 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
                     </div>
                     <button
                       onClick={() => handleRemoveAttachment(attachment.id)}
-                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
+                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-5 w-5" />
                     </button>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50/50">
-                <Upload className="h-8 w-8 text-gray-400 mx-auto mb-3" />
-                <p className="text-sm font-medium text-gray-500 mb-1">No files attached yet</p>
+              <div className="text-center py-16 border-2 border-dashed border-gray-300 rounded-2xl bg-gray-50/50">
+                <Upload className="h-10 w-10 text-gray-400 mx-auto mb-4" />
+                <p className="text-base font-medium text-gray-500 mb-1">No files attached yet</p>
                 <p className="text-xs text-gray-400">Click "Add Files" to upload documents</p>
               </div>
             )}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
