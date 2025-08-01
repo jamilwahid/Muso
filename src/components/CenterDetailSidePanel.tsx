@@ -129,15 +129,15 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
     return `+1${digits}`;
   };
 
-  const currentStatus = KANBAN_STATUSES.find(s => s.value === favoriteData.kanbanStatus);
-  const currentRating = ratingOptions.find(r => r.value === favoriteData.personalRating);
-
   const handleWebsiteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (center.center_contact.website) {
       window.open(center.center_contact.website, '_blank');
     }
   };
+
+  const currentStatus = KANBAN_STATUSES.find(s => s.value === favoriteData.kanbanStatus);
+  const currentRating = ratingOptions.find(r => r.value === favoriteData.personalRating);
 
   if (!isOpen) return null;
 
@@ -152,17 +152,26 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
       {/* Side Panel */}
       <div className="fixed right-0 top-0 h-full w-full max-w-2xl bg-white shadow-2xl z-[201] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white/95 backdrop-blur-xl border-b border-slate-200/80 p-6 z-10">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 z-10">
           <div className="flex items-start justify-between">
             <div className="flex-1 pr-4">
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">{center.center_name}</h2>
-              <div className="flex items-start text-sm text-slate-600">
-                <MapPin className="h-4 w-4 mr-2 text-slate-400 flex-shrink-0 mt-0.5" />
-                <span className="font-medium leading-relaxed">{formatAddress()}</span>
+              <div className="flex items-center justify-between mb-2">
+                <h1 className="text-xl font-semibold text-gray-900">{center.center_name}</h1>
+                <button
+                  onClick={onClose}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X className="h-5 w-5 text-gray-500" />
+                </button>
               </div>
               
-              {/* External Links - Below address */}
-              <div className="mt-1 text-sm text-slate-500">
+              <div className="flex items-start text-sm text-gray-600 mb-3">
+                <MapPin className="h-4 w-4 mr-2 text-gray-400 flex-shrink-0 mt-0.5" />
+                <span className="leading-relaxed">{formatAddress()}</span>
+              </div>
+              
+              {/* External Links */}
+              <div className="text-sm text-gray-500 mb-4">
                 {center.center_contact.website && (
                   <button
                     onClick={handleWebsiteClick}
@@ -184,100 +193,77 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
                 </a>
               </div>
               
-              {/* Badges Row - CWELCC, Subsidy, and Rating together */}
-              <div className="flex flex-wrap items-center gap-2 mt-3">
+              {/* Badges */}
+              <div className="flex flex-wrap items-center gap-2">
                 {center.CWELCC_participant && (
-                  <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                    <span>CWELCC</span>
-                  </div>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    CWELCC
+                  </span>
                 )}
                 
                 {center.subsidy_available && (
-                  <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                    <span>Subsidy</span>
-                  </div>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    Subsidy
+                  </span>
                 )}
 
-                {/* Rating Badge - Moved here next to other badges */}
-                <div className={`flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-medium border ${
-                  avgRating 
-                    ? 'bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border-purple-200/60' 
-                    : 'bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border-purple-200/60'
-                }`}>
-                  <Star className={`h-3 w-3 ${
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  <Star className={`h-3 w-3 mr-1 ${
                     avgRating 
                       ? 'text-amber-400 fill-current' 
-                      : 'text-slate-400'
+                      : 'text-gray-400'
                   }`} />
-                  <span>
-                    {avgRating ? avgRating.toFixed(1) : 'N/A'}
-                  </span>
-                </div>
+                  {avgRating ? avgRating.toFixed(1) : 'N/A'}
+                </span>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all duration-200 hover:scale-105"
-            >
-              <X className="h-5 w-5" />
-            </button>
           </div>
         </div>
 
-        <div className="p-6 space-y-8">
-          {/* Status and Rating Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Kanban Status */}
-            <div className="space-y-3">
-              <label className="text-sm font-semibold text-slate-700 flex items-center space-x-2">
-                <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
-                <span>Application Status</span>
+        <div className="px-6 py-6 space-y-8">
+          {/* Status and Rating */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Application Status */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Application Status
               </label>
               
               <div className="relative">
                 <button
                   onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-                  className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 ${
-                    currentStatus
-                      ? `border-${currentStatus.color}-200 bg-gradient-to-r from-${currentStatus.color}-50 to-${currentStatus.color}-100`
-                      : 'border-slate-200 bg-slate-50'
-                  }`}
+                  className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className={`w-3 h-3 rounded-full ${
-                      currentStatus ? `bg-${currentStatus.color}-500` : 'bg-slate-400'
+                    <div className={`w-2 h-2 rounded-full ${
+                      currentStatus ? `bg-${currentStatus.color}-500` : 'bg-gray-400'
                     }`}></div>
-                    <div className="text-left">
-                      <div className="font-semibold text-slate-900">
-                        {currentStatus?.label || 'Select Status'}
-                      </div>
-                      {currentStatus && (
-                        <div className="text-xs text-slate-600">{currentStatus.description}</div>
-                      )}
-                    </div>
+                    <span className="text-sm text-gray-900">
+                      {currentStatus?.label || 'Select Status'}
+                    </span>
                   </div>
-                  <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${
+                  <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
                     isStatusDropdownOpen ? 'rotate-180' : ''
                   }`} />
                 </button>
 
                 {isStatusDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
                     {KANBAN_STATUSES.map((status) => (
                       <button
                         key={status.value}
                         onClick={() => handleStatusChange(status.value)}
-                        className={`w-full flex items-center space-x-3 p-4 hover:bg-slate-50 transition-colors duration-200 ${
-                          favoriteData.kanbanStatus === status.value ? 'bg-slate-50' : ''
+                        className={`w-full flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 transition-colors ${
+                          favoriteData.kanbanStatus === status.value ? 'bg-gray-50' : ''
                         }`}
                       >
-                        <div className={`w-3 h-3 rounded-full bg-${status.color}-500`}></div>
+                        <div className={`w-2 h-2 rounded-full bg-${status.color}-500`}></div>
                         <div className="text-left flex-1">
-                          <div className="font-semibold text-slate-900">{status.label}</div>
-                          <div className="text-xs text-slate-600">{status.description}</div>
+                          <div className="text-sm font-medium text-gray-900">{status.label}</div>
+                          <div className="text-xs text-gray-500">{status.description}</div>
                         </div>
                         {favoriteData.kanbanStatus === status.value && (
-                          <CheckCircle2 className={`h-4 w-4 text-${status.color}-500`} />
+                          <CheckCircle2 className="h-4 w-4 text-indigo-500" />
                         )}
                       </button>
                     ))}
@@ -287,46 +273,41 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
             </div>
 
             {/* Personal Rating */}
-            <div className="space-y-3">
-              <label className="text-sm font-semibold text-slate-700 flex items-center space-x-2">
-                <Heart className="h-4 w-4 text-pink-500" />
-                <span>My Rating</span>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                My Rating
               </label>
               
               <div className="relative">
                 <button
                   onClick={() => setIsRatingDropdownOpen(!isRatingDropdownOpen)}
-                  className="w-full flex items-center justify-between p-4 rounded-xl border-2 border-slate-200 bg-slate-50 hover:bg-slate-100 transition-all duration-200"
+                  className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="text-2xl">{currentRating?.emoji || '⚪'}</div>
-                    <div className="text-left">
-                      <div className="font-semibold text-slate-900">
-                        {currentRating?.label || 'No rating'}
-                      </div>
-                    </div>
+                    <span className="text-lg">{currentRating?.emoji || '⚪'}</span>
+                    <span className="text-sm text-gray-900">
+                      {currentRating?.label || 'No rating'}
+                    </span>
                   </div>
-                  <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${
+                  <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
                     isRatingDropdownOpen ? 'rotate-180' : ''
                   }`} />
                 </button>
 
                 {isRatingDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
                     {ratingOptions.map((option) => (
                       <button
                         key={option.value || 'none'}
                         onClick={() => handlePersonalRatingChange(option.value)}
-                        className={`w-full flex items-center space-x-3 p-4 hover:bg-slate-50 transition-colors duration-200 ${
-                          favoriteData.personalRating === option.value ? 'bg-slate-50' : ''
+                        className={`w-full flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 transition-colors ${
+                          favoriteData.personalRating === option.value ? 'bg-gray-50' : ''
                         }`}
                       >
-                        <div className="text-2xl">{option.emoji}</div>
-                        <div className="text-left flex-1">
-                          <div className="font-semibold text-slate-900">{option.label}</div>
-                        </div>
+                        <span className="text-lg">{option.emoji}</span>
+                        <span className="text-sm text-gray-900 flex-1 text-left">{option.label}</span>
                         {favoriteData.personalRating === option.value && (
-                          <CheckCircle2 className="h-4 w-4 text-pink-500" />
+                          <CheckCircle2 className="h-4 w-4 text-indigo-500" />
                         )}
                       </button>
                     ))}
@@ -336,136 +317,103 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
             </div>
           </div>
 
-          {/* Center Overview */}
-          <div className="bg-gradient-to-r from-slate-50 to-slate-100/50 rounded-2xl p-6 border border-slate-200/50">
-            <h3 className="text-lg font-bold text-slate-900 mb-4">Center Overview</h3>
+          {/* Contact Information */}
+          <div className="bg-gray-50 rounded-lg p-4">
+            <h3 className="text-sm font-medium text-gray-900 mb-3">Contact Information</h3>
             
-            {/* Contact Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div className="space-y-4">
-                <h4 className="font-semibold text-slate-800 flex items-center space-x-2">
-                  <Phone className="h-4 w-4 text-slate-500" />
-                  <span>Contact</span>
-                </h4>
-                <div className="space-y-3">
-                  {center.center_contact.phone ? (
-                    <a 
-                      href={`tel:${formatPhoneForTel(center.center_contact.phone)}`}
-                      className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-3 rounded-xl text-sm font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-                    >
-                      <Phone className="h-4 w-4" />
-                      <span>{center.center_contact.phone}</span>
-                    </a>
-                  ) : (
-                    <div className="text-slate-500 text-sm">No phone available</div>
-                  )}
-                  
-                  {center.center_contact.website && (
-                    <div>
-                      <a 
-                        href={center.center_contact.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium text-sm hover:underline"
-                      >
-                        <Link className="h-4 w-4" />
-                        <span>Visit Website</span>
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </div>
-                  )}
-                  
-                  <div>
-                    <a 
-                      href={center.center_listing_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-2 text-indigo-600 hover:text-indigo-700 font-medium text-sm hover:underline"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      <span>Toronto.ca Listing</span>
-                    </a>
-                  </div>
+            <div className="space-y-3">
+              {center.center_contact.phone ? (
+                <a 
+                  href={`tel:${formatPhoneForTel(center.center_contact.phone)}`}
+                  className="inline-flex items-center space-x-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+                >
+                  <Phone className="h-4 w-4" />
+                  <span>{center.center_contact.phone}</span>
+                </a>
+              ) : (
+                <div className="text-sm text-gray-500">No phone available</div>
+              )}
+              
+              {center.center_contact.website && (
+                <div>
+                  <a 
+                    href={center.center_contact.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-2 text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    <span>Visit Website</span>
+                  </a>
                 </div>
-              </div>
-
-              {/* Languages and Dietary */}
-              <div className="space-y-4">
-                {center.languages_spoken.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold text-slate-800 mb-3 flex items-center space-x-2">
-                      <Languages className="h-4 w-4 text-slate-500" />
-                      <span>Languages</span>
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {center.languages_spoken.slice(0, 4).map((language, index) => (
-                        <span key={index} className="bg-white px-3 py-1.5 rounded-lg text-sm font-medium text-slate-700 border border-slate-200">
-                          {language}
-                        </span>
-                      ))}
-                      {center.languages_spoken.length > 4 && (
-                        <span className="bg-white px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 border border-slate-200">
-                          +{center.languages_spoken.length - 4} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {center.dietary_services.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold text-slate-800 mb-3 flex items-center space-x-2">
-                      <Utensils className="h-4 w-4 text-slate-500" />
-                      <span>Dietary Services</span>
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {center.dietary_services.slice(0, 4).map((service, index) => (
-                        <span key={index} className="bg-white px-3 py-1.5 rounded-lg text-sm font-medium text-slate-700 border border-slate-200">
-                          {service}
-                        </span>
-                      ))}
-                      {center.dietary_services.length > 4 && (
-                        <span className="bg-white px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 border border-slate-200">
-                          +{center.dietary_services.length - 4} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
           </div>
 
-          {/* Notes Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold text-slate-900 flex items-center space-x-2">
-              <FileText className="h-5 w-5 text-slate-500" />
-              <span>My Notes</span>
-            </h3>
-            
-            <div className="bg-slate-50 rounded-xl p-1">
-              <textarea
-                value={notesValue}
-                onChange={handleNotesChange}
-                placeholder="Add your thoughts, questions, or important details about this center..."
-                className="w-full p-4 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition-all duration-200 min-h-[120px]"
-                rows={6}
-              />
+          {/* Languages and Dietary Services */}
+          {(center.languages_spoken.length > 0 || center.dietary_services.length > 0) && (
+            <div className="space-y-4">
+              {center.languages_spoken.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900 mb-2 flex items-center space-x-2">
+                    <Languages className="h-4 w-4 text-gray-500" />
+                    <span>Languages Spoken</span>
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {center.languages_spoken.map((language, index) => (
+                      <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {language}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {center.dietary_services.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900 mb-2 flex items-center space-x-2">
+                    <Utensils className="h-4 w-4 text-gray-500" />
+                    <span>Dietary Services</span>
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {center.dietary_services.map((service, index) => (
+                      <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {service}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+          )}
+
+          {/* Notes Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-900 mb-2">
+              Notes
+            </label>
+            
+            <textarea
+              value={notesValue}
+              onChange={handleNotesChange}
+              placeholder="Add your thoughts, questions, or important details about this center..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+              rows={4}
+            />
           </div>
 
           {/* File Attachments */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-slate-900 flex items-center space-x-2">
-                <Upload className="h-5 w-5 text-slate-500" />
-                <span>Attachments</span>
-              </h3>
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-sm font-medium text-gray-900">
+                Attachments
+              </label>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center space-x-2 text-sm font-medium text-indigo-600 hover:text-indigo-700"
               >
-                Add Files
+                <Upload className="h-4 w-4" />
+                <span>Add Files</span>
               </button>
             </div>
 
@@ -479,23 +427,23 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
             />
 
             {favoriteData.attachments.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {favoriteData.attachments.map((attachment) => (
-                  <div key={attachment.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200 hover:shadow-sm transition-all duration-200">
+                  <div key={attachment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center space-x-3">
-                      <div className="p-2.5 bg-slate-100 rounded-lg">
-                        <FileText className="h-4 w-4 text-slate-500" />
+                      <div className="p-2 bg-gray-200 rounded-lg">
+                        <FileText className="h-4 w-4 text-gray-500" />
                       </div>
                       <div>
-                        <div className="font-semibold text-slate-900">{attachment.name}</div>
-                        <div className="text-xs text-slate-500">
+                        <div className="text-sm font-medium text-gray-900">{attachment.name}</div>
+                        <div className="text-xs text-gray-500">
                           {formatFileSize(attachment.size)} • {new Date(attachment.uploadedAt).toLocaleDateString()}
                         </div>
                       </div>
                     </div>
                     <button
                       onClick={() => handleRemoveAttachment(attachment.id)}
-                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
+                      className="p-1 text-gray-400 hover:text-red-500 transition-colors"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -503,22 +451,21 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
-                <Upload className="h-8 w-8 text-slate-400 mx-auto mb-3" />
-                <p className="text-sm font-medium text-slate-600">No files attached yet</p>
-                <p className="text-xs text-slate-400 mt-1">Click "Add Files" to upload documents, photos, or notes</p>
+              <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                <p className="text-sm text-gray-500">No files attached yet</p>
+                <p className="text-xs text-gray-400 mt-1">Click "Add Files" to upload documents</p>
               </div>
             )}
           </div>
 
           {/* City Support Notes */}
           {center.city_support_notes && (
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-              <h4 className="font-semibold text-blue-900 mb-3 flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span>City Support Notes</span>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="text-sm font-medium text-blue-900 mb-2">
+                City Support Notes
               </h4>
-              <p className="text-sm text-blue-800 leading-relaxed">{center.city_support_notes}</p>
+              <p className="text-sm text-blue-800">{center.city_support_notes}</p>
             </div>
           )}
         </div>
