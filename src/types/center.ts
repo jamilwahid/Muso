@@ -60,5 +60,4 @@ export interface FavoriteCenterData {
   }>;
   lastUpdated: string;
   kanbanStatus: KanbanStatus;
-  kanbanStatus: KanbanStatus;
 }

@@ -14,7 +14,6 @@ interface FavoritesContextType {
   addAttachment: (centerId: string, attachment: any) => void;
   removeAttachment: (centerId: string, attachmentId: string) => void;
   updateKanbanStatus: (centerId: string, newStatus: KanbanStatus) => void;
-  updateKanbanStatus: (centerId: string, newStatus: KanbanStatus) => void;
   clearAllFavorites: () => void;
   favoritesCount: number;
 }
@@ -47,7 +46,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
               personalRating: null,
               attachments: [],
               lastUpdated: new Date().toISOString(),
-              kanbanStatus: 'interested' as KanbanStatus
+              kanbanStatus: 'shortlisted' as KanbanStatus
             }));
             console.log('Migrated favorites from old format:', migrated);
             setFavorites(migrated);
