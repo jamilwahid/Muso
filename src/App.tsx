@@ -1,4 +1,3 @@
-```tsx
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { LeftSidebar } from './components/LeftSidebar'; // New import
@@ -114,4 +113,3 @@ function App() {
 }
 
 export default App;
-```

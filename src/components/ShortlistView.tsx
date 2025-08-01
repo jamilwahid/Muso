@@ -1,4 +1,3 @@
-```tsx
 import React from 'react';
 import { KanbanBoardView } from './KanbanBoardView';
 import { Center } from '../types/center';
@@ -64,4 +63,3 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
     </div>
   );
 };
-```

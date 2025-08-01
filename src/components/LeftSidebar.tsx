@@ -1,4 +1,3 @@
-```tsx
 import React from 'react';
 import { Baby, Map, Heart } from 'lucide-react';
 import { useFavorites } from '../contexts/FavoritesContext';
@@ -60,4 +59,3 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ currentView, setCurren
     </div>
   );
 };
-```
