@@ -85,13 +85,6 @@ export const KanbanCard: React.FC<KanbanCardProps> = ({ center, favoriteData, on
           <h4 className="font-bold text-sm text-slate-800 leading-tight flex-1 pr-2">
             {center.center_name}
           </h4>
-          <button
-            onClick={handleRemoveFromShortlist}
-            className="opacity-0 group-hover:opacity-100 p-1 rounded-lg bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600 transition-all duration-200"
-            title="Remove from shortlist"
-          >
-            <Heart className="h-3 w-3 fill-current" />
-          </button>
         </div>
 
         {/* Address */}
