@@ -135,29 +135,9 @@ export const KanbanCard: React.FC<KanbanCardProps> = ({ center, favoriteData, on
           </div>
         )}
 
-        {/* Footer */}
-        <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-          {/* Phone */}
-          <div className="flex-1">
-            {center.center_contact.phone ? (
-              <a 
-                href={`tel:${formatPhoneForTel(center.center_contact.phone)}`}
-                className="inline-flex items-center space-x-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-2 py-1 rounded-lg text-xs font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Phone className="h-2.5 w-2.5" />
-                <span className="truncate max-w-[80px]">{center.center_contact.phone}</span>
-              </a>
-            ) : (
-              <div className="inline-flex items-center space-x-1 bg-slate-100 text-slate-400 px-2 py-1 rounded-lg text-xs">
-                <Phone className="h-2.5 w-2.5" />
-                <span>No phone</span>
-              </div>
-            )}
-          </div>
-
-          {/* Last Updated */}
-          <div className="flex items-center space-x-1 text-xs text-slate-400 ml-2">
+        {/* Simple Footer with just last updated */}
+        <div className="flex justify-end pt-2 border-t border-slate-100">
+          <div className="flex items-center space-x-1 text-xs text-slate-400">
             <Clock className="h-2.5 w-2.5" />
             <span>{formatLastUpdated(favoriteData.lastUpdated)}</span>
           </div>
