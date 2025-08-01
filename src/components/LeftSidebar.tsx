@@ -46,7 +46,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ currentView, setCurren
           <Heart className="h-6 w-6" />
           <span className="text-xs font-medium mt-1">Favorites</span>
           {favoritesCount > 0 && (
-            <div className={\`absolute -top-1 -right-1 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm ${
+            <div className={`absolute -top-1 -right-1 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm ${
               currentView === 'shortlist'
                 ? 'bg-white text-pink-600'
                 : 'bg-pink-500 text-white'
