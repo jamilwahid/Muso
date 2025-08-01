@@ -103,7 +103,6 @@ export const KanbanBoardView: React.FC<KanbanBoardViewProps> = ({ centers, favor
       {selectedCenter && (
         <CenterDetailSidePanel
           center={selectedCenter.center}
-          favoriteData={selectedCenter.favoriteData}
           isOpen={!!selectedCenter}
           onClose={handleCloseSidePanel}
         />

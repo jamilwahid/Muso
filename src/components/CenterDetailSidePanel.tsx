@@ -6,7 +6,6 @@ import { useFavorites } from '../contexts/FavoritesContext';
 
 interface CenterDetailSidePanelProps {
   center: Center;
-  favoriteData: FavoriteCenterData;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -20,11 +19,18 @@ const KANBAN_STATUSES: Array<{ value: KanbanStatus; label: string; color: string
 
 export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
   center,
-  favoriteData,
   isOpen,
   onClose
 }) => {
-  const { updateNotes, updatePersonalRating, addAttachment, removeAttachment, updateKanbanStatus } = useFavorites();
+  const { updateNotes, updatePersonalRating, addAttachment, removeAttachment, updateKanbanStatus, favorites } = useFavorites();
+  
+  // Get fresh favorite data from context instead of using stale prop
+  const favoriteData = favorites.find(fav => fav.center_id === center.center_id);
+  
+  if (!favoriteData) {
+    return null; // Don't render if not in favorites
+  }
+  
   const [notesValue, setNotesValue] = useState(favoriteData.notes);
   const [isRatingDropdownOpen, setIsRatingDropdownOpen] = useState(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
