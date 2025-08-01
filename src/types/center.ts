@@ -51,5 +51,15 @@ export interface FavoriteCenterData {
   notes: string;
   lastUpdated: string;
   kanbanStatus: KanbanStatus;
-  kanbanStatus: KanbanStatus;
+  preferenceRating: string;
+  attachedFiles: AttachedFile[];
+}
+
+export interface AttachedFile {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  url: string;
+  uploadedAt: string;
 }

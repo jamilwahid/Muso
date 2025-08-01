@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-import { FavoriteCenterData, FavoriteActions, KanbanStatus } from '../types/center';
+import { FavoriteCenterData, FavoriteActions, KanbanStatus, AttachedFile } from '../types/center';
 
 interface FavoritesContextType {
   favorites: FavoriteCenterData[];
@@ -11,7 +11,8 @@ interface FavoritesContextType {
   toggleAction: (centerId: string, actionKey: keyof FavoriteActions) => void;
   updateNotes: (centerId: string, newNotes: string) => void;
   updateKanbanStatus: (centerId: string, newStatus: KanbanStatus) => void;
-  updateKanbanStatus: (centerId: string, newStatus: KanbanStatus) => void;
+  updatePreferenceRating: (centerId: string, rating: string) => void;
+  updateAttachedFiles: (centerId: string, files: AttachedFile[]) => void;
   clearAllFavorites: () => void;
   favoritesCount: number;
 }
@@ -42,7 +43,9 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
               actions: { called: false, applied: false, visited: false },
               notes: '',
               lastUpdated: new Date().toISOString(),
-              kanbanStatus: 'interested' as KanbanStatus
+              kanbanStatus: 'shortlisted' as KanbanStatus,
+              preferenceRating: '',
+              attachedFiles: []
             }));
             console.log('Migrated favorites from old format:', migrated);
             setFavorites(migrated);
@@ -52,7 +55,9 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
             console.log('Loaded favorites from localStorage:', parsed);
             const migratedWithKanban = parsed.map((fav: any) => ({
               ...fav,
-              kanbanStatus: fav.kanbanStatus || 'shortlisted'
+              kanbanStatus: fav.kanbanStatus || 'shortlisted',
+              preferenceRating: fav.preferenceRating || '',
+              attachedFiles: fav.attachedFiles || []
             }));
             setFavorites(migratedWithKanban);
           }
@@ -91,7 +96,9 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
           actions: { called: false, applied: false, visited: false },
           notes: '',
           lastUpdated: new Date().toISOString(),
-          kanbanStatus: 'shortlisted'
+          kanbanStatus: 'shortlisted',
+          preferenceRating: '',
+          attachedFiles: []
         };
         const newFavorites = [...prev, newFavorite];
         console.log('New favorites after add:', newFavorites);
@@ -161,6 +168,34 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     }));
   };
 
+  const updatePreferenceRating = (centerId: string, rating: string) => {
+    console.log('Updating preference rating for center:', centerId, 'to:', rating);
+    setFavorites(prev => prev.map(fav => {
+      if (fav.center_id === centerId) {
+        return {
+          ...fav,
+          preferenceRating: rating,
+          lastUpdated: new Date().toISOString()
+        };
+      }
+      return fav;
+    }));
+  };
+
+  const updateAttachedFiles = (centerId: string, files: AttachedFile[]) => {
+    console.log('Updating attached files for center:', centerId);
+    setFavorites(prev => prev.map(fav => {
+      if (fav.center_id === centerId) {
+        return {
+          ...fav,
+          attachedFiles: files,
+          lastUpdated: new Date().toISOString()
+        };
+      }
+      return fav;
+    }));
+  };
+
   const clearAllFavorites = () => {
     setFavorites([]);
   };
@@ -174,7 +209,8 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     toggleAction,
     updateNotes,
     updateKanbanStatus,
-    updateKanbanStatus,
+    updatePreferenceRating,
+    updateAttachedFiles,
     clearAllFavorites,
     favoritesCount: favorites.length
   };
