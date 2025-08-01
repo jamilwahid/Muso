@@ -49,6 +49,15 @@ export interface FavoriteCenterData {
   center_id: string;
   actions: FavoriteActions;
   notes: string;
+  personalRating: '🙂' | '😄' | '😍' | null;
+  attachments: Array<{
+    id: string;
+    name: string;
+    type: string;
+    size: number;
+    url: string;
+    uploadedAt: string;
+  }>;
   lastUpdated: string;
   kanbanStatus: KanbanStatus;
   kanbanStatus: KanbanStatus;

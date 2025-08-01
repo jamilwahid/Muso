@@ -10,6 +10,9 @@ interface FavoritesContextType {
   toggleFavorite: (centerId: string) => void;
   toggleAction: (centerId: string, actionKey: keyof FavoriteActions) => void;
   updateNotes: (centerId: string, newNotes: string) => void;
+  updatePersonalRating: (centerId: string, rating: '🙂' | '😄' | '😍' | null) => void;
+  addAttachment: (centerId: string, attachment: any) => void;
+  removeAttachment: (centerId: string, attachmentId: string) => void;
   updateKanbanStatus: (centerId: string, newStatus: KanbanStatus) => void;
   updateKanbanStatus: (centerId: string, newStatus: KanbanStatus) => void;
   clearAllFavorites: () => void;
@@ -41,6 +44,8 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
               center_id: centerId,
               actions: { called: false, applied: false, visited: false },
               notes: '',
+              personalRating: null,
+              attachments: [],
               lastUpdated: new Date().toISOString(),
               kanbanStatus: 'interested' as KanbanStatus
             }));
@@ -52,7 +57,9 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
             console.log('Loaded favorites from localStorage:', parsed);
             const migratedWithKanban = parsed.map((fav: any) => ({
               ...fav,
-              kanbanStatus: fav.kanbanStatus || 'shortlisted'
+              kanbanStatus: fav.kanbanStatus || 'shortlisted',
+              personalRating: fav.personalRating || null,
+              attachments: fav.attachments || []
             }));
             setFavorites(migratedWithKanban);
           }
@@ -90,6 +97,8 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
           center_id: centerId,
           actions: { called: false, applied: false, visited: false },
           notes: '',
+          personalRating: null,
+          attachments: [],
           lastUpdated: new Date().toISOString(),
           kanbanStatus: 'shortlisted'
         };
@@ -161,6 +170,47 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     }));
   };
 
+  const updatePersonalRating = (centerId: string, rating: '🙂' | '😄' | '😍' | null) => {
+    console.log('Updating personal rating for center:', centerId, 'to:', rating);
+    setFavorites(prev => prev.map(fav => {
+      if (fav.center_id === centerId) {
+        return {
+          ...fav,
+          personalRating: rating,
+          lastUpdated: new Date().toISOString()
+        };
+      }
+      return fav;
+    }));
+  };
+
+  const addAttachment = (centerId: string, attachment: any) => {
+    console.log('Adding attachment for center:', centerId);
+    setFavorites(prev => prev.map(fav => {
+      if (fav.center_id === centerId) {
+        return {
+          ...fav,
+          attachments: [...fav.attachments, attachment],
+          lastUpdated: new Date().toISOString()
+        };
+      }
+      return fav;
+    }));
+  };
+
+  const removeAttachment = (centerId: string, attachmentId: string) => {
+    console.log('Removing attachment for center:', centerId);
+    setFavorites(prev => prev.map(fav => {
+      if (fav.center_id === centerId) {
+        return {
+          ...fav,
+          attachments: fav.attachments.filter(att => att.id !== attachmentId),
+          lastUpdated: new Date().toISOString()
+        };
+      }
+      return fav;
+    }));
+  };
   const clearAllFavorites = () => {
     setFavorites([]);
   };
@@ -173,6 +223,9 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     toggleFavorite,
     toggleAction,
     updateNotes,
+    updatePersonalRating,
+    addAttachment,
+    removeAttachment,
     updateKanbanStatus,
     updateKanbanStatus,
     clearAllFavorites,

@@ -6,9 +6,10 @@ import { useFavorites } from '../contexts/FavoritesContext';
 interface KanbanCardProps {
   center: Center;
   favoriteData: FavoriteCenterData;
+  onClick?: () => void;
 }
 
-export const KanbanCard: React.FC<KanbanCardProps> = ({ center, favoriteData }) => {
+export const KanbanCard: React.FC<KanbanCardProps> = ({ center, favoriteData, onClick }) => {
   const { removeFavorite } = useFavorites();
 
   const programsWithRating = center.programs.filter(p => p.quality_rating);
@@ -75,7 +76,8 @@ export const KanbanCard: React.FC<KanbanCardProps> = ({ center, favoriteData }) 
     <div
       draggable
       onDragStart={handleDragStart}
-      className="bg-white/90 backdrop-blur-sm border border-slate-200/60 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-move group"
+      onClick={onClick}
+      className="bg-white/90 backdrop-blur-sm border border-slate-200/60 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group"
     >
       <div className="p-3">
         {/* Header */}

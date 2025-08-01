@@ -1,5 +1,6 @@
 import React from 'react';
 import { KanbanColumn } from './KanbanColumn';
+import { CenterDetailSidePanel } from './CenterDetailSidePanel';
 import { Center, FavoriteCenterData, KanbanStatus } from '../types/center';
 import { useFavorites } from '../contexts/FavoritesContext';
 import { Heart, FileText, Clock, CheckCircle2 } from 'lucide-react';
@@ -38,6 +39,7 @@ const KANBAN_COLUMNS = [
 
 export const KanbanBoardView: React.FC<KanbanBoardViewProps> = ({ centers, favoritedCenters }) => {
   const { updateKanbanStatus } = useFavorites();
+  const [selectedCenter, setSelectedCenter] = React.useState<{ center: Center; favoriteData: FavoriteCenterData } | null>(null);
 
   // Debug logging
   console.log('KanbanBoardView - favoritedCenters:', favoritedCenters);
@@ -47,6 +49,13 @@ export const KanbanBoardView: React.FC<KanbanBoardViewProps> = ({ centers, favor
     updateKanbanStatus(centerId, newStatus);
   };
 
+  const handleCardClick = (center: Center, favoriteData: FavoriteCenterData) => {
+    setSelectedCenter({ center, favoriteData });
+  };
+
+  const handleCloseSidePanel = () => {
+    setSelectedCenter(null);
+  };
   // Group centers by their kanban status
   const centersByStatus = KANBAN_COLUMNS.reduce((acc, column) => {
     acc[column.id] = favoritedCenters.filter(
@@ -76,6 +85,7 @@ export const KanbanBoardView: React.FC<KanbanBoardViewProps> = ({ centers, favor
             column={column}
             centers={centersByStatus[column.id] || []}
             onDrop={handleDrop}
+            onCardClick={handleCardClick}
           />
         ))}
       </div>
@@ -88,6 +98,16 @@ export const KanbanBoardView: React.FC<KanbanBoardViewProps> = ({ centers, favor
           </p>
         </div>
       </div>
+
+      {/* Side Panel */}
+      {selectedCenter && (
+        <CenterDetailSidePanel
+          center={selectedCenter.center}
+          favoriteData={selectedCenter.favoriteData}
+          isOpen={!!selectedCenter}
+          onClose={handleCloseSidePanel}
+        />
+      )}
     </div>
   );
 }

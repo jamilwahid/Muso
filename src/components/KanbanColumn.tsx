@@ -12,9 +12,10 @@ interface KanbanColumnProps {
   };
   centers: Array<{ center: Center; favoriteData: FavoriteCenterData }>;
   onDrop: (centerId: string, newStatus: KanbanStatus) => void;
+  onCardClick: (center: Center, favoriteData: FavoriteCenterData) => void;
 }
 
-export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, centers, onDrop }) => {
+export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, centers, onDrop, onCardClick }) => {
   const [isDragOver, setIsDragOver] = useState(false);
 
   // Debug logging
@@ -83,6 +84,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column, centers, onD
               key={center.center_id}
               center={center}
               favoriteData={favoriteData}
+              onClick={() => onCardClick(center, favoriteData)}
             />
           ))
         )}
