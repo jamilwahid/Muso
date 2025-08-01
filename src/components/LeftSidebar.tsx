@@ -74,7 +74,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ currentView, setCurren
             
             {/* Active indicator - Left border */}
             {currentView === 'shortlist' && (
-              <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-slate-400 rounded-r-full"></div>
+              <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 rounded-r-full"></div>
             )}
             
             {/* Favorites Count Badge */}
