@@ -150,9 +150,9 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
       />
       
       {/* Side Panel */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-2xl bg-white shadow-2xl z-[201] overflow-y-auto">
+      <div className="fixed right-0 top-0 h-screen w-full max-w-2xl bg-white shadow-2xl z-[201] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 z-10">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 z-10 flex-shrink-0">
           <div className="flex items-start justify-between">
             <div className="flex-1 pr-4">
               <div className="flex items-center justify-between mb-2">
@@ -270,7 +270,7 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
         </div>
 
         {/* Status and Rating - Header Level */}
-        <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
+        <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 flex-shrink-0">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Application Status */}
             <div>
@@ -367,7 +367,7 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
           </div>
         </div>
 
-        <div className="px-6 py-6 space-y-6">
+        <div className="px-6 py-6 space-y-6 flex-1 overflow-y-auto">
           {/* Contact Information */}
           <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-6 shadow-sm border border-gray-100">
             <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center space-x-2">
