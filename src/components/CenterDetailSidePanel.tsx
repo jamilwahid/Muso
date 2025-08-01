@@ -269,105 +269,105 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
           )}
         </div>
 
-        <div className="px-6 py-6 space-y-6">
-          {/* Status and Rating */}
-          <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Application Status */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Application Status
-                </label>
-                
-                <div className="relative">
-                  <button
-                    onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-                    className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-3 h-3 rounded-full ${
-                        currentStatus ? `bg-${currentStatus.color}-500` : 'bg-gray-400'
-                      }`}></div>
-                      <span className="text-sm font-medium text-gray-900">
-                        {currentStatus?.label || 'Select Status'}
-                      </span>
-                    </div>
-                    <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
-                      isStatusDropdownOpen ? 'rotate-180' : ''
-                    }`} />
-                  </button>
+        {/* Status and Rating - Header Level */}
+        <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Application Status */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Application Status
+              </label>
+              
+              <div className="relative">
+                <button
+                  onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+                  className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200 min-h-[48px]"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-3 h-3 rounded-full ${
+                      currentStatus ? `bg-${currentStatus.color}-500` : 'bg-gray-400'
+                    }`}></div>
+                    <span className="text-sm font-medium text-gray-900">
+                      {currentStatus?.label || 'Select Status'}
+                    </span>
+                  </div>
+                  <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
+                    isStatusDropdownOpen ? 'rotate-180' : ''
+                  }`} />
+                </button>
 
-                  {isStatusDropdownOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
-                      {KANBAN_STATUSES.map((status) => (
-                        <button
-                          key={status.value}
-                          onClick={() => handleStatusChange(status.value)}
-                          className={`w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors ${
-                            favoriteData.kanbanStatus === status.value ? 'bg-gray-50' : ''
-                          }`}
-                        >
-                          <div className={`w-3 h-3 rounded-full bg-${status.color}-500`}></div>
-                          <div className="text-left flex-1">
-                            <div className="text-sm font-medium text-gray-900">{status.label}</div>
-                            <div className="text-xs text-gray-500">{status.description}</div>
-                          </div>
-                          {favoriteData.kanbanStatus === status.value && (
-                            <CheckCircle2 className="h-4 w-4 text-indigo-500" />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                {isStatusDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                    {KANBAN_STATUSES.map((status) => (
+                      <button
+                        key={status.value}
+                        onClick={() => handleStatusChange(status.value)}
+                        className={`w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors ${
+                          favoriteData.kanbanStatus === status.value ? 'bg-gray-50' : ''
+                        }`}
+                      >
+                        <div className={`w-3 h-3 rounded-full bg-${status.color}-500`}></div>
+                        <div className="text-left flex-1">
+                          <div className="text-sm font-medium text-gray-900">{status.label}</div>
+                          <div className="text-xs text-gray-500">{status.description}</div>
+                        </div>
+                        {favoriteData.kanbanStatus === status.value && (
+                          <CheckCircle2 className="h-4 w-4 text-indigo-500" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
+            </div>
 
-              {/* Personal Rating */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  My Rating
-                </label>
-                
-                <div className="relative">
-                  <button
-                    onClick={() => setIsRatingDropdownOpen(!isRatingDropdownOpen)}
-                    className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <span className="text-lg">{currentRating?.emoji || '⚪'}</span>
-                      <span className="text-sm font-medium text-gray-900">
-                        {currentRating?.label || 'No rating'}
-                      </span>
-                    </div>
-                    <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
-                      isRatingDropdownOpen ? 'rotate-180' : ''
-                    }`} />
-                  </button>
+            {/* Personal Rating */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                My Rating
+              </label>
+              
+              <div className="relative">
+                <button
+                  onClick={() => setIsRatingDropdownOpen(!isRatingDropdownOpen)}
+                  className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200 min-h-[48px]"
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="text-lg">{currentRating?.emoji || '⚪'}</span>
+                    <span className="text-sm font-medium text-gray-900">
+                      {currentRating?.label || 'No rating'}
+                    </span>
+                  </div>
+                  <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
+                    isRatingDropdownOpen ? 'rotate-180' : ''
+                  }`} />
+                </button>
 
-                  {isRatingDropdownOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
-                      {ratingOptions.map((option) => (
-                        <button
-                          key={option.value || 'none'}
-                          onClick={() => handlePersonalRatingChange(option.value)}
-                          className={`w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors ${
-                            favoriteData.personalRating === option.value ? 'bg-gray-50' : ''
-                          }`}
-                        >
-                          <span className="text-lg">{option.emoji}</span>
-                          <span className="text-sm font-medium text-gray-900 flex-1 text-left">{option.label}</span>
-                          {favoriteData.personalRating === option.value && (
-                            <CheckCircle2 className="h-4 w-4 text-indigo-500" />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                {isRatingDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                    {ratingOptions.map((option) => (
+                      <button
+                        key={option.value || 'none'}
+                        onClick={() => handlePersonalRatingChange(option.value)}
+                        className={`w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors ${
+                          favoriteData.personalRating === option.value ? 'bg-gray-50' : ''
+                        }`}
+                      >
+                        <span className="text-lg">{option.emoji}</span>
+                        <span className="text-sm font-medium text-gray-900 flex-1 text-left">{option.label}</span>
+                        {favoriteData.personalRating === option.value && (
+                          <CheckCircle2 className="h-4 w-4 text-indigo-500" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
+        </div>
 
+        <div className="px-6 py-6 space-y-6">
           {/* Contact Information */}
           <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-6 shadow-sm border border-gray-100">
             <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center space-x-2">
