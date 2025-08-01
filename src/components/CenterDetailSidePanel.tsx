@@ -367,10 +367,13 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
           </div>
 
           {/* Contact Information */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">Contact Information</h3>
+          <div>
+            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center space-x-2">
+              <Phone className="h-5 w-5 text-slate-600" />
+              <span>Contact Information</span>
+            </h3>
             
-            <div className="space-y-3">
+            <div className="bg-gray-50 rounded-lg p-4 space-y-3">
               {/* Contact Name */}
               {center.center_contact.name && (
                 <div className="flex items-center space-x-2">
@@ -416,9 +419,10 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
 
           {/* Notes Section */}
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Notes
-            </label>
+            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center space-x-2">
+              <FileText className="h-5 w-5 text-slate-600" />
+              <span>My Notes</span>
+            </h3>
             
             <textarea
               value={notesValue}
@@ -431,10 +435,11 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
 
           {/* File Attachments */}
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <label className="block text-sm font-medium text-gray-900">
-                Attachments
-              </label>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-slate-800 flex items-center space-x-2">
+                <Upload className="h-5 w-5 text-slate-600" />
+                <span>Attachments</span>
+              </h3>
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className="inline-flex items-center space-x-2 text-sm font-medium text-indigo-600 hover:text-indigo-700"
@@ -485,16 +490,6 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
               </div>
             )}
           </div>
-
-          {/* City Support Notes */}
-          {center.city_support_notes && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="text-sm font-medium text-blue-900 mb-2">
-                City Support Notes
-              </h4>
-              <p className="text-sm text-blue-800">{center.city_support_notes}</p>
-            </div>
-          )}
         </div>
       </div>
     </>
