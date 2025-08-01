@@ -11,66 +11,89 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ currentView, setCurren
   const { favoritesCount } = useFavorites();
 
   return (
-    <div className="w-16 bg-slate-900 flex flex-col shadow-xl">
+    <div className="w-16 bg-white border-r border-slate-200 flex flex-col shadow-sm">
       {/* Top Section - Logo */}
-      <div className="flex flex-col items-center pt-6 pb-8">
+      <div className="flex flex-col items-center pt-4 pb-3">
         <div className="relative group cursor-pointer">
-          <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <Baby className="h-5 w-5 text-white" />
+          {/* Muso Logo - Larger size for hierarchy */}
+          <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
+            <Baby className="h-6 w-6 text-white" />
+            
+            {/* Subtle glow effect on hover */}
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 rounded-2xl opacity-0 group-hover:opacity-20 blur-lg transition-opacity duration-300"></div>
           </div>
         </div>
       </div>
 
+      {/* Horizontal Separator */}
+      <div className="mx-3 mb-4">
+        <div className="h-px bg-slate-200"></div>
+      </div>
+
       {/* Middle Section - Navigation */}
-      <nav className="flex-1 flex flex-col items-center space-y-2 px-2">
-        {/* Explore Button */}
+      <nav className="flex-1 flex flex-col items-center space-y-1 px-2">
+        {/* Explore/Map Button */}
         <button
           onClick={() => setCurrentView('map')}
           className={`relative group w-12 h-12 rounded-xl transition-all duration-200 flex items-center justify-center ${
             currentView === 'map'
-              ? 'bg-slate-800 text-indigo-400 shadow-lg'
-              : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
+              ? 'bg-slate-100 text-slate-700 shadow-sm'
+              : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
           }`}
           title="Explore Centers"
         >
-          <Map className="h-5 w-5" />
+          {/* Navigation icon - Smaller than logo */}
+          <Map className="h-5 w-5 transition-colors duration-200" />
           
-          {/* Active indicator */}
+          {/* Active indicator - Left border */}
           {currentView === 'map' && (
-            <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-indigo-400 rounded-r-full"></div>
+            <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-slate-400 rounded-r-full"></div>
           )}
+          
+          {/* Hover tooltip background */}
+          <div className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+            Explore Centers
+          </div>
         </button>
 
-        {/* Favorites Button */}
-        <button
-          onClick={() => setCurrentView('shortlist')}
-          className={`relative group w-12 h-12 rounded-xl transition-all duration-200 flex items-center justify-center ${
-            currentView === 'shortlist'
-              ? 'bg-slate-800 text-pink-400 shadow-lg'
-              : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
-          }`}
-          title="My Favorites"
-        >
-          <Heart className={`h-5 w-5 ${
-            currentView === 'shortlist' ? 'fill-current' : ''
-          }`} />
-          
-          {/* Active indicator */}
-          {currentView === 'shortlist' && (
-            <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-pink-400 rounded-r-full"></div>
-          )}
-          
-          {/* Badge */}
-          {favoritesCount > 0 && (
-            <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-lg border-2 border-slate-900">
-              <span className="px-1">{favoritesCount > 99 ? '99+' : favoritesCount}</span>
+        {/* Favorites/Shortlist Button - Positioned slightly lower */}
+        <div className="pt-1">
+          <button
+            onClick={() => setCurrentView('shortlist')}
+            className={`relative group w-12 h-12 rounded-xl transition-all duration-200 flex items-center justify-center ${
+              currentView === 'shortlist'
+                ? 'bg-slate-100 text-slate-700 shadow-sm'
+                : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+            }`}
+            title="My Favorites"
+          >
+            {/* Navigation icon - Smaller than logo */}
+            <Heart className={`h-5 w-5 transition-colors duration-200 ${
+              currentView === 'shortlist' ? 'fill-current' : ''
+            }`} />
+            
+            {/* Active indicator - Left border */}
+            {currentView === 'shortlist' && (
+              <div className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-slate-400 rounded-r-full"></div>
+            )}
+            
+            {/* Favorites Count Badge */}
+            {favoritesCount > 0 && (
+              <div className="absolute -top-1.5 -right-1.5 min-w-[20px] h-[20px] bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-md border-2 border-white">
+                <span className="px-1">{favoritesCount > 99 ? '99+' : favoritesCount}</span>
+              </div>
+            )}
+            
+            {/* Hover tooltip background */}
+            <div className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+              My Favorites
             </div>
-          )}
-        </button>
+          </button>
+        </div>
       </nav>
 
       {/* Bottom Section - Spacer */}
-      <div className="pb-6">
+      <div className="pb-4">
         {/* Future: Could add user avatar, settings, or help button here */}
       </div>
     </div>
