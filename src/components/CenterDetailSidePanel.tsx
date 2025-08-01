@@ -132,6 +132,13 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
   const currentStatus = KANBAN_STATUSES.find(s => s.value === favoriteData.kanbanStatus);
   const currentRating = ratingOptions.find(r => r.value === favoriteData.personalRating);
 
+  const handleWebsiteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (center.center_contact.website) {
+      window.open(center.center_contact.website, '_blank');
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -518,11 +525,4 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
       </div>
     </>
   );
-
-  const handleWebsiteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (center.center_contact.website) {
-      window.open(center.center_contact.website, '_blank');
-    }
-  };
 };
