@@ -240,7 +240,7 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
               <div className="relative">
                 <button
                   onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-                  className="w-full flex items-center justify-between px-3 py-2.5 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200"
+                  className="w-full flex items-center justify-between px-3 py-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200 h-12"
                 >
                   <div className="flex items-center space-x-3">
                     <div className={`w-3 h-3 rounded-full ${
@@ -261,7 +261,7 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
                       <button
                         key={status.value}
                         onClick={() => handleStatusChange(status.value)}
-                        className={`w-full flex items-center space-x-3 px-3 py-2.5 hover:bg-gray-50 transition-colors ${
+                        className={`w-full flex items-center space-x-3 px-3 py-3 hover:bg-gray-50 transition-colors min-h-[3rem] ${
                           favoriteData.kanbanStatus === status.value ? 'bg-gray-50' : ''
                         }`}
                       >
@@ -289,7 +289,7 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
               <div className="relative">
                 <button
                   onClick={() => setIsRatingDropdownOpen(!isRatingDropdownOpen)}
-                  className="w-full flex items-center justify-between px-3 py-2.5 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200"
+                  className="w-full flex items-center justify-between px-3 py-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200 h-12"
                 >
                   <div className="flex items-center space-x-3">
                     <span className="text-lg">{currentRating?.emoji || '⚪'}</span>
@@ -308,7 +308,7 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
                       <button
                         key={option.value || 'none'}
                         onClick={() => handlePersonalRatingChange(option.value)}
-                        className={`w-full flex items-center space-x-3 px-3 py-2.5 hover:bg-gray-50 transition-colors ${
+                        className={`w-full flex items-center space-x-3 px-3 py-3 hover:bg-gray-50 transition-colors min-h-[3rem] ${
                           favoriteData.personalRating === option.value ? 'bg-gray-50' : ''
                         }`}
                       >
