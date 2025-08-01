@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { X, MapPin, Star, Phone, ExternalLink, Languages, Utensils, Link, Heart, Clock, CheckCircle2, Phone as PhoneIcon, Eye, FileText, Upload, Trash2, ChevronDown, ArrowRight } from 'lucide-react';
 import { Center, FavoriteCenterData, KanbanStatus } from '../types/center';
 import { useFavorites } from '../contexts/FavoritesContext';
@@ -141,7 +142,7 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div 
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4"
       onClick={onClose}
@@ -498,4 +499,7 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
       </div>
     </div>
   );
+
+  // Render the modal at the document root level to avoid scroll container issues
+  return createPortal(modalContent, document.body);
 };
