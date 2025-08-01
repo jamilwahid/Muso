@@ -119,7 +119,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto relative z-[100]">
       <div className="flex items-center justify-center">
         <div className="flex items-center space-x-3 flex-wrap gap-y-3">
           {/* Binary Toggle Filters - Now using Trophy for CWELCC */}
@@ -179,7 +179,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
             const selectedCount = (filters[key as keyof Filters] as string[]).length;
             
             return (
-              <div key={key} className="relative" ref={el => dropdownRefs.current[key] = el}>
+              <div key={key} className="relative z-[101]" ref={el => dropdownRefs.current[key] = el}>
                 <button
                   onClick={() => setOpenDropdown(openDropdown === key ? null : key)}
                   className={`group flex items-center space-x-2 px-4 py-2.5 border rounded-xl text-sm font-medium transition-all duration-200 relative ${
@@ -202,7 +202,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
                 </button>
 
                 {openDropdown === key && (
-                  <div className="absolute top-full left-0 mt-2 w-72 bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-2xl shadow-xl z-[9999] max-h-80 overflow-hidden">
+                  <div className="absolute top-full left-0 mt-2 w-72 bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-2xl shadow-xl z-[102] max-h-80 overflow-hidden">
                     <div className="p-2 max-h-80 overflow-y-auto">
                       {/* Search Input */}
                       <div className="px-3 py-2 border-b border-slate-100 mb-2">

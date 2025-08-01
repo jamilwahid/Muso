@@ -52,7 +52,7 @@ function App() {
       <div className="flex-1 flex flex-col overflow-hidden"> {/* Added flex-1 flex flex-col */}
         {/* Filter Bar with Summary - Now part of main content flow */}
         {currentView !== 'shortlist' && (
-          <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 py-5 px-6"> {/* Removed fixed, top */}
+          <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 py-5 px-6 relative z-[100]"> {/* Added z-index */}
             <div className="max-w-7xl mx-auto">
               <FilterBar
                 filters={filters}
