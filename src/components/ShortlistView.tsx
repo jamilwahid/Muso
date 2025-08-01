@@ -1,3 +1,4 @@
+```tsx
 import React from 'react';
 import { KanbanBoardView } from './KanbanBoardView';
 import { Center } from '../types/center';
@@ -6,7 +7,7 @@ import { Heart, Sparkles } from 'lucide-react';
 
 interface ShortlistViewProps {
   centers: Center[];
-  clearAllFilters: () => void;
+  clearAllFilters: () => void; // Keep this prop for now, though it might become unused
 }
 
 export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
@@ -36,9 +37,9 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
                   <Heart className="h-12 w-12 text-pink-400" />
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-4">Your shortlist is empty</h3>
+              <h3 className="text-2xl font-bold text-slate-800 mb-4">Your favorites list is empty</h3> {/* Updated text */}
               <p className="text-slate-600 mb-8 leading-relaxed text-lg">
-                Start building your shortlist by favoriting centers that catch your interest. 
+                Start building your favorites by clicking the heart icon on center cards. 
                 You can then track your progress and add personal notes here.
               </p>
               <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-100">
@@ -47,7 +48,7 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
                   <span className="font-semibold text-pink-800">Pro tip</span>
                 </div>
                 <p className="text-sm text-pink-700 leading-relaxed">
-                  Look for the heart icon on center cards to add them to your shortlist. 
+                  Look for the heart icon on center cards to add them to your favorites. 
                   Once you have a few favorites, come back here to organize your next steps!
                 </p>
               </div>
@@ -63,3 +64,4 @@ export const ShortlistView: React.FC<ShortlistViewProps> = ({ centers }) => {
     </div>
   );
 };
+```
