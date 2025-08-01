@@ -269,74 +269,235 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
           )}
         </div>
 
-        <div className="px-6 py-6 space-y-8">
+        <div className="px-6 py-6 space-y-6">
           {/* Status and Rating */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Application Status */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Application Status
-              </label>
-              
-              <div className="relative">
-                <button
-                  onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-                  className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-2 h-2 rounded-full ${
-                      currentStatus ? `bg-${currentStatus.color}-500` : 'bg-gray-400'
-                    }`}></div>
-                    <span className="text-sm text-gray-900">
-                      {currentStatus?.label || 'Select Status'}
-                    </span>
-                  </div>
-                  <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
-                    isStatusDropdownOpen ? 'rotate-180' : ''
-                  }`} />
-                </button>
+          <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Application Status */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Application Status
+                </label>
+                
+                <div className="relative">
+                  <button
+                    onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+                    className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-3 h-3 rounded-full ${
+                        currentStatus ? `bg-${currentStatus.color}-500` : 'bg-gray-400'
+                      }`}></div>
+                      <span className="text-sm font-medium text-gray-900">
+                        {currentStatus?.label || 'Select Status'}
+                      </span>
+                    </div>
+                    <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
+                      isStatusDropdownOpen ? 'rotate-180' : ''
+                    }`} />
+                  </button>
 
-                {isStatusDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
-                    {KANBAN_STATUSES.map((status) => (
-                      <button
-                        key={status.value}
-                        onClick={() => handleStatusChange(status.value)}
-                        className={`w-full flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 transition-colors ${
-                          favoriteData.kanbanStatus === status.value ? 'bg-gray-50' : ''
-                        }`}
-                      >
-                        <div className={`w-2 h-2 rounded-full bg-${status.color}-500`}></div>
-                        <div className="text-left flex-1">
-                          <div className="text-sm font-medium text-gray-900">{status.label}</div>
-                          <div className="text-xs text-gray-500">{status.description}</div>
-                        </div>
-                        {favoriteData.kanbanStatus === status.value && (
-                          <CheckCircle2 className="h-4 w-4 text-indigo-500" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                  {isStatusDropdownOpen && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                      {KANBAN_STATUSES.map((status) => (
+                        <button
+                          key={status.value}
+                          onClick={() => handleStatusChange(status.value)}
+                          className={`w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors ${
+                            favoriteData.kanbanStatus === status.value ? 'bg-gray-50' : ''
+                          }`}
+                        >
+                          <div className={`w-3 h-3 rounded-full bg-${status.color}-500`}></div>
+                          <div className="text-left flex-1">
+                            <div className="text-sm font-medium text-gray-900">{status.label}</div>
+                            <div className="text-xs text-gray-500">{status.description}</div>
+                          </div>
+                          {favoriteData.kanbanStatus === status.value && (
+                            <CheckCircle2 className="h-4 w-4 text-indigo-500" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Personal Rating */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  My Rating
+                </label>
+                
+                <div className="relative">
+                  <button
+                    onClick={() => setIsRatingDropdownOpen(!isRatingDropdownOpen)}
+                    className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all duration-200"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <span className="text-lg">{currentRating?.emoji || '⚪'}</span>
+                      <span className="text-sm font-medium text-gray-900">
+                        {currentRating?.label || 'No rating'}
+                      </span>
+                    </div>
+                    <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
+                      isRatingDropdownOpen ? 'rotate-180' : ''
+                    }`} />
+                  </button>
+
+                  {isRatingDropdownOpen && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                      {ratingOptions.map((option) => (
+                        <button
+                          key={option.value || 'none'}
+                          onClick={() => handlePersonalRatingChange(option.value)}
+                          className={`w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors ${
+                            favoriteData.personalRating === option.value ? 'bg-gray-50' : ''
+                          }`}
+                        >
+                          <span className="text-lg">{option.emoji}</span>
+                          <span className="text-sm font-medium text-gray-900 flex-1 text-left">{option.label}</span>
+                          {favoriteData.personalRating === option.value && (
+                            <CheckCircle2 className="h-4 w-4 text-indigo-500" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
+          </div>
 
-            {/* Personal Rating */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                My Rating
-              </label>
-              
-              <div className="relative">
-                <button
-                  onClick={() => setIsRatingDropdownOpen(!isRatingDropdownOpen)}
-                  className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-lg">{currentRating?.emoji || '⚪'}</span>
-                    <span className="text-sm text-gray-900">
-                      {currentRating?.label || 'No rating'}
-                    </span>
+          {/* Contact Information */}
+          <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center space-x-2">
+              <Phone className="h-5 w-5 text-slate-600" />
+              <span>Contact Information</span>
+            </h3>
+            
+            <div className="space-y-4">
+              {/* Contact Name */}
+              {center.center_contact.name && (
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                  <div className="text-sm font-medium text-gray-700">Contact:</div>
+                  <div className="text-sm text-gray-900 font-medium">{center.center_contact.name}</div>
+                </div>
+              )}
+
+              {/* Phone Number - Plain text with tel link */}
+              {center.center_contact.phone ? (
+                <div className="flex items-center space-x-3">
+                  <Phone className="h-4 w-4 text-gray-500" />
+                  <a 
+                    href={`tel:${formatPhoneForTel(center.center_contact.phone)}`}
+                    className="text-sm text-indigo-600 hover:text-indigo-700 hover:underline font-medium"
+                  >
+                    {center.center_contact.phone}
+                  </a>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-3">
+                  <Phone className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-500">No phone available</span>
+                </div>
+              )}
+
+              {/* Website */}
+              {center.center_contact.website && (
+                <div className="flex items-center space-x-3">
+                  <ExternalLink className="h-4 w-4 text-gray-500" />
+                  <a 
+                    href={center.center_contact.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-indigo-600 hover:text-indigo-700 hover:underline font-medium"
+                  >
+                    Visit Website
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Notes Section */}
+          <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center space-x-2">
+              <FileText className="h-5 w-5 text-slate-600" />
+              <span>My Notes</span>
+            </h3>
+            
+            <textarea
+              value={notesValue}
+              onChange={handleNotesChange}
+              placeholder="Add your thoughts, questions, or important details about this center..."
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none shadow-sm transition-all duration-200"
+              rows={8}
+            />
+          </div>
+
+          {/* File Attachments */}
+          <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-slate-800 flex items-center space-x-2">
+                <Upload className="h-5 w-5 text-slate-600" />
+                <span>Attachments</span>
+              </h3>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="inline-flex items-center space-x-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition-all duration-200"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Add Files</span>
+              </button>
+            </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              onChange={handleFileUpload}
+              className="hidden"
+              accept="image/*,.pdf,.doc,.docx,.txt"
+            />
+
+            {favoriteData.attachments.length > 0 ? (
+              <div className="space-y-3">
+                {favoriteData.attachments.map((attachment) => (
+                  <div key={attachment.id} className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-gray-100 rounded-lg">
+                        <FileText className="h-4 w-4 text-gray-500" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{attachment.name}</div>
+                        <div className="text-xs text-gray-500">
+                          {formatFileSize(attachment.size)} • {new Date(attachment.uploadedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleRemoveAttachment(attachment.id)}
+                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50/50">
+                <Upload className="h-8 w-8 text-gray-400 mx-auto mb-3" />
+                <p className="text-sm font-medium text-gray-500 mb-1">No files attached yet</p>
+                <p className="text-xs text-gray-400">Click "Add Files" to upload documents</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
                   </div>
                   <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${
                     isRatingDropdownOpen ? 'rotate-180' : ''
