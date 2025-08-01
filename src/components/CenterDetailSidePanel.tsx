@@ -23,7 +23,7 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
   isOpen,
   onClose
 }) => {
-  const { toggleAction, updateNotes, updatePersonalRating, addAttachment, removeAttachment, updateKanbanStatus } = useFavorites();
+  const { updateNotes, updatePersonalRating, addAttachment, removeAttachment, updateKanbanStatus } = useFavorites();
   const [notesValue, setNotesValue] = useState(favoriteData.notes);
   const [isRatingDropdownOpen, setIsRatingDropdownOpen] = useState(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
@@ -63,6 +63,7 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
   };
 
   const handlePersonalRatingChange = (rating: '🙂' | '😄' | '😍' | null) => {
+    console.log('Updating personal rating:', rating, 'for center:', center.center_id);
     updatePersonalRating(center.center_id, rating);
     setIsRatingDropdownOpen(false);
   };
@@ -128,12 +129,6 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
     return `+1${digits}`;
   };
 
-  const actionItems = [
-    { key: 'called' as const, label: 'Called', icon: PhoneIcon, color: 'emerald' },
-    { key: 'visited' as const, label: 'Visited', icon: Eye, color: 'blue' },
-    { key: 'applied' as const, label: 'Applied', icon: FileText, color: 'purple' }
-  ];
-
   const currentStatus = KANBAN_STATUSES.find(s => s.value === favoriteData.kanbanStatus);
   const currentRating = ratingOptions.find(r => r.value === favoriteData.personalRating);
 
@@ -157,6 +152,32 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
               <div className="flex items-start text-sm text-slate-600">
                 <MapPin className="h-4 w-4 mr-2 text-slate-400 flex-shrink-0 mt-0.5" />
                 <span className="font-medium leading-relaxed">{formatAddress()}</span>
+              </div>
+              
+              {/* Badges under address */}
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                {center.CWELCC_participant && (
+                  <div className="inline-flex items-center bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-3 py-1.5 rounded-lg text-sm font-semibold border border-purple-200">
+                    CWELCC Participant
+                  </div>
+                )}
+                
+                {center.subsidy_available && (
+                  <div className="inline-flex items-center bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 px-3 py-1.5 rounded-lg text-sm font-semibold border border-emerald-200">
+                    Subsidy Available
+                  </div>
+                )}
+
+                <div className="flex items-center space-x-2 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-3 py-1.5 rounded-lg text-sm font-semibold border border-amber-200">
+                  <Star className={`h-4 w-4 ${
+                    avgRating 
+                      ? 'text-amber-500 fill-current' 
+                      : 'text-slate-400'
+                  }`} />
+                  <span>
+                    {avgRating ? `${avgRating.toFixed(1)} Rating` : 'No Rating'}
+                  </span>
+                </div>
               </div>
             </div>
             <button
@@ -284,34 +305,8 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
           <div className="bg-gradient-to-r from-slate-50 to-slate-100/50 rounded-2xl p-6 border border-slate-200/50">
             <h3 className="text-lg font-bold text-slate-900 mb-4">Center Overview</h3>
             
-            {/* Badges */}
-            <div className="flex flex-wrap items-center gap-2 mb-6">
-              {center.CWELCC_participant && (
-                <div className="inline-flex items-center bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-3 py-2 rounded-lg text-sm font-semibold border border-purple-200">
-                  CWELCC Participant
-                </div>
-              )}
-              
-              {center.subsidy_available && (
-                <div className="inline-flex items-center bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 px-3 py-2 rounded-lg text-sm font-semibold border border-emerald-200">
-                  Subsidy Available
-                </div>
-              )}
-
-              <div className="flex items-center space-x-2 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-3 py-2 rounded-lg text-sm font-semibold border border-amber-200">
-                <Star className={`h-4 w-4 ${
-                  avgRating 
-                    ? 'text-amber-500 fill-current' 
-                    : 'text-slate-400'
-                }`} />
-                <span>
-                  {avgRating ? `${avgRating.toFixed(1)} Rating` : 'No Rating'}
-                </span>
-              </div>
-            </div>
-
             {/* Contact Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div className="space-y-4">
                 <h4 className="font-semibold text-slate-800 flex items-center space-x-2">
                   <Phone className="h-4 w-4 text-slate-500" />
@@ -403,48 +398,6 @@ export const CenterDetailSidePanel: React.FC<CenterDetailSidePanelProps> = ({
                   </div>
                 )}
               </div>
-            </div>
-          </div>
-
-          {/* Progress Tracking */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold text-slate-900 flex items-center space-x-2">
-              <CheckCircle2 className="h-5 w-5 text-slate-500" />
-              <span>Action Items</span>
-            </h3>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {actionItems.map(({ key, label, icon: Icon, color }) => {
-                const isCompleted = favoriteData.actions[key];
-                return (
-                  <button
-                    key={key}
-                    onClick={() => toggleAction(center.center_id, key)}
-                    className={`group flex items-center space-x-3 p-4 rounded-xl border-2 transition-all duration-200 ${
-                      isCompleted
-                        ? `border-${color}-200 bg-gradient-to-r from-${color}-50 to-${color}-100 text-${color}-700 shadow-sm`
-                        : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:border-slate-300 hover:shadow-sm'
-                    }`}
-                  >
-                    <div className={`p-2.5 rounded-lg transition-all duration-200 ${
-                      isCompleted
-                        ? `bg-${color}-500 text-white`
-                        : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200'
-                    }`}>
-                      <Icon className="h-4 w-4" />
-                    </div>
-                    <div className="flex-1 text-left">
-                      <div className="font-semibold">{label}</div>
-                      {isCompleted && (
-                        <div className="text-xs opacity-75">Completed</div>
-                      )}
-                    </div>
-                    {isCompleted && (
-                      <CheckCircle2 className={`h-5 w-5 text-${color}-500`} />
-                    )}
-                  </button>
-                );
-              })}
             </div>
           </div>
 
