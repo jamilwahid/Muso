@@ -1,227 +1,89 @@
-import React, { useState } from 'react';
-import { MapPin, Star, Phone, ExternalLink, Bookmark, Languages, Utensils, Link } from 'lucide-react';
+import React from 'react';
+import { ExternalLink, MapPin, Phone, Utensils } from 'lucide-react';
 import { Center } from '../types/center';
 
 interface CenterCardProps {
   center: Center;
 }
 
+const halalLabels = (center: Center) =>
+  center.dietary_services.filter(service => /halal/i.test(service));
+
+const formatPhoneForTel = (phone: string | null | undefined) => {
+  if (!phone) return '';
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  return digits ? `+1${digits}` : '';
+};
+
 export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
-  const [isSaved, setIsSaved] = useState(false); // TODO: Connect to actual save state
-  
-  const programsWithRating = center.programs.filter(p => p.quality_rating);
-  const avgRating = programsWithRating.length > 0 
-    ? programsWithRating.reduce((sum, p) => sum + (p.quality_rating || 0), 0) / programsWithRating.length
-    : null;
-
-  const handleViewListing = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.open(center.center_listing_url, '_blank');
-  };
-
-  const handleWebsiteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (center.center_contact.website) {
-      window.open(center.center_contact.website, '_blank');
-    }
-  };
-
-  const handleSaveCenter = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsSaved(!isSaved);
-    // TODO: Implement actual save functionality
-    console.log('Save center:', center.center_id);
-  };
-
-  // Format phone number for tel: link (remove all non-digits and format)
-  const formatPhoneForTel = (phone: string | null | undefined) => {
-    if (!phone || typeof phone !== 'string') {
-      return '';
-    }
-    
-    const digits = phone.replace(/\D/g, '');
-    
-    if (digits.length === 10) {
-      return `+1${digits}`;
-    } else if (digits.length === 11 && digits.startsWith('1')) {
-      return `+${digits}`;
-    }
-    
-    return `+1${digits}`;
-  };
-
-  // Format address with postal code
-  const formatAddress = () => {
-    const baseAddress = center.location.address;
-    const postalCode = center.location.postal_code;
-    return postalCode ? `${baseAddress}, ${postalCode}` : baseAddress;
-  };
+  const tags = halalLabels(center);
+  const ageGroups = [...new Set(center.programs.map(program => program.age_group))];
 
   return (
-    <div className="group bg-white/90 backdrop-blur-sm border border-slate-200/60 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
-      <div className="p-3 sm:p-4">
-        {/* Header Section - Name and Address with full horizontal space */}
-        <div className="mb-2">
-          <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-1 leading-tight">
-            {center.center_name}
-          </h3>
-          
-          <div className="flex items-start text-xs sm:text-sm text-slate-500">
-            <MapPin className="h-3.5 w-3.5 mr-1.5 text-slate-400 flex-shrink-0 mt-0.5" />
-            <span className="font-medium leading-relaxed">{formatAddress()}</span>
-          </div>
-          
-          {/* External Links - Below address */}
-          <div className="mt-1 text-sm text-slate-500">
-            {center.center_contact.website && (
-              <button
-                onClick={handleWebsiteClick}
-                className="inline-flex items-center space-x-1 hover:text-blue-600 hover:underline transition-colors duration-200"
-              >
-                <Link className="h-3 w-3" />
-                <span>Website</span>
-              </button>
-            )}
-            {center.center_contact.website && <span className="mx-2">·</span>}
-            <button 
-              onClick={handleViewListing}
-              className="inline-flex items-center space-x-1 hover:text-indigo-600 hover:underline transition-colors duration-200"
-            >
-              <Link className="h-3 w-3" />
-              <span>Toronto.ca listing</span>
-            </button>
-          </div>
+    <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-bold leading-snug text-slate-900">{center.center_name}</h3>
+          <p className="mt-2 flex items-start gap-2 text-sm leading-relaxed text-slate-600">
+            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+            <span>{center.location.address}{center.location.postal_code ? `, ${center.location.postal_code}` : ''}</span>
+          </p>
         </div>
-
-        {/* Badges Row - CWELCC, Subsidy, and Rating together */}
-        <div className="flex flex-wrap items-center gap-1.5 mb-2">
-          {center.CWELCC_participant && (
-            <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-              <span>CWELCC</span>
-            </div>
-          )}
-          
-          {center.subsidy_available && (
-            <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-              <span>Subsidy</span>
-            </div>
-          )}
-
-          {/* Rating Badge - Moved here next to other badges */}
-          <div className={`flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-medium border ${
-            avgRating 
-              ? 'bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border-purple-200/60' 
-              : 'bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border-purple-200/60'
-          }`}>
-            <Star className={`h-3 w-3 ${
-              avgRating 
-                ? 'text-amber-400 fill-current' 
-                : 'text-slate-400'
-            }`} />
-            <span>
-              {avgRating ? avgRating.toFixed(1) : 'N/A'}
-            </span>
-          </div>
-        </div>
-
-        {/* Horizontal divider */}
-        <div className="border-t border-slate-100 my-2"></div>
-
-        {/* Language and Dietary Tags Section - Improved spacing and grouping */}
-        {(center.languages_spoken.length > 0 || center.dietary_services.length > 0) && (
-          <div className="mb-2 space-y-2">
-            {/* Language Tags - Using same icon as filter UI */}
-            {center.languages_spoken.length > 0 && (
-              <div className="space-y-1">
-                <div className="flex items-center space-x-1.5">
-                  <Languages className="h-3.5 w-3.5 text-slate-400" />
-                  <span className="text-sm font-medium text-slate-600">Languages</span>
-                </div>
-                <div className="flex flex-wrap gap-1 ml-5">
-                  {center.languages_spoken.slice(0, 2).map((language, index) => (
-                    <div key={`lang-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                      {language}
-                    </div>
-                  ))}
-                  {center.languages_spoken.length > 2 && (
-                    <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                      +{center.languages_spoken.length - 2} more
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Dietary Services Tags - Using same icon as filter UI */}
-            {center.dietary_services.length > 0 && (
-              <div className="space-y-1">
-                <div className="flex items-center space-x-1.5">
-                  <Utensils className="h-3.5 w-3.5 text-slate-400" />
-                  <span className="text-sm font-medium text-slate-600">Dietary</span>
-                </div>
-                <div className="flex flex-wrap gap-1 ml-5">
-                  {center.dietary_services.slice(0, 2).map((service, index) => (
-                    <div key={`diet-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                      {service}
-                    </div>
-                  ))}
-                  {center.dietary_services.length > 2 && (
-                    <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                      +{center.dietary_services.length - 2} more
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Horizontal divider before actions */}
-        <div className="border-t border-slate-100 my-2"></div>
-
-        {/* Action Buttons Section - Equal height and consistent styling */}
-        <div className="pt-1">
-          <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-            {/* Phone Button - Primary action */}
-            <div className="flex-1">
-              {center.center_contact.phone ? (
-                <a 
-                  href={`tel:${formatPhoneForTel(center.center_contact.phone)}`}
-                  className="inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-2 rounded-xl text-xs font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl w-full sm:w-auto touch-manipulation h-10"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Phone className="h-3.5 w-3.5" />
-                  <span className="truncate">{center.center_contact.phone}</span>
-                </a>
-              ) : (
-                <div className="inline-flex items-center justify-center space-x-2 bg-slate-100 text-slate-400 px-3 py-2 rounded-xl text-xs font-medium cursor-not-allowed w-full sm:w-auto h-10">
-                  <Phone className="h-3.5 w-3.5" />
-                  <span>No phone</span>
-                </div>
-              )}
-            </div>
-
-            {/* Secondary Actions - Equal height and consistent spacing */}
-            <div className="flex items-center justify-center sm:justify-end space-x-2">
-              {/* Save Button - Icon with clear saved/unsaved state */}
-              <button
-                onClick={handleSaveCenter}
-                className={`relative p-2 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl border-2 touch-manipulation h-10 w-10 flex items-center justify-center ${
-                  isSaved 
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-white/20 hover:from-indigo-600 hover:to-purple-700' 
-                    : 'bg-white text-indigo-600 border-indigo-200/60 hover:bg-indigo-50'
-                }`}
-                title={isSaved ? "Saved to My List" : "Save to My List"}
-              >
-                <Bookmark className={`h-3.5 w-3.5 ${isSaved ? 'fill-current' : ''}`} />
-                {!isSaved && (
-                  <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full"></div>
-                )}
-              </button>
-            </div>
-          </div>
+        <div className="flex flex-wrap gap-2">
+          {center.CWELCC_participant && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">CWELCC</span>}
+          {center.subsidy_available && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Fee subsidy</span>}
         </div>
       </div>
-    </div>
+
+      <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50/60 p-4">
+        <h4 className="flex items-center gap-2 text-sm font-semibold text-emerald-950">
+          <Utensils className="h-4 w-4" />
+          Halal information in City listing
+        </h4>
+        {tags.length > 0 ? (
+          <ul className="mt-2 flex flex-wrap gap-2">
+            {tags.map(tag => (
+              <li key={tag} className="rounded-full bg-white px-3 py-1 text-sm font-medium text-emerald-900">
+                {tag}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-2 text-sm text-slate-700">No halal-related tag appears in the City listing.</p>
+        )}
+        <p className="mt-2 text-xs leading-relaxed text-slate-600">
+          Listing information is not a halal certification. Confirm the centre’s current food practices directly.
+        </p>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {ageGroups.map(age => (
+          <span key={age} className="rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-900">{age}</span>
+        ))}
+      </div>
+
+      <p className="mt-3 text-xs text-slate-500">
+        City listing updated {center.last_updated}
+      </p>
+
+      <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
+        {center.center_contact.phone && (
+          <a href={`tel:${formatPhoneForTel(center.center_contact.phone)}`} className="inline-flex items-center gap-2 rounded-lg bg-emerald-800 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-900">
+            <Phone className="h-4 w-4" />
+            {center.center_contact.phone}
+          </a>
+        )}
+        {center.center_contact.website && (
+          <a href={center.center_contact.website} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-emerald-800 underline underline-offset-2">
+            Website
+          </a>
+        )}
+        <a href={center.center_listing_url} target="_blank" rel="noopener noreferrer" className="ml-auto inline-flex items-center gap-2 text-sm font-semibold text-emerald-800 underline underline-offset-2">
+          City of Toronto listing <ExternalLink className="h-4 w-4" />
+        </a>
+      </div>
+    </article>
   );
 };
