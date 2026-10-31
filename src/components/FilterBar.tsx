@@ -1,5 +1,6 @@
 import React from 'react';
 import { Check, ChevronDown, MapPin, Users } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Filters } from '../types/center';
 
 interface FilterBarProps {
@@ -37,7 +38,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
         : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
     }`;
 
-  const dropdown = (key: 'age_groups' | 'postal_codes', label: string, options: string[], Icon: typeof Users) => {
+  const dropdown = (key: 'age_groups' | 'postal_codes', label: string, options: string[], Icon: LucideIcon) => {
     const selected = filters[key];
     return (
       <details className="relative">
@@ -77,7 +78,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFiltersChange, 
         }`}>
           {filters.halal_listed && <Check className="h-4 w-4" />}
         </span>
-        <span>Halal information listed</span>
+        <span>Halal tag in City listing</span>
       </button>
 
       <button
