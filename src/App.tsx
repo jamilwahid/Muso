@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
-import { MapPlaceholder } from './components/MapPlaceholder';
 import { CenterCard } from './components/CenterCard';
 import { Footer } from './components/Footer';
 import { useFilters } from './hooks/useFilters';
@@ -11,116 +10,109 @@ import centersData from './data/centers.json';
 function App() {
   const [centers] = useState<Center[]>(centersData as Center[]);
   const [filters, setFilters] = useState<Filters>({
+    halal_listed: true,
     CWELCC_participant: null,
     subsidy_available: null,
     age_groups: [],
-    languages_spoken: [],
-    dietary_services: [],
     postal_codes: []
   });
 
   const { filteredCenters, availableOptions } = useFilters(centers, filters);
 
-  const clearAllFilters = () => {
+  const clearFilters = () => {
     setFilters({
+      halal_listed: true,
       CWELCC_participant: null,
       subsidy_available: null,
       age_groups: [],
-      languages_spoken: [],
-      dietary_services: [],
       postal_codes: []
     });
   };
 
-  const hasActiveFilters = filters.CWELCC_participant !== null || 
-                          filters.subsidy_available !== null ||
-                          filters.age_groups.length > 0 ||
-                          filters.languages_spoken.length > 0 ||
-                          filters.dietary_services.length > 0 ||
-                          filters.postal_codes.length > 0;
+  const showAllCentres = () => {
+    setFilters({
+      halal_listed: false,
+      CWELCC_participant: null,
+      subsidy_available: null,
+      age_groups: [],
+      postal_codes: []
+    });
+  };
+
+  const hasActiveFilters =
+    filters.halal_listed ||
+    filters.CWELCC_participant === true ||
+    filters.subsidy_available === true ||
+    filters.age_groups.length > 0 ||
+    filters.postal_codes.length > 0;
 
   return (
-    <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
-      {/* Fixed Header */}
-      <div className="fixed top-0 left-0 right-0 z-40">
-        <Header />
-      </div>
-      
-      {/* Fixed Filter Bar with Summary */}
-      <div className="fixed top-[89px] left-0 right-0 z-30">
-        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60">
-          {/* Filter Controls */}
-          <div className="px-6 py-5">
-            <FilterBar
-              filters={filters}
-              onFiltersChange={setFilters}
-              availableOptions={availableOptions}
-            />
+    <div className="min-h-screen bg-stone-50 text-slate-900">
+      <Header />
+      <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6">
+        <section className="mb-7 max-w-3xl">
+          <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-emerald-800">
+            Free childcare finder for Toronto families
+          </p>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Find childcare with halal information
+          </h2>
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
+            Start with centres whose City of Toronto listing includes a halal-related food tag. Check the original listing and confirm the details directly with each centre.
+          </p>
+        </section>
+
+        <section aria-label="Search filters" className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+          <div className="mb-3">
+            <h3 className="font-semibold text-slate-900">Find a centre that fits</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              Halal information is on by default. Turn it off to browse all listed centres.
+            </p>
           </div>
-          
-          {/* Summary Section */}
-          <div className="px-6 py-2.5 bg-white/40 backdrop-blur-sm">
-            <div className="max-w-7xl mx-auto">
-              <div className="text-center">
-                <div className="text-sm font-medium text-slate-600">
-                  {hasActiveFilters ? (
-                    <>Showing {filteredCenters.length.toLocaleString()}/{centers.length.toLocaleString()} centers</>
-                  ) : (
-                    <>Showing {centers.length.toLocaleString()} centers</>
-                  )}
-                </div>
-              </div>
-            </div>
+          <FilterBar filters={filters} onFiltersChange={setFilters} availableOptions={availableOptions} />
+        </section>
+
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-lg font-semibold text-slate-900">
+              {filteredCenters.length.toLocaleString()} {filteredCenters.length === 1 ? 'centre' : 'centres'}
+            </p>
+            <p className="text-sm text-slate-600">
+              {filters.halal_listed ? 'with halal-related information in the City listing' : 'in the City directory'}
+              {hasActiveFilters && (filters.CWELCC_participant || filters.subsidy_available || filters.age_groups.length || filters.postal_codes.length)
+                ? ' · additional filters applied'
+                : ''}
+            </p>
           </div>
-        </div>
-      </div>
-      
-      {/* Main Content Area - Adjusted top position */}
-      <div className="fixed top-[209px] left-0 right-0 bottom-[80px] flex flex-col lg:flex-row">
-        {/* Map Section - 60% - Fixed */}
-        <div className="w-full lg:w-3/5 h-1/2 lg:h-full border-b lg:border-b-0 lg:border-r border-slate-200/60">
-          <MapPlaceholder filteredCount={filteredCenters.length} />
+          {hasActiveFilters && (
+            <button type="button" onClick={clearFilters} className="text-sm font-semibold text-emerald-800 underline underline-offset-2">
+              Reset filters
+            </button>
+          )}
+          {!filters.halal_listed && (
+            <button type="button" onClick={showAllCentres} className="text-sm font-semibold text-emerald-800 underline underline-offset-2">
+              Reset to halal listings
+            </button>
+          )}
         </div>
 
-        {/* Results Section - 40% - Only this scrolls */}
-        <div className="w-full lg:w-2/5 h-1/2 lg:h-full bg-white/60 backdrop-blur-sm overflow-y-auto">
-          <div className="p-4 lg:p-6">
-            {filteredCenters.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-white/20 max-w-md mx-auto">
-                  <div className="text-slate-400 mb-6">
-                    <div className="w-20 h-20 mx-auto bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center shadow-inner">
-                      <span className="text-3xl">🔍</span>
-                    </div>
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-3">No centers match your filters</h3>
-                  <p className="text-slate-600 mb-6 leading-relaxed">Try adjusting your search criteria to see more results that fit your family's needs.</p>
-                  <button
-                    onClick={clearAllFilters}
-                    className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-2xl font-bold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-                  >
-                    Show all centers
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4 lg:space-y-6">
-                {filteredCenters.map(center => (
-                  <CenterCard
-                    key={center.center_id}
-                    center={center}
-                  />
-                ))}
-              </div>
-            )}
+        {filteredCenters.length === 0 ? (
+          <div className="rounded-2xl border border-slate-200 bg-white px-6 py-14 text-center">
+            <h3 className="text-lg font-semibold">No centres match those filters</h3>
+            <p className="mt-2 text-sm text-slate-600">Try a nearby area or clear one of the filters.</p>
+            <button type="button" onClick={clearFilters} className="mt-4 rounded-lg bg-emerald-800 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-900">
+              Show halal listings
+            </button>
           </div>
-        </div>
-      </div>
-      
-      {/* Fixed Footer */}
-      <div className="fixed bottom-0 left-0 right-0 z-30">
-        <Footer />
-      </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {filteredCenters.map(center => (
+              <CenterCard key={center.center_id} center={center} />
+            ))}
+          </div>
+        )}
+      </main>
+      <Footer />
     </div>
   );
 }
