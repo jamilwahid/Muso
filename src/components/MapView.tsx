@@ -5,6 +5,7 @@ import { Center } from '../types/center';
 interface MapViewProps {
   centers: Center[];
   selectedCenterId: string | null;
+  halalOnly: boolean;
   onSelectCenter: (centerId: string) => void;
 }
 
@@ -53,14 +54,15 @@ const unproject = (x: number, y: number, zoom: number): Coordinates => {
 const hasCoordinates = (center: Center) =>
   Number.isFinite(center.location.latitude) && Number.isFinite(center.location.longitude);
 
-export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, onSelectCenter }) => {
+export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, halalOnly, onSelectCenter }) => {
   const mapElement = useRef<HTMLDivElement>(null);
   const dragStart = useRef<{ pointerId: number; x: number; y: number; center: Coordinates } | null>(null);
   const [size, setSize] = useState({ width: 800, height: 560 });
   const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
 
-  const selectedCenter = centers.find(center => center.center_id === selectedCenterId);
+  const centerCount = centers.length;
+  const centerWithoutSelection = centers.find(center => center.center_id === selectedCenterId);
 
   useEffect(() => {
     const element = mapElement.current;
@@ -74,6 +76,7 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, onS
   }, []);
 
   useEffect(() => {
+    const selectedCenter = centers.find(center => center.center_id === selectedCenterId);
     if (selectedCenter && hasCoordinates(selectedCenter)) {
       setMapCenter({
         lat: selectedCenter.location.latitude as number,
@@ -81,12 +84,11 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, onS
       });
       setZoom(current => Math.max(current, 13));
     }
-  }, [selectedCenter?.center_id]);
+  }, [centers, selectedCenterId]);
 
   const centerWorld = project(mapCenter, zoom);
 
   const tiles = useMemo(() => {
-    const worldSize = TILE_SIZE * 2 ** zoom;
     const minX = Math.floor((centerWorld.x - size.width / 2) / TILE_SIZE) - 1;
     const maxX = Math.floor((centerWorld.x + size.width / 2) / TILE_SIZE) + 1;
     const minY = Math.max(0, Math.floor((centerWorld.y - size.height / 2) / TILE_SIZE) - 1);
@@ -166,7 +168,6 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, onS
   };
 
   const zoomBy = (step: number) => setZoom(current => clamp(current + step, 8, 17));
-
   const recenter = () => {
     setMapCenter(DEFAULT_CENTER);
     setZoom(DEFAULT_ZOOM);
@@ -229,8 +230,8 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, onS
       </div>
 
       <div className="pointer-events-none absolute left-4 top-4 z-20 rounded-xl bg-white/95 px-4 py-3 shadow-lg backdrop-blur">
-        <p className="text-sm font-bold text-slate-900">Halal-tagged centres</p>
-        <p className="mt-0.5 text-xs text-slate-600">{centers.length.toLocaleString()} in this search</p>
+        <p className="text-sm font-bold text-slate-900">{halalOnly ? 'Halal-tagged centres' : 'All listed centres'}</p>
+        <p className="mt-0.5 text-xs text-slate-600">{centerCount.toLocaleString()} in this search</p>
       </div>
 
       <div className="absolute right-4 top-4 z-20 flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
