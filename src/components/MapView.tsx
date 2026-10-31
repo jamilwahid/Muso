@@ -82,9 +82,37 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, hal
         lat: selectedCenter.location.latitude as number,
         lng: selectedCenter.location.longitude as number
       });
-      setZoom(current => Math.max(current, 13));
+      setZoom(13);
+      return;
     }
-  }, [centers, selectedCenterId]);
+
+    const locatedCenters = centers.filter(hasCoordinates);
+    if (locatedCenters.length === 0) {
+      setMapCenter(DEFAULT_CENTER);
+      setZoom(DEFAULT_ZOOM);
+      return;
+    }
+
+    const coordinates = locatedCenters.map(center => ({
+      lat: center.location.latitude as number,
+      lng: center.location.longitude as number
+    }));
+    const latitudes = coordinates.map(point => point.lat);
+    const longitudes = coordinates.map(point => point.lng);
+    const fittedCenter = {
+      lat: (Math.min(...latitudes) + Math.max(...latitudes)) / 2,
+      lng: (Math.min(...longitudes) + Math.max(...longitudes)) / 2
+    };
+    const northWest = project({ lat: Math.max(...latitudes), lng: Math.min(...longitudes) }, 0);
+    const southEast = project({ lat: Math.min(...latitudes), lng: Math.max(...longitudes) }, 0);
+    const spanX = Math.max(0.25, Math.abs(southEast.x - northWest.x));
+    const spanY = Math.max(0.25, Math.abs(southEast.y - northWest.y));
+    const scale = Math.min((size.width - 120) / spanX, (size.height - 120) / spanY);
+    const fittedZoom = clamp(Math.floor(Math.log2(Math.max(1, scale))), 8, 13);
+
+    setMapCenter(fittedCenter);
+    setZoom(fittedZoom);
+  }, [centers, selectedCenterId, size.height, size.width]);
 
   const centerWorld = project(mapCenter, zoom);
 
@@ -230,7 +258,7 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, hal
       </div>
 
       <div className="pointer-events-none absolute left-4 top-4 z-20 rounded-xl bg-white/95 px-4 py-3 shadow-lg backdrop-blur">
-        <p className="text-sm font-bold text-slate-900">{halalOnly ? 'Halal-tagged centres' : 'All listed centres'}</p>
+        <p className="text-sm font-bold text-slate-900">{halalOnly ? 'Halal in City listings' : 'All Toronto centres'}</p>
         <p className="mt-0.5 text-xs text-slate-600">{mappedCount.toLocaleString()} mapped</p>
         {mappedCount < centerCount && (
           <p className="mt-0.5 text-[10px] text-slate-500">
