@@ -29,6 +29,12 @@ function App() {
     }
   }, [filteredCenters, selectedCenterId]);
 
+  useEffect(() => {
+    if (selectedCenterId) {
+      document.getElementById(`center-${selectedCenterId}`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, [selectedCenterId]);
+
   const resetFilters = () => {
     setFilters(defaultFilters);
     setSelectedCenterId(null);
