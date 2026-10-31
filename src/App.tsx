@@ -71,7 +71,14 @@ function App() {
           </div>
         </section>
 
-        <section aria-label="Search filters" className="mb-3 rounded-xl border border-[#e4e0d6] bg-[#fbfaf6] p-3 shadow-[0_1px_2px_rgba(25,40,31,0.04)] sm:p-3.5">
+        <section aria-label="Start your childcare search" className="mb-3 rounded-xl border border-[#e4e0d6] bg-[#fbfaf6] p-3.5 shadow-[0_1px_2px_rgba(25,40,31,0.04)] sm:p-4">
+          <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#718274]">Start your search</p>
+              <h2 className="mt-1 text-base font-semibold text-[#263c32]">Where do you need care?</h2>
+            </div>
+            <p className="text-xs text-slate-500">Halal-related City listings are included by default.</p>
+          </div>
           <FilterBar filters={filters} onFiltersChange={setFilters} availableOptions={availableOptions} />
         </section>
 
