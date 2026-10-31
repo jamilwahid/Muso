@@ -1,21 +1,18 @@
 import React from 'react';
-import { Baby } from 'lucide-react';
+import { Baby, MoonStar } from 'lucide-react';
 
 export const Header: React.FC = () => {
   return (
-    <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-5 h-[89px]">
-      <div className="flex items-center justify-center max-w-7xl mx-auto h-full">
-        <div className="flex items-center space-x-4">
-          <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-3 rounded-2xl shadow-lg">
-            <Baby className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
-              Muso
-            </h1>
-            <p className="text-sm text-slate-500 font-medium">Your sidekick in the childcare hunt</p>
-          </div>
+    <header className="border-b border-emerald-950/10 bg-white">
+      <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-4 sm:px-6">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-800 text-white">
+          <Baby className="h-6 w-6" />
         </div>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Muso</h1>
+          <p className="text-sm text-slate-600">Toronto childcare with halal information</p>
+        </div>
+        <MoonStar className="ml-auto h-6 w-6 text-emerald-800" aria-hidden="true" />
       </div>
     </header>
   );
