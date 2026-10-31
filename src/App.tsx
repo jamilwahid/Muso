@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
 import { MapView } from './components/MapView';
@@ -22,7 +22,17 @@ function App() {
   const [selectedCenterId, setSelectedCenterId] = useState<string | null>(null);
   const { filteredCenters, availableOptions } = useFilters(centers, filters);
 
-  const resetFilters = () => setFilters(defaultFilters);
+  useEffect(() => {
+    if (selectedCenterId && !filteredCenters.some(center => center.center_id === selectedCenterId)) {
+      setSelectedCenterId(null);
+    }
+  }, [filteredCenters, selectedCenterId]);
+
+  const resetFilters = () => {
+    setFilters(defaultFilters);
+    setSelectedCenterId(null);
+  };
+
   const hasAdditionalFilters =
     filters.CWELCC_participant === true ||
     filters.subsidy_available === true ||
@@ -80,7 +90,7 @@ function App() {
             onSelectCenter={setSelectedCenterId}
           />
 
-          <aside aria-label="Childcare results" className="min-h-[360px] lg:min-h-0 lg:overflow-y-auto lg:bg-white">
+          <aside aria-label="Childcare results" className="min-h-[360px] lg:min-h-0 lg:overflow-y-auto">
             {filteredCenters.length === 0 ? (
               <div className="flex h-full min-h-[260px] flex-col items-center justify-center px-6 py-10 text-center">
                 <h4 className="font-semibold">No centres match those filters</h4>
