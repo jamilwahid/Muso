@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
+import { MapView } from './components/MapView';
 import { CenterCard } from './components/CenterCard';
 import { Footer } from './components/Footer';
 import { useFilters } from './hooks/useFilters';
@@ -18,6 +19,7 @@ const defaultFilters: Filters = {
 function App() {
   const [centers] = useState<Center[]>(centersData as Center[]);
   const [filters, setFilters] = useState<Filters>(defaultFilters);
+  const [selectedCenterId, setSelectedCenterId] = useState<string | null>(null);
   const { filteredCenters, availableOptions } = useFilters(centers, filters);
 
   const resetFilters = () => setFilters(defaultFilters);
@@ -32,60 +34,75 @@ function App() {
     : 'in the City directory';
 
   return (
-    <div className="min-h-screen bg-stone-50 text-slate-900">
+    <div className="flex min-h-screen flex-col bg-stone-50 text-slate-900">
       <Header />
-      <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6">
-        <section className="mb-7 max-w-3xl">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-emerald-800">
-            Free childcare finder for Toronto families
-          </p>
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Find childcare with halal information
-          </h2>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
-            Start with centres whose City of Toronto listing includes a halal-related tag. Open the original listing and confirm current food practices directly with each centre.
-          </p>
-        </section>
-
-        <section aria-label="Search filters" className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-          <div className="mb-3">
-            <h3 className="font-semibold text-slate-900">Find a centre that fits</h3>
-            <p className="mt-1 text-sm text-slate-600">
-              Halal tags are shown by default. Turn the filter off to browse all listed centres.
+      <main className="mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-4 sm:px-6">
+        <section className="flex flex-wrap items-end justify-between gap-4 py-5">
+          <div>
+            <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-emerald-800">
+              Toronto · Free childcare finder
+            </p>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              Find halal childcare near you
+            </h2>
+            <p className="mt-1 max-w-2xl text-sm text-slate-600">
+              Explore centres whose City listing includes halal information. Confirm current food practices directly with each centre.
             </p>
           </div>
+          <div className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-900">
+            {filteredCenters.length.toLocaleString()} {filters.halal_listed ? 'halal-tagged' : 'listed'} centres
+          </div>
+        </section>
+
+        <section aria-label="Search filters" className="mb-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
           <FilterBar filters={filters} onFiltersChange={setFilters} availableOptions={availableOptions} />
         </section>
 
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <section className="mb-2 flex items-center justify-between gap-3">
           <div>
-            <p className="text-lg font-semibold text-slate-900">
-              {filteredCenters.length.toLocaleString()} {filteredCenters.length === 1 ? 'centre' : 'centres'}
+            <h3 className="font-semibold text-slate-900">Childcare near you</h3>
+            <p className="text-xs text-slate-500">
+              {filteredCenters.length.toLocaleString()} {filteredCenters.length === 1 ? 'centre' : 'centres'} {description}
             </p>
-            <p className="text-sm text-slate-600">{description}</p>
           </div>
           {(hasAdditionalFilters || !filters.halal_listed) && (
             <button type="button" onClick={resetFilters} className="text-sm font-semibold text-emerald-800 underline underline-offset-2">
               Reset to halal listings
             </button>
           )}
-        </div>
+        </section>
 
-        {filteredCenters.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white px-6 py-14 text-center">
-            <h3 className="text-lg font-semibold">No centres match those filters</h3>
-            <p className="mt-2 text-sm text-slate-600">Try a nearby area or clear one of the filters.</p>
-            <button type="button" onClick={resetFilters} className="mt-4 rounded-lg bg-emerald-800 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-900">
-              Show halal listings
-            </button>
-          </div>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2">
-            {filteredCenters.map(center => (
-              <CenterCard key={center.center_id} center={center} />
-            ))}
-          </div>
-        )}
+        <div className="mb-6 grid flex-1 gap-4 lg:h-[72vh] lg:min-h-[560px] lg:grid-cols-[minmax(0,1.3fr)_minmax(360px,0.8fr)] lg:gap-0 lg:overflow-hidden lg:rounded-2xl lg:border lg:border-slate-200 lg:bg-white lg:shadow-sm">
+          <MapView
+            centers={filteredCenters}
+            selectedCenterId={selectedCenterId}
+            halalOnly={filters.halal_listed}
+            onSelectCenter={setSelectedCenterId}
+          />
+
+          <aside aria-label="Childcare results" className="min-h-[360px] lg:min-h-0 lg:overflow-y-auto lg:bg-white">
+            {filteredCenters.length === 0 ? (
+              <div className="flex h-full min-h-[260px] flex-col items-center justify-center px-6 py-10 text-center">
+                <h4 className="font-semibold">No centres match those filters</h4>
+                <p className="mt-2 text-sm text-slate-600">Try a nearby area or clear one of the filters.</p>
+                <button type="button" onClick={resetFilters} className="mt-4 rounded-lg bg-emerald-800 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-900">
+                  Show halal listings
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3 p-1 lg:p-4">
+                {filteredCenters.map(center => (
+                  <CenterCard
+                    key={center.center_id}
+                    center={center}
+                    isSelected={center.center_id === selectedCenterId}
+                    onSelect={() => setSelectedCenterId(center.center_id)}
+                  />
+                ))}
+              </div>
+            )}
+          </aside>
+        </div>
       </main>
       <Footer />
     </div>
