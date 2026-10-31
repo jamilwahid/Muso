@@ -62,7 +62,6 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, hal
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
 
   const centerCount = centers.length;
-  const centerWithoutSelection = centers.find(center => center.center_id === selectedCenterId);
 
   useEffect(() => {
     const element = mapElement.current;
