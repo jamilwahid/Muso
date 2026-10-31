@@ -35,5 +35,5 @@ export interface Filters {
   CWELCC_participant: boolean | null;
   subsidy_available: boolean | null;
   age_groups: string[];
-  postal_codes: string[];
+  location_query: string;
 }
