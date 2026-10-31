@@ -62,6 +62,7 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, hal
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
 
   const centerCount = centers.length;
+  const mappedCount = centers.filter(hasCoordinates).length;
 
   useEffect(() => {
     const element = mapElement.current;
@@ -230,7 +231,12 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, hal
 
       <div className="pointer-events-none absolute left-4 top-4 z-20 rounded-xl bg-white/95 px-4 py-3 shadow-lg backdrop-blur">
         <p className="text-sm font-bold text-slate-900">{halalOnly ? 'Halal-tagged centres' : 'All listed centres'}</p>
-        <p className="mt-0.5 text-xs text-slate-600">{centerCount.toLocaleString()} in this search</p>
+        <p className="mt-0.5 text-xs text-slate-600">{mappedCount.toLocaleString()} mapped</p>
+        {mappedCount < centerCount && (
+          <p className="mt-0.5 text-[10px] text-slate-500">
+            {centerCount - mappedCount} {centerCount - mappedCount === 1 ? 'centre has' : 'centres have'} no mapped location
+          </p>
+        )}
       </div>
 
       <div className="absolute right-4 top-4 z-20 flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
