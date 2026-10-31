@@ -2,18 +2,18 @@ import React from 'react';
 import { Baby } from 'lucide-react';
 
 export const Header: React.FC = () => (
-  <header className="border-b border-[#e6e2d8] bg-[#fbfaf6]">
-    <div className="mx-auto flex h-[68px] max-w-[1600px] items-center px-4 sm:px-6">
-      <a href="/" className="flex items-center gap-3 text-slate-900 no-underline">
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#214f40] text-white">
+  <header className="border-b border-[#dedacf] bg-[#fffdf8]">
+    <div className="mx-auto flex h-[72px] max-w-[1600px] items-center px-4 sm:px-6">
+      <a href="/" className="flex items-center gap-3 text-[#202b24] no-underline">
+        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#176044] shadow-[0_3px_8px_rgba(18,75,54,0.16)] text-white">
           <Baby className="h-5 w-5" />
         </span>
-        <span className="text-xl font-bold tracking-tight">Muso</span>
+        <span className="text-[21px] font-bold tracking-[-0.04em]">Muso</span>
       </a>
-      <span className="ml-4 hidden border-l border-[#dedbd1] pl-4 text-sm text-slate-600 sm:block">
+      <span className="ml-4 hidden border-l border-[#dedacf] pl-4 text-sm text-[#606b62] sm:block">
         Halal-first childcare finder
       </span>
-      <span className="ml-auto text-xs font-medium uppercase tracking-[0.12em] text-slate-500">
+      <span className="ml-auto rounded-full border border-[#d8e6d8] bg-[#edf5ed] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#176044]">
         Toronto
       </span>
     </div>
