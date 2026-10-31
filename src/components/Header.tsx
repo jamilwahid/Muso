@@ -1,19 +1,21 @@
 import React from 'react';
-import { Baby, MoonStar } from 'lucide-react';
+import { Baby } from 'lucide-react';
 
-export const Header: React.FC = () => {
-  return (
-    <header className="border-b border-emerald-950/10 bg-white">
-      <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-4 sm:px-6">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-800 text-white">
-          <Baby className="h-6 w-6" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Muso</h1>
-          <p className="text-sm text-slate-600">Toronto childcare with halal information</p>
-        </div>
-        <MoonStar className="ml-auto h-6 w-6 text-emerald-800" aria-hidden="true" />
-      </div>
-    </header>
-  );
-};
+export const Header: React.FC = () => (
+  <header className="border-b border-[#e6e2d8] bg-[#fbfaf6]">
+    <div className="mx-auto flex h-[68px] max-w-[1600px] items-center px-4 sm:px-6">
+      <a href="/" className="flex items-center gap-3 text-slate-900 no-underline">
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#214f40] text-white">
+          <Baby className="h-5 w-5" />
+        </span>
+        <span className="text-xl font-bold tracking-tight">Muso</span>
+      </a>
+      <span className="ml-4 hidden border-l border-[#dedbd1] pl-4 text-sm text-slate-600 sm:block">
+        Halal-first childcare finder
+      </span>
+      <span className="ml-auto text-xs font-medium uppercase tracking-[0.12em] text-slate-500">
+        Toronto
+      </span>
+    </div>
+  </header>
+);
