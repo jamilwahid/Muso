@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --muso-ink: #202b24;
+  --muso-forest: #176044;
+  --muso-forest-deep: #124b36;
+  --muso-mint: #e8f3e9;
+  --muso-clay: #a75b3e;
+  --muso-clay-wash: #fbefe7;
+  --muso-paper: #f7f5ef;
+  --muso-line: #dedacf;
+  --muso-muted: #606b62;
+}
+
+html {
+  background: var(--muso-paper);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--muso-paper);
+  color: var(--muso-ink);
+}
+
+::selection {
+  color: #fff;
+  background: var(--muso-forest);
+}
+
+:focus-visible {
+  outline: 3px solid #71aa82;
+  outline-offset: 2px;
+}
