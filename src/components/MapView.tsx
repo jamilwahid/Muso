@@ -211,7 +211,7 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, hal
   };
 
   return (
-    <section aria-label="Map of childcare centres" className="relative h-[42vh] min-h-[320px] overflow-hidden rounded-2xl border border-slate-200 bg-[#e7eee8] shadow-sm lg:h-full lg:min-h-[560px] lg:rounded-none lg:border-0 lg:border-r">
+    <section aria-label="Map of childcare centres" className="relative h-[42vh] min-h-[320px] overflow-hidden rounded-2xl border border-[#dedacf] bg-[#e8f0e8] shadow-inner lg:h-full lg:min-h-[560px] lg:rounded-none lg:border-0 lg:border-r lg:border-[#dedacf]">
       <div
         ref={mapElement}
         className="absolute inset-0 cursor-grab touch-none select-none active:cursor-grabbing"
@@ -244,10 +244,10 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, hal
               onClick={() => selectGroup(group)}
               className={`absolute z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white shadow-lg transition-transform hover:scale-110 ${
                 count > 1
-                  ? 'h-9 min-w-9 bg-white px-2 text-xs font-bold text-emerald-900'
+                  ? 'h-9 min-w-9 bg-[#fffdf9] px-2 text-xs font-bold text-[#176044]'
                   : active
-                    ? 'h-10 w-10 bg-emerald-800 text-white ring-4 ring-emerald-800/20'
-                    : 'h-8 w-8 bg-white text-emerald-800'
+                    ? 'h-10 w-10 bg-[#176044] text-white ring-4 ring-[#176044]/20'
+                    : 'h-8 w-8 bg-[#fffdf9] text-[#176044]'
               }`}
               style={{ left: group.x, top: group.y }}
             >
@@ -257,21 +257,21 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, hal
         })}
       </div>
 
-      <div className="pointer-events-none absolute left-4 top-4 z-20 rounded-xl bg-white/95 px-4 py-3 shadow-lg backdrop-blur">
-        <p className="text-sm font-bold text-slate-900">{halalOnly ? 'Halal in City listings' : 'All Toronto centres'}</p>
-        <p className="mt-0.5 text-xs text-slate-600">{mappedCount.toLocaleString()} mapped</p>
+      <div className="pointer-events-none absolute left-4 top-4 z-20 rounded-2xl border border-white/80 bg-[#fffdf8]/95 px-4 py-3 shadow-[0_5px_16px_rgba(32,43,36,0.13)] backdrop-blur">
+        <p className="text-sm font-bold text-[#202b24]">{halalOnly ? 'Halal in City listings' : 'All Toronto centres'}</p>
+        <p className="mt-0.5 text-xs text-[#606b62]">{mappedCount.toLocaleString()} mapped</p>
         {mappedCount < centerCount && (
-          <p className="mt-0.5 text-[10px] text-slate-500">
+          <p className="mt-0.5 text-[10px] text-[#737d73]">
             {centerCount - mappedCount} {centerCount - mappedCount === 1 ? 'centre has' : 'centres have'} no mapped location
           </p>
         )}
       </div>
 
-      <div className="absolute right-4 top-4 z-20 flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
-        <button type="button" aria-label="Zoom in" onClick={() => zoomBy(1)} className="p-2.5 text-slate-700 hover:bg-slate-50">
+      <div className="absolute right-4 top-4 z-20 flex flex-col overflow-hidden rounded-2xl border border-[#dedacf] bg-[#fffdf9] shadow-[0_5px_16px_rgba(32,43,36,0.13)]">
+        <button type="button" aria-label="Zoom in" onClick={() => zoomBy(1)} className="p-2.5 text-[#48544b] hover:bg-[#f1f5ef]">
           <Plus className="h-4 w-4" />
         </button>
-        <div className="border-t border-slate-200" />
+        <div className="border-t border-[#e8e3d9]" />
         <button type="button" aria-label="Zoom out" onClick={() => zoomBy(-1)} className="p-2.5 text-slate-700 hover:bg-slate-50">
           <Minus className="h-4 w-4" />
         </button>
@@ -280,7 +280,7 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, hal
       <button
         type="button"
         onClick={recenter}
-        className="absolute bottom-9 right-4 z-20 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/95 px-3 py-2 text-xs font-semibold text-slate-700 shadow-lg hover:bg-white"
+        className="absolute bottom-9 right-4 z-20 inline-flex items-center gap-2 rounded-xl border border-[#dedacf] bg-[#fffdf8]/95 px-3 py-2 text-xs font-semibold text-[#48544b] shadow-[0_5px_16px_rgba(32,43,36,0.13)] hover:bg-white"
       >
         <LocateFixed className="h-4 w-4" />
         Toronto
