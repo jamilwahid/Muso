@@ -2,45 +2,21 @@ import React from 'react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-white/95 backdrop-blur-xl border-t border-slate-200/60 px-6 py-6 h-[80px]">
-      <div className="max-w-7xl mx-auto h-full">
-        <div className="flex flex-col items-center justify-center space-y-2 text-center h-full">
-          {/* Main message */}
-          <p className="text-xs text-slate-600 font-normal">
-            Made with ❤️ by <span className="font-semibold text-indigo-600">Jamil</span> - a tired first-time dad and spreadsheet survivor!
-          </p>
-          
-          {/* Icon-only action buttons */}
-          <div className="flex items-center space-x-4">
-            <a
-              href="https://www.linkedin.com/in/jamilwahid/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 transition-all duration-200"
-              title="Connect on LinkedIn"
-            >
-              <i className="fa-brands fa-linkedin fa-lg"></i>
-            </a>
-            
-            <a
-              href="mailto:jamil.wahid08@gmail.com"
-              className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 transition-all duration-200"
-              title="Send an email"
-            >
-              <i className="fa-solid fa-envelope fa-lg"></i>
-            </a>
-            
-            <a
-              href="https://forms.gle/TArjxyRiUtAhQ9277"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 transition-all duration-200"
-              title="Suggest a feature"
-            >
-              <i className="fa-solid fa-lightbulb ga-lg"></i>
-            </a>
-          </div>
-        </div>
+    <footer className="mt-10 border-t border-slate-200 bg-white">
+      <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-sm text-slate-600 sm:px-6">
+        <p>Muso is free and open source, made to help Muslim families find childcare that fits their halal needs.</p>
+        <p>
+          Centre and food information comes from the{' '}
+          <a
+            href="https://www.toronto.ca/data/children/dmc/a2z/a2za.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-emerald-800 underline underline-offset-2"
+          >
+            City of Toronto A–Z licensed child care directory
+          </a>
+          . Please confirm current food practices with the centre.
+        </p>
       </div>
     </footer>
   );
