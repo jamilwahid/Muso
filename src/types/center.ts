@@ -31,10 +31,9 @@ export interface Program {
 }
 
 export interface Filters {
+  halal_listed: boolean;
   CWELCC_participant: boolean | null;
   subsidy_available: boolean | null;
   age_groups: string[];
-  languages_spoken: string[];
-  dietary_services: string[];
   postal_codes: string[];
 }
