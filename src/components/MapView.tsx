@@ -5,7 +5,7 @@ import { Center } from '../types/center';
 interface MapViewProps {
   centers: Center[];
   selectedCenterId: string | null;
-  halalOnly: boolean;
+  hasSelectedFoodOptions: boolean;
   onSelectCenter: (centerId: string) => void;
 }
 
@@ -54,7 +54,7 @@ const unproject = (x: number, y: number, zoom: number): Coordinates => {
 const hasCoordinates = (center: Center) =>
   Number.isFinite(center.location.latitude) && Number.isFinite(center.location.longitude);
 
-export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, halalOnly, onSelectCenter }) => {
+export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, hasSelectedFoodOptions, onSelectCenter }) => {
   const mapElement = useRef<HTMLDivElement>(null);
   const dragStart = useRef<{ pointerId: number; x: number; y: number; center: Coordinates } | null>(null);
   const [size, setSize] = useState({ width: 800, height: 560 });
@@ -258,7 +258,7 @@ export const MapView: React.FC<MapViewProps> = ({ centers, selectedCenterId, hal
       </div>
 
       <div className="pointer-events-none absolute left-4 top-4 z-20 rounded-2xl border border-white/80 bg-[#fffdf8]/95 px-4 py-3 shadow-[0_5px_16px_rgba(32,43,36,0.13)] backdrop-blur">
-        <p className="text-sm font-bold text-[#202b24]">{halalOnly ? 'Halal in City listings' : 'All Toronto centres'}</p>
+        <p className="text-sm font-bold text-[#202b24]">{hasSelectedFoodOptions ? 'Selected food options' : 'All Toronto centres'}</p>
         <p className="mt-0.5 text-xs text-[#606b62]">{mappedCount.toLocaleString()} mapped</p>
         {mappedCount < centerCount && (
           <p className="mt-0.5 text-[10px] text-[#737d73]">

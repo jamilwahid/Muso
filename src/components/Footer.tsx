@@ -4,7 +4,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="mt-10 border-t border-[#dedacf] bg-[#fffdf8]">
       <div className="mx-auto flex max-w-[1600px] flex-col gap-2 px-4 py-6 text-sm text-[#606b62] sm:px-6">
-        <p>Muso is free and open source, made to help Muslim families find childcare that fits their halal needs.</p>
+        <p>Muso is free and open source, helping Toronto families find childcare with food options that fit their needs.</p>
         <p>
           Centre and food information comes from the{' '}
           <a

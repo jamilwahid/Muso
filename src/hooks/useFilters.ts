@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 import { Center, Filters } from '../types/center';
 
-const hasHalalListing = (center: Center) =>
-  center.dietary_services.some(service => /halal/i.test(service));
-
 const normalize = (value: string) =>
   value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase().trim();
 
@@ -11,7 +8,13 @@ export const useFilters = (centers: Center[], filters: Filters) => {
   const filteredCenters = useMemo(() => {
     const locationQuery = normalize(filters.location_query);
     return centers.filter(center => {
-      if (filters.halal_listed && !hasHalalListing(center)) return false;
+      if (
+        filters.dietary_services.length > 0 &&
+        !filters.dietary_services.some(option => center.dietary_services.includes(option))
+      ) {
+        return false;
+      }
+
       if (filters.CWELCC_participant === true && !center.CWELCC_participant) return false;
       if (filters.subsidy_available === true && !center.subsidy_available) return false;
 
@@ -36,7 +39,8 @@ export const useFilters = (centers: Center[], filters: Filters) => {
 
   const availableOptions = useMemo(() => {
     const ageGroups = [...new Set(centers.flatMap(center => center.programs.map(program => program.age_group)))].sort();
-    return { ageGroups };
+    const dietaryServices = [...new Set(centers.flatMap(center => center.dietary_services))].sort();
+    return { ageGroups, dietaryServices };
   }, [centers]);
 
   return { filteredCenters, availableOptions };

@@ -8,8 +8,7 @@ interface CenterCardProps {
   onSelect: () => void;
 }
 
-const halalLabels = (center: Center) =>
-  center.dietary_services.filter(service => /halal/i.test(service));
+const foodLabels = (center: Center) => center.dietary_services;
 
 const formatPhoneForTel = (phone: string | null | undefined) => {
   if (!phone) return '';
@@ -20,7 +19,7 @@ const formatPhoneForTel = (phone: string | null | undefined) => {
 };
 
 export const CenterCard: React.FC<CenterCardProps> = ({ center, isSelected, onSelect }) => {
-  const tags = halalLabels(center);
+  const tags = foodLabels(center);
   const ageGroups = [...new Set(center.programs.map(program => program.age_group))];
 
   return (
@@ -62,7 +61,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center, isSelected, onSe
             ))}
           </div>
         ) : (
-          <p className="text-xs text-[#737d73]">No halal-related tag in the City listing.</p>
+          <p className="text-xs text-[#737d73]">No food-option tags listed by the City.</p>
         )}
       </div>
 

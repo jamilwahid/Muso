@@ -11,7 +11,7 @@ export const Header: React.FC = () => (
         <span className="text-[21px] font-bold tracking-[-0.04em]">Muso</span>
       </a>
       <span className="ml-4 hidden border-l border-[#dedacf] pl-4 text-sm text-[#606b62] sm:block">
-        Halal-first childcare finder
+        Toronto childcare food options
       </span>
       <span className="ml-auto rounded-full border border-[#d8e6d8] bg-[#edf5ed] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#176044]">
         Toronto

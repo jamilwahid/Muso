@@ -9,8 +9,10 @@ import { useFilters } from './hooks/useFilters';
 import { Center, Filters } from './types/center';
 import centersData from './data/centers.json';
 
+const defaultHalalTags = ['Halal Food Option Available', 'Halal Centre'];
+
 const defaultFilters: Filters = {
-  halal_listed: true,
+  dietary_services: defaultHalalTags,
   CWELCC_participant: null,
   subsidy_available: null,
   age_groups: [],
@@ -40,14 +42,19 @@ function App() {
     setSelectedCenterId(null);
   };
 
-  const hasAdditionalFilters =
+  const isDefaultFoodSelection =
+    filters.dietary_services.length === defaultHalalTags.length &&
+    defaultHalalTags.every(tag => filters.dietary_services.includes(tag));
+
+  const hasCustomizedFilters =
+    !isDefaultFoodSelection ||
     filters.CWELCC_participant === true ||
     filters.subsidy_available === true ||
     filters.age_groups.length > 0 ||
     filters.location_query.length > 0;
 
-  const resultLabel = filters.halal_listed
-    ? 'centres with halal information in the City listing'
+  const resultLabel = filters.dietary_services.length > 0
+    ? 'centres matching selected food options'
     : 'licensed centres in Toronto';
 
   return (
@@ -60,24 +67,24 @@ function App() {
               Childcare search · Toronto
             </p>
             <h1 className="max-w-4xl text-[30px] font-semibold leading-[1.08] tracking-[-0.045em] sm:text-[40px]">
-              Find daycares with halal food information.
+              Find childcare that fits your family’s food needs.
             </h1>
             <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-[#606b62] sm:text-[15px]">
-              Explore the map, see what each City listing says, and contact centres about their current food practices.
+              Explore Toronto centres by the food options in their City listing, then confirm details directly with each centre.
             </p>
           </div>
           <div className="rounded-full border border-[#d5e4d5] bg-[#eaf4e9] px-3.5 py-2 text-xs font-semibold text-[#20573d]">
-            {filteredCenters.length.toLocaleString()} {filters.halal_listed ? 'halal-tagged' : 'listed'} centres
+            {filteredCenters.length.toLocaleString()} matching centres
           </div>
         </section>
 
-        <section aria-label="Start your childcare search" className="mb-3 rounded-2xl border border-[#dedacf] bg-[#fffdf8] p-3.5 shadow-[0_3px_14px_rgba(32,43,36,0.045)] sm:p-4">
+        <section aria-label="Food options and childcare filters" className="mb-3 rounded-2xl border border-[#dedacf] bg-[#fffdf8] p-3.5 shadow-[0_3px_14px_rgba(32,43,36,0.045)] sm:p-4">
           <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#a75b3e]">Start your search</p>
-              <h2 className="mt-1 text-base font-semibold tracking-[-0.02em] text-[#202b24]">Where do you need care?</h2>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#a75b3e]">Food options</p>
+              <h2 className="mt-1 text-base font-semibold tracking-[-0.02em] text-[#202b24]">Choose what matters to your family.</h2>
             </div>
-            <p className="text-xs text-[#737d73]">Halal-related City listings are included by default.</p>
+            <p className="text-xs text-[#737d73]">Halal-related City tags are selected by default.</p>
           </div>
           <FilterBar filters={filters} onFiltersChange={setFilters} availableOptions={availableOptions} />
         </section>
@@ -85,9 +92,9 @@ function App() {
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <p className="flex items-center gap-2 text-xs leading-relaxed text-[#606b62]">
             <Info className="h-4 w-4 shrink-0 text-[#176044]" />
-            City tags are a starting point, not certification. Confirm current food practices with each centre.
+            City tags are provider-reported, not certification. Confirm current food practices with each centre.
           </p>
-          {(hasAdditionalFilters || !filters.halal_listed) && (
+          {hasCustomizedFilters && (
             <button type="button" onClick={resetFilters} className="shrink-0 text-xs font-semibold text-[#176044] underline decoration-[#a9c9ad] underline-offset-2">
               Reset search
             </button>
@@ -98,7 +105,7 @@ function App() {
           <MapView
             centers={filteredCenters}
             selectedCenterId={selectedCenterId}
-            halalOnly={filters.halal_listed}
+            hasSelectedFoodOptions={filters.dietary_services.length > 0}
             onSelectCenter={setSelectedCenterId}
           />
 
@@ -111,7 +118,7 @@ function App() {
             {filteredCenters.length === 0 ? (
               <div className="flex h-full min-h-[260px] flex-col items-center justify-center px-6 py-10 text-center">
                 <h2 className="font-semibold">No centres match those filters</h2>
-                <p className="mt-2 text-sm text-[#606b62]">Try a nearby neighbourhood or clear a filter.</p>
+                <p className="mt-2 text-sm text-[#606b62]">Try another food option, a nearby area, or clear a filter.</p>
                 <button type="button" onClick={resetFilters} className="mt-4 rounded-xl bg-[#176044] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#124b36]">
                   Reset search
                 </button>
