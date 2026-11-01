@@ -1,29 +1,13 @@
-import React from 'react';
 import { Baby } from 'lucide-react';
 
-export const Header: React.FC = () => {
-  return (
-    <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-5 h-[89px]">
-      <div className="flex items-center justify-between max-w-7xl mx-auto h-full">
-        {/* Left spacer for centering */}
-        <div className="w-10"></div>
-        
-        {/* Centered logo */}
-        <div className="flex items-center space-x-4">
-          <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-3 rounded-2xl shadow-lg">
-            <Baby className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
-              Muso
-            </h1>
-            <p className="text-sm text-slate-500 font-medium">Your sidekick in the infant childcare hunt</p>
-          </div>
-        </div>
-        
-        {/* Right spacer for centering */}
-        <div className="w-10"></div>
-      </div>
-    </header>
-  );
-};
+export const Header = () => (
+  <header className="flex h-16 shrink-0 items-center gap-3 bg-[#fafbf7] px-4 sm:px-6">
+    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#175d3e] text-white">
+      <Baby size={22} aria-hidden="true" />
+    </div>
+    <div>
+      <h1 className="text-xl font-bold leading-tight tracking-tight text-[#17392a]">Muso</h1>
+      <p className="text-[11px] font-medium leading-tight text-[#6a7c6f]">Childcare & food options · Toronto</p>
+    </div>
+  </header>
+);

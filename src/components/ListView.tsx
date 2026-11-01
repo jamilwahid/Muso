@@ -1,6 +1,6 @@
 import React from 'react';
 import { CenterCard } from './CenterCard';
-import { Center, Filters } from '../types/center';
+import { Center } from '../types/center';
 
 interface ListViewProps {
   filteredCenters: Center[];

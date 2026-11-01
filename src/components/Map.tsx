@@ -12,13 +12,13 @@ interface MapComponentProps {
   filteredCenters: Center[];
 }
 
-export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCenters }) => {
+export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) => {
   const [selectedCenter, setSelectedCenter] = useState<Center | null>(null);
   const [hoveredCenter, setHoveredCenter] = useState<Center | null>(null);
   const favoritesHook = useFavorites();
   const { favorites, favoritesCount } = favoritesHook;
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
-  const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
+  const [, setCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [showMapHint, setShowMapHint] = useState(false);
   const [showDismissHint, setShowDismissHint] = useState(false);
   const [viewState, setViewState] = useState({
@@ -226,7 +226,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         logoPosition="bottom-right"
       >
         {/* Only render filtered centers with coordinates - Force re-render with key */}
-        {centersWithCoords.map((center, index) => {
+        {centersWithCoords.map((center) => {
           const isSelected = selectedCenter?.center_id === center.center_id;
           const isCenterFavorited = favoritesHook.isFavorite(center.center_id);
           
@@ -307,22 +307,13 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
           </div>
         </div>
       )}
-      {/* Floating Card Overlay - Positioned based on marker location */}
-      {selectedCenter && cardPosition && (
-        <div 
-          className="absolute z-50 pointer-events-none"
-          style={{
-            left: `${cardPosition.x}px`,
-            top: `${cardPosition.y}px`,
-            maxWidth: '400px',
-            width: 'auto'
-          }}
-        >
-          <div className="pointer-events-auto transform transition-all duration-300 ease-out">
-            <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
-              <CenterCard center={selectedCenter} />
-            </div>
+      {/* Centre details stay within reach on small screens. */}
+      {selectedCenter && (
+        <div className="absolute bottom-0 left-0 z-50 w-full max-h-[65%] overflow-y-auto rounded-t-[28px] bg-white p-3 shadow-2xl sm:bottom-4 sm:left-4 sm:max-w-[400px] sm:rounded-2xl">
+          <div className="flex justify-end">
+            <button type="button" onClick={() => { setSelectedCenter(null); setCardPosition(null); }} aria-label="Close centre details" className="flex h-10 w-10 items-center justify-center rounded-full text-2xl text-[#355343] hover:bg-[#edf4ed]">×</button>
           </div>
+          <CenterCard center={selectedCenter} />
         </div>
       )}
 

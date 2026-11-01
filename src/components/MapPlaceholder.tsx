@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Zap, Map, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { MapComponent } from './Map';
 import { Center } from '../types/center';
 
@@ -11,7 +11,6 @@ interface MapPlaceholderProps {
 
 export const MapPlaceholder: React.FC<MapPlaceholderProps> = ({ 
   centers, 
-  filteredCount, 
   filteredCenters 
 }) => {
   const [mapError, setMapError] = useState(false);

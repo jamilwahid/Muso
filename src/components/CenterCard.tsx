@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapPin, Star, Phone, ExternalLink, Languages, Utensils, Link, Heart } from 'lucide-react';
+import React from 'react';
+import { MapPin, Star, Phone, Languages, Utensils, Link, Heart } from 'lucide-react';
 import { Center } from '../types/center';
 import { useFavorites } from '../hooks/useFavorites';
 
@@ -164,19 +164,15 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
               <div className="space-y-1">
                 <div className="flex items-center space-x-1.5">
                   <Utensils className="h-3.5 w-3.5 text-slate-400" />
-                  <span className="text-sm font-medium text-slate-600">Dietary</span>
+                  <span className="text-sm font-semibold text-[#175d3e]">Food options</span>
                 </div>
                 <div className="flex flex-wrap gap-1 ml-5">
-                  {center.dietary_services.slice(0, 2).map((service, index) => (
+                  {[...center.dietary_services].sort((a, b) => Number(/halal/i.test(b)) - Number(/halal/i.test(a))).map((service, index) => (
                     <div key={`diet-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
                       {service}
                     </div>
                   ))}
-                  {center.dietary_services.length > 2 && (
-                    <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                      +{center.dietary_services.length - 2} more
-                    </div>
-                  )}
+
                 </div>
               </div>
             )}

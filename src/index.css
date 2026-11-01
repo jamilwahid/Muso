@@ -1,6 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "@heroui/styles";
+
+@config "../tailwind.config.js";
+
+html, body, #root { height: 100%; margin: 0; }
 
 /* Custom styles for Mapbox popup */
 .mapboxgl-popup {

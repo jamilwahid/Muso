@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import { useState } from 'react';
+import { Button } from '@heroui/react';
+import { List, Map as MapIcon } from 'lucide-react';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
 import { MapPlaceholder } from './components/MapPlaceholder';
 import { ListView } from './components/ListView';
-import { Footer } from './components/Footer';
 import { useFilters } from './hooks/useFilters';
 import { Center, Filters } from './types/center';
 import centersData from './data/centers.json';
@@ -14,75 +14,32 @@ const defaultFoodOptions = ['Halal Food Option Available', 'Halal Centre'];
 function App() {
   const [centers] = useState<Center[]>(centersData as Center[]);
   const [currentView, setCurrentView] = useState<'map' | 'list'>('map');
-  const [filters, setFilters] = useState<Filters>({
-    dietary_services: defaultFoodOptions
-  });
-
+  const [filters, setFilters] = useState<Filters>({ dietary_services: defaultFoodOptions });
   const { filteredCenters, availableOptions } = useFilters(centers, filters);
 
-  useEffect(() => {
-    localStorage.removeItem('muso-home-location');
-  }, []);
-
-  const clearAllFilters = () => {
-    setFilters({ dietary_services: [] });
-  };
-
-  const hasActiveFilters = filters.dietary_services.length > 0;
-
   return (
-    <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
-      <div className="fixed top-0 left-0 right-0 z-40">
-        <Header />
-      </div>
-
-      <div className="fixed top-[89px] left-0 right-0 z-30">
-        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60">
-          <div className="px-6 py-5">
-            <FilterBar
-              filters={filters}
-              onFiltersChange={setFilters}
-              availableOptions={availableOptions}
-            />
-          </div>
-
-          <div className="px-6 py-3 bg-white/40 backdrop-blur-sm border-b border-slate-200/40">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex items-center justify-center">
-                <div className="text-sm font-medium text-slate-600">
-                  {hasActiveFilters ? (
-                    <>Showing {filteredCenters.length.toLocaleString()}/{centers.length.toLocaleString()} centers</>
-                  ) : (
-                    <>Showing {filteredCenters.length.toLocaleString()} centers</>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className="flex h-[100dvh] min-h-0 flex-col overflow-hidden bg-[#faf9f4] text-[#20342b]">
+      <Header />
+      <section aria-label="Food filters" className="shrink-0 border-b border-[#dce8de] bg-[#fafbf7]">
+        <FilterBar filters={filters} onFiltersChange={setFilters} availableOptions={availableOptions} />
+        <div className="flex items-center justify-between gap-3 px-4 pb-3 sm:px-6">
+          <p className="text-xs font-medium text-[#5b7063]" aria-live="polite">
+            <span className="font-semibold text-[#234d38]">{filteredCenters.length.toLocaleString()} centres</span> · Toronto
+          </p>
+          <Button size="sm" variant="tertiary" onPress={() => setCurrentView(currentView === 'map' ? 'list' : 'map')} className="h-9 rounded-full px-3 text-xs font-semibold text-[#165b3c]">
+            {currentView === 'map' ? <><List size={16} /> View list</> : <><MapIcon size={16} /> View map</>}
+          </Button>
         </div>
-      </div>
-
-      <div className="fixed top-[225px] left-0 right-0 bottom-[80px]">
+      </section>
+      <main className="relative min-h-0 flex-1">
         {currentView === 'map' ? (
-          <div className="absolute inset-0 w-full h-full">
-            <MapPlaceholder
-              centers={centers}
-              filteredCount={filteredCenters.length}
-              filteredCenters={filteredCenters}
-            />
-          </div>
+          <MapPlaceholder centers={centers} filteredCount={filteredCenters.length} filteredCenters={filteredCenters} />
         ) : (
-          <div className="absolute inset-0 w-full h-full">
-            <ListView
-              filteredCenters={filteredCenters}
-              clearAllFilters={clearAllFilters}
-            />
-          </div>
+          <ListView filteredCenters={filteredCenters} clearAllFilters={() => setFilters({ dietary_services: [] })} />
         )}
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 z-30">
-        <Footer />
+      </main>
+      <div className="shrink-0 bg-[#fafbf7] px-4 py-2 text-center text-[11px] leading-4 text-[#617268]">
+        Food options are from City listings. Confirm current practices with the centre.
       </div>
     </div>
   );
