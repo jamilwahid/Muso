@@ -1,10 +1,9 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import Map, { Marker } from 'react-map-gl';
-import { MapPin, Home } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { Center } from '../types/center';
 import { CenterCard } from './CenterCard';
 import { MapControls } from './MapControls';
-import { HomeAddress } from './HomeAddress';
 import { useFavorites } from '../hooks/useFavorites';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -22,7 +21,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   const [cardPosition, setCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [showMapHint, setShowMapHint] = useState(false);
   const [showDismissHint, setShowDismissHint] = useState(false);
-  const [homeLocation, setHomeLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [viewState, setViewState] = useState({
     longitude: -79.3832,
     latitude: 43.6532,
@@ -30,47 +28,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   });
   
   const mapRef = useRef<any>(null);
-
-  // Load home location from localStorage
-  useEffect(() => {
-    const savedHome = localStorage.getItem('muso-home-location');
-    if (savedHome) {
-      try {
-        const home = JSON.parse(savedHome);
-        setHomeLocation({ lat: home.lat, lng: home.lng });
-      } catch (e) {
-        console.warn('Failed to load home location for map');
-      }
-    }
-  }, []);
-
-  // Listen for home location changes
-  useEffect(() => {
-    const handleHomeLocationUpdate = (event?: CustomEvent | StorageEvent) => {
-      const savedHome = localStorage.getItem('muso-home-location');
-      if (savedHome) {
-        try {
-          const home = JSON.parse(savedHome);
-          setHomeLocation({ lat: home.lat, lng: home.lng });
-          console.log('Home location updated and will be visible:', home);
-        } catch (e) {
-          console.warn('Failed to load updated home location');
-        }
-      } else {
-        setHomeLocation(null);
-        console.log('Home location cleared');
-      }
-    };
-
-    // Listen for both storage changes and custom events
-    window.addEventListener('storage', handleHomeLocationUpdate);
-    window.addEventListener('homeLocationSet', handleHomeLocationUpdate as EventListener);
-    
-    return () => {
-      window.removeEventListener('storage', handleHomeLocationUpdate);
-      window.removeEventListener('homeLocationSet', handleHomeLocationUpdate as EventListener);
-    };
-  }, []);
 
   // Auto-dismiss map hint after 8 seconds
   useEffect(() => {
@@ -99,16 +56,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
   // Handle map movement to track user interaction
   const handleMove = useCallback((evt: any) => {
     setViewState(evt.viewState);
-  }, []);
-
-  // Handle location selection from HomeBase
-  const handleLocationSelect = useCallback((longitude: number, latitude: number, zoom: number = 15) => {
-    setViewState(prev => ({
-      ...prev,
-      longitude,
-      latitude,
-      zoom
-    }));
   }, []);
 
   // Zoom controls
@@ -337,22 +284,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
           );
         })}
 
-        {/* Home Location Marker */}
-        {homeLocation && (
-          <Marker
-            longitude={homeLocation.lng}
-            latitude={homeLocation.lat}
-            anchor="bottom"
-            style={{ zIndex: 1000 }}
-          >
-            <div className="relative cursor-pointer transform transition-all duration-300">
-              {/* Home Pin - Same size as center markers */}
-              <div className="relative w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full border-3 border-white shadow-lg flex items-center justify-center">
-                <Home className="h-5 w-5 text-white" />
-              </div>
-            </div>
-          </Marker>
-        )}
       </Map>
 
       {/* Hover Tooltip */}
@@ -403,10 +334,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ centers, filteredCen
         canZoomOut={canZoomOut}
       />
 
-      {/* Home Address Navigation - Moved to top-right */}
-      <div className="absolute top-4 right-4 z-[100]">
-        <HomeAddress onLocationSelect={handleLocationSelect} />
-      </div>
 
       {/* Instructions overlay - Top right (only show when no center is selected) */}
       {!selectedCenter && showMapHint && (
