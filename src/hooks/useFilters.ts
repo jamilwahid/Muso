@@ -5,7 +5,10 @@ export const useFilters = (centers: Center[], filters: Filters) => {
   const filteredCenters = useMemo(() => {
     if (filters.dietary_services.length === 0) return centers;
     return centers.filter(center =>
-      filters.dietary_services.some(option => center.dietary_services.includes(option))
+      filters.dietary_services.some(option =>
+        center.dietary_services.includes(option) ||
+        (option === 'Halal Food Option Available' && center.dietary_services.includes('Halal Centre'))
+      )
     );
   }, [centers, filters]);
 
