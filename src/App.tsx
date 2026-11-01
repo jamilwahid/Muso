@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@heroui/react';
 import { List, Map as MapIcon } from 'lucide-react';
 import { Header } from './components/Header';
+import { Footer } from './components/Footer';
 import { FilterBar } from './components/FilterBar';
 import { MapPlaceholder } from './components/MapPlaceholder';
 import { ListView } from './components/ListView';
@@ -36,9 +37,7 @@ function App() {
           <ListView filteredCenters={filteredCenters} clearAllFilters={() => setFilters({ dietary_services: [] })} />
         )}
       </main>
-      <div className="shrink-0 bg-[#fafbf7] px-4 py-2 text-center text-[11px] leading-4 text-[#617268]">
-        Food options are from City listings. Confirm current practices with the centre.
-      </div>
+      <Footer />
     </div>
   );
 }
