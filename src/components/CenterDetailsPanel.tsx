@@ -44,7 +44,7 @@ export const CenterDetailsPanel: React.FC<CenterDetailsPanelProps> = ({ center, 
     <aside
       aria-label="Selected centre details"
       style={{ '--sheet-drag': `${dragDistance}px` } as React.CSSProperties}
-      className={`mobile-centre-sheet absolute inset-x-0 bottom-0 z-[70] flex flex-col overflow-hidden rounded-t-[24px] border border-[#dce8de] bg-[#fafbf7] shadow-[0_-5px_24px_rgba(25,50,32,0.18)] motion-reduce:transition-none md:inset-x-auto md:bottom-3 md:left-4 md:top-[110px] md:z-50 md:h-auto md:w-[430px] md:max-w-[calc(100%-2rem)] md:rounded-[24px] ${expanded ? 'h-[clamp(40%,calc(86%-var(--sheet-drag)),92%)]' : 'h-[clamp(30%,calc(60%-var(--sheet-drag)),92%)]'} ${dragging ? '' : 'transition-[height] duration-300 ease-out'}`}
+      className={`mobile-centre-sheet absolute inset-x-0 bottom-0 z-[70] flex flex-col overflow-hidden rounded-t-[24px] border border-[#dce8de] bg-[#fafbf7] shadow-[0_-5px_24px_rgba(25,50,32,0.18)] motion-reduce:transition-none md:inset-x-auto md:bottom-3 md:left-4 md:top-[130px] md:z-50 md:h-auto md:w-[430px] md:max-w-[calc(100%-2rem)] md:rounded-[24px] ${expanded ? 'h-[clamp(40%,calc(86%-var(--sheet-drag)),92%)]' : 'h-[clamp(30%,calc(60%-var(--sheet-drag)),92%)]'} ${dragging ? '' : 'transition-[height] duration-300 ease-out'}`}
     >
       <div className="relative shrink-0 bg-[#fafbf7]">
         <div className="flex justify-center md:hidden">

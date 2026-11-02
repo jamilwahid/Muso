@@ -20,11 +20,11 @@ function App() {
         <MapPlaceholder centers={centers} filteredCount={filteredCenters.length} filteredCenters={filteredCenters} />
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-[55] h-40 bg-gradient-to-b from-[#fafbf7]/95 via-[#fafbf7]/70 to-transparent md:hidden" />
         <div className="pointer-events-none absolute inset-x-0 top-0 z-[60] p-3 sm:p-4">
-          <div className="flex min-w-0 flex-col items-start gap-2 md:flex-row md:items-center md:gap-3">
-            <div className="pointer-events-auto shrink-0 self-center rounded-2xl border md:self-auto border-[#dce8de] bg-[#fafbf7]/95 shadow-[0_2px_12px_rgba(32,52,43,0.12)] backdrop-blur">
+          <div className="flex min-w-0 flex-col items-center gap-2">
+            <div className="pointer-events-auto shrink-0 rounded-2xl border border-[#dce8de] bg-[#fafbf7]/95 shadow-[0_2px_12px_rgba(32,52,43,0.12)] backdrop-blur">
               <Header />
             </div>
-            <div className="pointer-events-auto max-w-full min-w-0">
+            <div className="pointer-events-auto max-w-full min-w-0 self-start md:self-center">
               <FilterBar filters={filters} onFiltersChange={setFilters} availableOptions={availableOptions} />
             </div>
           </div>

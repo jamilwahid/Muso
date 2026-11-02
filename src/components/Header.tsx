@@ -8,7 +8,6 @@ export const Header = () => (
     </div>
     <div>
       <h1 className="text-lg font-bold md:text-xl leading-tight tracking-tight text-[#17392a]">Muso</h1>
-      <p className="hidden text-[11px] font-medium leading-tight text-[#6a7c6f] md:block">Childcare & food options · Toronto</p>
     </div>
     <details className="ml-2 md:hidden">
       <summary aria-label="About Muso" className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full text-[#175d3e] hover:bg-[#edf5ed] [&::-webkit-details-marker]:hidden"><MoreHorizontal size={20} /></summary>
