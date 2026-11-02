@@ -50,7 +50,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
     <article className="text-[#203c2c]">
       <div className="px-5 pb-4 pt-1 sm:px-6">
         <h2 className="break-words text-[22px] font-semibold leading-tight tracking-[-0.025em] text-[#17392a]">{center.center_name}</h2>
-        <div className="mt-3 flex items-start gap-2 text-sm leading-relaxed text-[#607267]">
+        <div className="mt-3 flex items-start gap-2 text-base leading-relaxed text-[#53685a]">
           <MapPin size={17} className="mt-3 shrink-0 text-[#688b73]" aria-hidden="true" />
           <span className="min-w-0 flex-1 break-words py-2.5">{address}</span>
           {copyButton('address', address)}

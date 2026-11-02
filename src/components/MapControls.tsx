@@ -21,34 +21,36 @@ export const MapControls: React.FC<MapControlsProps> = ({
   return (
     <div className={`absolute right-4 z-20 flex flex-col space-y-2 md:bottom-4 ${selected ? (expanded ? 'hidden md:flex' : 'bottom-[calc(60%+3rem)]') : 'bottom-14'}`}>
       {/* Zoom Controls */}
-      <div className="flex flex-col space-y-1 bg-white/95 backdrop-blur-xl rounded-lg shadow-lg border border-white/30 p-1">
+      <div className="flex flex-col rounded-2xl border border-[#dce8de] bg-[#fafbf7]/95 p-1 shadow-lg backdrop-blur-xl">
         {/* Zoom In */}
         <button
           onClick={onZoomIn}
           disabled={!canZoomIn}
-          className={`p-2 rounded-md transition-all duration-200 relative ${
+          className={`flex h-11 w-11 items-center justify-center rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#175d3e] ${
             canZoomIn
-              ? 'text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 hover:shadow-sm'
-              : 'text-slate-300 cursor-not-allowed'
+              ? 'text-[#175d3e] hover:bg-[#edf5ed]'
+              : 'text-[#a8bbae] cursor-not-allowed'
           }`}
           title="Zoom in"
+          aria-label="Zoom in"
         >
           <Plus className="h-4 w-4" />
         </button>
         
         {/* Divider */}
-        <div className="h-px bg-slate-200 mx-1"></div>
+        <div className="mx-1 h-px bg-[#dce8de]"></div>
         
         {/* Zoom Out */}
         <button
           onClick={onZoomOut}
           disabled={!canZoomOut}
-          className={`p-2 rounded-md transition-all duration-200 relative ${
+          className={`flex h-11 w-11 items-center justify-center rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#175d3e] ${
             canZoomOut
-              ? 'text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 hover:shadow-sm'
-              : 'text-slate-300 cursor-not-allowed'
+              ? 'text-[#175d3e] hover:bg-[#edf5ed]'
+              : 'text-[#a8bbae] cursor-not-allowed'
           }`}
           title="Zoom out"
+          aria-label="Zoom out"
         >
           <Minus className="h-4 w-4" />
         </button>

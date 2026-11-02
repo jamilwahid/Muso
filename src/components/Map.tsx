@@ -274,7 +274,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
                 {/* Main Pin - Debug the styling */}
                 <div className={`relative rounded-full border-3 border-white shadow-lg flex items-center justify-center transition-all duration-300 ${
                   isSelected
-                    ? 'w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 ring-4 ring-indigo-200'
+                    ? 'w-10 h-10 bg-[#175d3e] ring-4 ring-[#b9d9c5]'
                     : isCenterFavorited
                     ? 'w-8 h-8 bg-gradient-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 ring-4 ring-pink-300 ring-opacity-75'
                     : 'w-8 h-8 bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800'
@@ -288,11 +288,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
                     <div className="absolute -top-1 -right-1 w-4 h-4 bg-pink-400 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
                   )}
                 </div>
-                
-                {/* Subtle glow for selected marker */}
-                {isSelected && (
-                  <div className="absolute inset-0 w-10 h-10 bg-indigo-400 rounded-full opacity-30 blur-md"></div>
-                )}
                 
                 {/* Enhanced glow for favorited marker */}
                 {isCenterFavorited && !isSelected && (
