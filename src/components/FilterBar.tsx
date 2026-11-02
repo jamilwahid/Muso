@@ -1,5 +1,5 @@
 import { Button } from '@heroui/react';
-import { Check, Leaf, Sprout, Utensils } from 'lucide-react';
+import { Check, Leaf, Utensils } from 'lucide-react';
 import { Filters } from '../types/center';
 
 interface FilterBarProps {
@@ -18,7 +18,6 @@ const PorkFreeIcon = () => (
 const featuredOptions = [
   { value: 'Halal Food Option Available', label: 'Halal options', Icon: Utensils },
   { value: 'Vegetarian Food Option Available', label: 'Vegetarian options', Icon: Leaf },
-  { value: 'Vegan Food Option Available', label: 'Vegan options', Icon: Sprout },
   { value: 'Pork-Free Menu', label: 'Pork-free menu', Icon: PorkFreeIcon }
 ];
 
