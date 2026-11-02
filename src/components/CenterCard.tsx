@@ -1,5 +1,4 @@
-import React from 'react';
-import { MapPin, Star, Phone, Languages, Utensils, Link, Heart } from 'lucide-react';
+import { ExternalLink, Heart, MapPin, Phone, Star, Utensils } from 'lucide-react';
 import { Center } from '../types/center';
 import { useFavorites } from '../hooks/useFavorites';
 
@@ -7,226 +6,81 @@ interface CenterCardProps {
   center: Center;
 }
 
+const formatPhoneForTel = (phone: string) => {
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  return `+1${digits}`;
+};
+
 export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
-  const isCurrentlyFavorited = isFavorite(center.center_id);
-  
-  const programsWithRating = center.programs.filter(p => p.quality_rating);
-  const avgRating = programsWithRating.length > 0 
-    ? programsWithRating.reduce((sum, p) => sum + (p.quality_rating || 0), 0) / programsWithRating.length
+  const saved = isFavorite(center.center_id);
+  const ratings = center.programs.filter(program => program.quality_rating);
+  const avgRating = ratings.length
+    ? ratings.reduce((sum, program) => sum + (program.quality_rating || 0), 0) / ratings.length
     : null;
-
-  const handleViewListing = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.open(center.center_listing_url, '_blank');
-  };
-
-  const handleWebsiteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (center.center_contact.website) {
-      window.open(center.center_contact.website, '_blank');
-    }
-  };
-
-  const handleSaveCenter = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    console.log('Save button clicked for center:', center.center_id);
-    toggleFavorite(center.center_id);
-  };
-
-  // Format phone number for tel: link (remove all non-digits and format)
-  const formatPhoneForTel = (phone: string | null | undefined) => {
-    if (!phone || typeof phone !== 'string') {
-      return '';
-    }
-    
-    const digits = phone.replace(/\D/g, '');
-    
-    if (digits.length === 10) {
-      return `+1${digits}`;
-    } else if (digits.length === 11 && digits.startsWith('1')) {
-      return `+${digits}`;
-    }
-    
-    return `+1${digits}`;
-  };
-
-  // Format address with postal code
-  const formatAddress = () => {
-    const baseAddress = center.location.address;
-    const postalCode = center.location.postal_code;
-    return postalCode ? `${baseAddress}, ${postalCode}` : baseAddress;
-  };
+  const foodOptions = [...center.dietary_services].sort(
+    (a, b) => Number(/halal/i.test(b)) - Number(/halal/i.test(a))
+  );
+  const ageGroups = [...new Set(center.programs.map(program => program.age_group))];
+  const actionClass = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#d4e3d8] bg-white px-4 py-2 text-sm font-semibold text-[#175d3e] hover:bg-[#edf5ed]';
 
   return (
-    <div className={`group bg-white/90 backdrop-blur-sm border rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${
-      isCurrentlyFavorited 
-        ? 'border-pink-200/80 ring-1 ring-pink-100/50' 
-        : 'border-slate-200/60'
-    }`}>
-      <div className="p-3 sm:p-4">
-        {/* Header Section - Name and Address with full horizontal space */}
-        <div className="mb-2">
-          <div className="flex items-start justify-between mb-1">
-            <h3 className="text-base sm:text-lg font-bold text-slate-800 leading-tight flex-1 pr-2">
-              {center.center_name}
-            </h3>
+    <article className="text-[#203c2c]">
+      <div className="px-5 pb-5 pt-1">
+        <h2 className="pr-8 text-[22px] font-semibold leading-tight tracking-[-0.025em] text-[#17392a]">{center.center_name}</h2>
+        <p className="mt-2 flex items-start gap-2 text-sm leading-relaxed text-[#607267]">
+          <MapPin size={17} className="mt-0.5 shrink-0 text-[#688b73]" aria-hidden="true" />
+          <span>{center.location.address}{center.location.postal_code ? `, ${center.location.postal_code}` : ''}</span>
+        </p>
+      </div>
+
+      <section className="border-t border-[#e4ece4] px-5 py-4" aria-label="Food options">
+        <h3 className="flex items-center gap-2 text-sm font-semibold text-[#175d3e]"><Utensils size={16} /> Food options</h3>
+        {foodOptions.length ? (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {foodOptions.map(option => (
+              <span key={option} className={`rounded-full px-3 py-1.5 text-xs font-medium ${/halal/i.test(option) ? 'bg-[#e0f1e4] text-[#175d3e]' : 'bg-[#f2f4ee] text-[#536458]'}`}>
+                {option}
+              </span>
+            ))}
           </div>
-          
-          <div className="flex items-start text-xs sm:text-sm text-slate-500">
-            <MapPin className="h-3.5 w-3.5 mr-1.5 text-slate-400 flex-shrink-0 mt-0.5" />
-            <span className="font-medium leading-relaxed">{formatAddress()}</span>
-          </div>
-          
-          {/* External Links - Below address */}
-          <div className="mt-1 text-sm text-slate-500">
-            {center.center_contact.website && (
-              <button
-                onClick={handleWebsiteClick}
-                className="inline-flex items-center space-x-1 hover:text-blue-600 hover:underline transition-colors duration-200"
-              >
-                <Link className="h-3 w-3" />
-                <span>Website</span>
-              </button>
-            )}
-            {center.center_contact.website && <span className="mx-2">·</span>}
-            <button 
-              onClick={handleViewListing}
-              className="inline-flex items-center space-x-1 hover:text-indigo-600 hover:underline transition-colors duration-200"
-            >
-              <Link className="h-3 w-3" />
-              <span>Toronto.ca listing</span>
-            </button>
-          </div>
-        </div>
+        ) : <p className="mt-2 text-sm text-[#68786d]">No food options listed.</p>}
+        <p className="mt-3 text-xs leading-relaxed text-[#718075]">From the City listing. Confirm current food practices with the centre.</p>
+      </section>
 
-        {/* Badges Row - CWELCC, Subsidy, and Rating together */}
-        <div className="flex flex-wrap items-center gap-1.5 mb-2">
-          {center.CWELCC_participant && (
-            <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-              <span>CWELCC</span>
-            </div>
-          )}
-          
-          {center.subsidy_available && (
-            <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-              <span>Subsidy</span>
-            </div>
-          )}
-
-          {/* Rating Badge - Moved here next to other badges */}
-          <div className={`flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-medium border ${
-            avgRating 
-              ? 'bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border-purple-200/60' 
-              : 'bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border-purple-200/60'
-          }`}>
-            <Star className={`h-3 w-3 ${
-              avgRating 
-                ? 'text-amber-400 fill-current' 
-                : 'text-slate-400'
-            }`} />
-            <span>
-              {avgRating ? avgRating.toFixed(1) : 'N/A'}
-            </span>
-          </div>
-        </div>
-
-        {/* Horizontal divider */}
-        <div className="border-t border-slate-100 my-2"></div>
-
-        {/* Language and Dietary Tags Section - Improved spacing and grouping */}
-        {(center.languages_spoken.length > 0 || center.dietary_services.length > 0) && (
-          <div className="mb-2 space-y-2">
-            {/* Language Tags - Using same icon as filter UI */}
-            {center.languages_spoken.length > 0 && (
-              <div className="space-y-1">
-                <div className="flex items-center space-x-1.5">
-                  <Languages className="h-3.5 w-3.5 text-slate-400" />
-                  <span className="text-sm font-medium text-slate-600">Languages</span>
-                </div>
-                <div className="flex flex-wrap gap-1 ml-5">
-                  {center.languages_spoken.slice(0, 2).map((language, index) => (
-                    <div key={`lang-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                      {language}
-                    </div>
-                  ))}
-                  {center.languages_spoken.length > 2 && (
-                    <div className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                      +{center.languages_spoken.length - 2} more
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Dietary Services Tags - Using same icon as filter UI */}
-            {center.dietary_services.length > 0 && (
-              <div className="space-y-1">
-                <div className="flex items-center space-x-1.5">
-                  <Utensils className="h-3.5 w-3.5 text-slate-400" />
-                  <span className="text-sm font-semibold text-[#175d3e]">Food options</span>
-                </div>
-                <div className="flex flex-wrap gap-1 ml-5">
-                  {[...center.dietary_services].sort((a, b) => Number(/halal/i.test(b)) - Number(/halal/i.test(a))).map((service, index) => (
-                    <div key={`diet-${index}`} className="inline-flex items-center bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 px-2 py-1 rounded-lg text-xs font-medium border border-purple-200/60">
-                      {service}
-                    </div>
-                  ))}
-
-                </div>
-              </div>
-            )}
-          </div>
+      <div className="flex flex-wrap gap-2 border-t border-[#e4ece4] px-5 py-4">
+        {center.center_contact.phone ? (
+          <a href={`tel:${formatPhoneForTel(center.center_contact.phone)}`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#175d3e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#124b33]">
+            <Phone size={16} /> {center.center_contact.phone}
+          </a>
+        ) : (
+          <span className="inline-flex min-h-11 items-center rounded-full bg-[#f2f4ee] px-4 py-2 text-sm text-[#68786d]">No phone</span>
         )}
+        <button type="button" onClick={() => toggleFavorite(center.center_id)} aria-pressed={saved} className={actionClass}>
+          <Heart size={16} fill={saved ? 'currentColor' : 'none'} /> {saved ? 'Saved' : 'Save'}
+        </button>
+      </div>
 
-        {/* Horizontal divider before actions */}
-        <div className="border-t border-slate-100 my-2"></div>
-
-        {/* Action Buttons Section - Equal height and consistent styling */}
-        <div className="pt-1">
-          <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-            {/* Phone Button - Primary action */}
-            <div className="flex-1">
-              {center.center_contact.phone ? (
-                <a 
-                  href={`tel:${formatPhoneForTel(center.center_contact.phone)}`}
-                  className="inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-2 rounded-xl text-xs font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl w-full sm:w-auto touch-manipulation h-10"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Phone className="h-3.5 w-3.5" />
-                  <span className="truncate">{center.center_contact.phone}</span>
-                </a>
-              ) : (
-                <div className="inline-flex items-center justify-center space-x-2 bg-slate-100 text-slate-400 px-3 py-2 rounded-xl text-xs font-medium cursor-not-allowed w-full sm:w-auto h-10">
-                  <Phone className="h-3.5 w-3.5" />
-                  <span>No phone</span>
-                </div>
-              )}
-            </div>
-
-            {/* Secondary Actions - Equal height and consistent spacing */}
-            <div className="flex items-center justify-center sm:justify-end space-x-2">
-              {/* Favorite Button with Heart Icon */}
-              <button
-                onClick={handleSaveCenter}
-                className={`relative p-2 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl border-2 touch-manipulation h-10 w-10 flex items-center justify-center group ${
-                  isCurrentlyFavorited
-                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white border-white/20 hover:from-pink-600 hover:to-rose-600'
-                    : 'bg-gradient-to-r from-slate-500 to-slate-600 text-white border-white/20 hover:from-slate-600 hover:to-slate-700'
-                }`}
-                title={isCurrentlyFavorited ? "Remove from favorites" : "Add to favorites"}
-              >
-                <Heart className={`h-3.5 w-3.5 relative z-10 ${
-                  isCurrentlyFavorited ? 'fill-current' : ''
-                }`} />
-                
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-              </button>
-            </div>
+      <div className="space-y-4 border-t border-[#e4ece4] px-5 py-4 text-sm text-[#53685a]">
+        {ageGroups.length > 0 && <div><h3 className="font-semibold text-[#284a36]">Programs</h3><p className="mt-1">{ageGroups.join(' · ')}</p></div>}
+        <div>
+          <h3 className="font-semibold text-[#284a36]">Centre information</h3>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {center.CWELCC_participant && <span className="rounded-full bg-[#f2f4ee] px-3 py-1 text-xs font-medium">CWELCC</span>}
+            {center.subsidy_available && <span className="rounded-full bg-[#f2f4ee] px-3 py-1 text-xs font-medium">Subsidy</span>}
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#f2f4ee] px-3 py-1 text-xs font-medium"><Star size={13} /> Quality rating: {avgRating ? avgRating.toFixed(1) : 'N/A'}</span>
           </div>
+        </div>
+        {center.languages_spoken.length > 0 && (
+          <div><h3 className="font-semibold text-[#284a36]">Languages</h3><p className="mt-1">{center.languages_spoken.slice(0, 2).join(' · ')}{center.languages_spoken.length > 2 ? ` + ${center.languages_spoken.length - 2} more` : ''}</p></div>
+        )}
+        <div className="flex flex-wrap gap-x-5 gap-y-3 pt-1">
+          {center.center_contact.website && <a href={center.center_contact.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-[#175d3e] underline-offset-2 hover:underline">Website <ExternalLink size={14} /></a>}
+          <a href={center.center_listing_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-[#175d3e] underline-offset-2 hover:underline">Toronto.ca listing <ExternalLink size={14} /></a>
         </div>
       </div>
-    </div>
+    </article>
   );
 };

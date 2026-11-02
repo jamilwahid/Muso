@@ -16,17 +16,21 @@ function App() {
 
   return (
     <div className="flex h-[100dvh] min-h-0 flex-col overflow-hidden bg-[#faf9f4] text-[#20342b]">
-      <Header />
-      <section aria-label="Food filters" className="shrink-0 border-b border-[#dce8de] bg-[#fafbf7]">
-        <FilterBar filters={filters} onFiltersChange={setFilters} availableOptions={availableOptions} />
-        <div className="flex items-center justify-between gap-3 px-4 pb-3 sm:px-6">
-          <p className="text-xs font-medium text-[#5b7063]" aria-live="polite">
-            <span className="font-semibold text-[#234d38]">{filteredCenters.length.toLocaleString()} centres</span> · Toronto
+      <main className="relative min-h-0 flex-1" aria-label="Childcare map">
+        <MapPlaceholder centers={centers} filteredCount={filteredCenters.length} filteredCenters={filteredCenters} />
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[60] p-3 sm:p-4">
+          <div className="flex min-w-0 flex-col items-start gap-2 md:flex-row md:items-center md:gap-3">
+            <div className="pointer-events-auto shrink-0 overflow-hidden rounded-2xl border border-[#dce8de] bg-[#fafbf7]/95 shadow-[0_2px_12px_rgba(32,52,43,0.12)] backdrop-blur">
+              <Header />
+            </div>
+            <div className="pointer-events-auto max-w-full min-w-0 overflow-hidden rounded-2xl border border-[#dce8de] bg-[#fafbf7]/95 shadow-[0_2px_12px_rgba(32,52,43,0.12)] backdrop-blur">
+              <FilterBar filters={filters} onFiltersChange={setFilters} availableOptions={availableOptions} />
+            </div>
+          </div>
+          <p className="mt-2 inline-flex rounded-full border border-[#dce8de] bg-[#fafbf7]/95 px-3 py-1.5 text-xs font-medium text-[#355343] shadow-sm backdrop-blur" aria-live="polite">
+            {filteredCenters.length.toLocaleString()} centres · Toronto
           </p>
         </div>
-      </section>
-      <main className="relative min-h-0 flex-1">
-        <MapPlaceholder centers={centers} filteredCount={filteredCenters.length} filteredCenters={filteredCenters} />
       </main>
       <Footer />
     </div>

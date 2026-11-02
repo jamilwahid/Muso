@@ -1,7 +1,7 @@
 import { Baby } from 'lucide-react';
 
 export const Header = () => (
-  <header className="flex h-16 shrink-0 items-center gap-3 bg-[#fafbf7] px-4 sm:px-6">
+  <header className="flex h-14 shrink-0 items-center gap-3 px-4">
     <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#175d3e] text-white">
       <Baby size={22} aria-hidden="true" />
     </div>

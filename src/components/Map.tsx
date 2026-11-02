@@ -191,6 +191,14 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
     setCardPosition(null);
   }, []);
 
+  // Close details if the selected centre no longer matches the active filter.
+  useEffect(() => {
+    if (selectedCenter && !filteredCenters.some(center => center.center_id === selectedCenter.center_id)) {
+      setSelectedCenter(null);
+      setCardPosition(null);
+    }
+  }, [filteredCenters, selectedCenter]);
+
   // Handle keyboard events - ESC to dismiss
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -309,12 +317,12 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
       )}
       {/* Centre details stay within reach on small screens. */}
       {selectedCenter && (
-        <div className="absolute bottom-0 left-0 z-50 w-full max-h-[65%] overflow-y-auto rounded-t-[28px] bg-white p-3 shadow-2xl sm:bottom-4 sm:left-4 sm:max-w-[400px] sm:rounded-2xl">
-          <div className="flex justify-end">
+        <aside key={selectedCenter.center_id} aria-label="Selected centre details" className="absolute inset-x-2 bottom-2 z-50 max-h-[min(60%,calc(100%-11rem))] overflow-y-auto rounded-[24px] border border-[#dce8de] bg-[#fafbf7] shadow-[0_8px_30px_rgba(25,50,32,0.2)] md:inset-x-auto md:bottom-3 md:left-4 md:top-[110px] md:max-h-none md:w-[390px]">
+          <div className="sticky top-0 z-10 flex justify-end bg-[#fafbf7]/95 px-3 pt-2 backdrop-blur">
             <button type="button" onClick={() => { setSelectedCenter(null); setCardPosition(null); }} aria-label="Close centre details" className="flex h-10 w-10 items-center justify-center rounded-full text-2xl text-[#355343] hover:bg-[#edf4ed]">×</button>
           </div>
           <CenterCard center={selectedCenter} />
-        </div>
+        </aside>
       )}
 
       {/* Map Navigation Controls */}

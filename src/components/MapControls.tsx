@@ -15,7 +15,7 @@ export const MapControls: React.FC<MapControlsProps> = ({
   canZoomOut
 }) => {
   return (
-    <div className="absolute bottom-4 right-4 z-[100] flex flex-col space-y-2">
+    <div className="absolute bottom-4 right-4 z-20 flex flex-col space-y-2">
       {/* Zoom Controls */}
       <div className="flex flex-col space-y-1 bg-white/95 backdrop-blur-xl rounded-lg shadow-lg border border-white/30 p-1">
         {/* Zoom In */}
