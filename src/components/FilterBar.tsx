@@ -1,5 +1,5 @@
 import { Button } from '@heroui/react';
-import { Check, Leaf, Utensils } from 'lucide-react';
+import { Leaf, Utensils } from 'lucide-react';
 import { Filters } from '../types/center';
 
 interface FilterBarProps {
@@ -31,8 +31,8 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
         const active = selected === value;
         return (
           <Button key={value} aria-pressed={active} onPress={() => select(value)}
-            className={`h-11 shrink-0 rounded-full border px-4 text-sm font-semibold ${active ? 'border-[#175d3e] bg-[#175d3e] text-white shadow-[0_2px_8px_rgba(25,50,32,0.22)]' : 'border-[#d4e3d8] bg-[#fafbf7] text-[#355343] shadow-[0_2px_8px_rgba(25,50,32,0.18)]'}`}>
-            <Icon size={16} aria-hidden="true" /> {label} {active && <Check size={16} aria-hidden="true" />}
+            className={`h-11 shrink-0 rounded-full border px-4 text-sm font-semibold ${active ? 'border-[#175d3e] bg-[#175d3e] text-white shadow-[0_2px_8px_rgba(25,50,32,0.22)]' : 'border-[#9dbdab] bg-[#fafbf7] text-[#175d3e] shadow-[0_2px_8px_rgba(25,50,32,0.18)]'}`}>
+            <Icon size={16} aria-hidden="true" /> {label}
           </Button>
         );
       })}
