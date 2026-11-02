@@ -10,10 +10,12 @@ import { useFilters } from './hooks/useFilters';
 import { Center, Filters } from './types/center';
 import centersData from './data/centers.json';
 
+const defaultFoodOption = 'Halal Food Option Available';
+
 function App() {
   const [centers] = useState<Center[]>(centersData as Center[]);
   const [currentView, setCurrentView] = useState<'map' | 'list'>('map');
-  const [filters, setFilters] = useState<Filters>({ dietary_services: [] });
+  const [filters, setFilters] = useState<Filters>({ dietary_services: [defaultFoodOption] });
   const { filteredCenters, availableOptions } = useFilters(centers, filters);
 
   return (
@@ -34,7 +36,7 @@ function App() {
         {currentView === 'map' ? (
           <MapPlaceholder centers={centers} filteredCount={filteredCenters.length} filteredCenters={filteredCenters} />
         ) : (
-          <ListView filteredCenters={filteredCenters} clearAllFilters={() => setFilters({ dietary_services: [] })} />
+          <ListView filteredCenters={filteredCenters} clearAllFilters={() => setFilters({ dietary_services: [defaultFoodOption] })} />
         )}
       </main>
       <Footer />

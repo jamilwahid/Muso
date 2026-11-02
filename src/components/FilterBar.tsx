@@ -9,7 +9,6 @@ interface FilterBarProps {
 }
 
 const featuredOptions = [
-  { value: '', label: 'All centres' },
   { value: 'Halal Food Option Available', label: 'Halal food' },
   { value: 'Vegetarian Food Option Available', label: 'Vegetarian' },
   { value: 'Vegan Food Option Available', label: 'Vegan' },
@@ -20,7 +19,7 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
   const selected = filters.dietary_services[0] || '';
   const select = (value: string) => onFiltersChange({
     ...filters,
-    dietary_services: value ? [value] : []
+    dietary_services: [value]
   });
 
   return (

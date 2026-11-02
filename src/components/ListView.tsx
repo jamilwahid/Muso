@@ -28,7 +28,7 @@ export const ListView: React.FC<ListViewProps> = ({
                 onClick={clearAllFilters}
                 className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl text-lg"
               >
-                Explore All Centers
+                Show halal centres
               </button>
             </div>
           </div>
