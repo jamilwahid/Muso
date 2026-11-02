@@ -23,38 +23,29 @@ export const MapPlaceholder: React.FC<MapPlaceholderProps> = ({
   // Check if we have a Mapbox token
   if (!mapboxToken || mapboxToken.trim() === '') {
     return (
-      <div className="h-full bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 flex items-center justify-center relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 25px 25px, #6366f1 2px, transparent 0), radial-gradient(circle at 75px 75px, #8b5cf6 2px, transparent 0)`,
-            backgroundSize: '100px 100px'
-          }}></div>
-        </div>
+      <div className="flex h-full items-center justify-center overflow-auto bg-[#f2f6ef] p-5">
         
-        <div className="text-center space-y-6 relative z-10">
+        <div className="w-full max-w-lg space-y-6 rounded-3xl border border-[#dce8de] bg-[#fafbf7] p-6 text-center shadow-lg sm:p-8">
           <div className="relative">
-            <div className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl border border-white/20 inline-block">
-              <div className="bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 p-4 rounded-2xl">
-                <AlertCircle className="h-12 w-12 text-white" />
-              </div>
+            <div className="inline-flex rounded-2xl bg-[#e4f0e6] p-4">
+              <AlertCircle className="h-8 w-8 text-[#175d3e]" />
             </div>
           </div>
           
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-slate-800">Map Configuration Needed</h3>
-            <p className="text-slate-600 max-w-md leading-relaxed">
+            <h3 className="text-2xl font-semibold text-[#17392a]">Map Configuration Needed</h3>
+            <p className="max-w-md leading-relaxed text-[#53685a]">
               To display the interactive map, please add your Mapbox access token to the environment variables.
             </p>
             
-            <div className="bg-white/80 backdrop-blur-xl p-4 rounded-2xl shadow-lg border border-white/20 max-w-lg">
+            <div className="max-w-lg rounded-2xl border border-[#dce8de] bg-white p-4">
               <div className="text-left space-y-2">
-                <p className="text-sm font-semibold text-slate-700">Add to your .env file:</p>
-                <code className="block bg-slate-100 p-2 rounded-lg text-xs font-mono text-slate-800">
+                <p className="text-sm font-semibold text-[#284a36]">Add to your .env file:</p>
+                <code className="block break-all rounded-lg bg-[#f2f6ef] p-2 font-mono text-xs text-[#203c2c]">
                   VITE_MAPBOX_TOKEN=your_mapbox_token_here
                 </code>
-                <p className="text-xs text-slate-500">
-                  Get your free token at <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">mapbox.com</a>
+                <p className="text-sm text-[#53685a]">
+                  Get your free token at <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="text-[#175d3e] underline">mapbox.com</a>
                 </p>
               </div>
             </div>
@@ -67,25 +58,23 @@ export const MapPlaceholder: React.FC<MapPlaceholderProps> = ({
   // If there's a map error, show fallback
   if (mapError) {
     return (
-      <div className="h-full bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 flex items-center justify-center relative overflow-hidden">
-        <div className="text-center space-y-6 relative z-10">
+      <div className="flex h-full items-center justify-center overflow-auto bg-[#f2f6ef] p-5">
+        <div className="w-full max-w-lg space-y-6 rounded-3xl border border-[#dce8de] bg-[#fafbf7] p-6 text-center shadow-lg sm:p-8">
           <div className="relative">
-            <div className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl border border-white/20 inline-block">
-              <div className="bg-gradient-to-br from-red-500 via-pink-500 to-purple-500 p-4 rounded-2xl">
-                <AlertCircle className="h-12 w-12 text-white" />
-              </div>
+            <div className="inline-flex rounded-2xl bg-[#e4f0e6] p-4">
+              <AlertCircle className="h-8 w-8 text-[#175d3e]" />
             </div>
           </div>
           
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-slate-800">Map Loading Error</h3>
-            <p className="text-slate-600 max-w-md leading-relaxed">
+            <h3 className="text-2xl font-semibold text-[#17392a]">Map Loading Error</h3>
+            <p className="max-w-md leading-relaxed text-[#53685a]">
               There was an issue loading the map. Please check your internet connection and Mapbox token.
             </p>
             
             <button
               onClick={() => setMapError(false)}
-              className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-2xl font-bold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="min-h-11 rounded-full bg-[#175d3e] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#124b33] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#175d3e]"
             >
               Try Again
             </button>
