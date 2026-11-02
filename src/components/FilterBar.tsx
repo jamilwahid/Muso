@@ -1,5 +1,5 @@
 import { Button } from '@heroui/react';
-import { Check } from 'lucide-react';
+import { Check, Leaf, Sprout, Utensils } from 'lucide-react';
 import { Filters } from '../types/center';
 
 interface FilterBarProps {
@@ -8,28 +8,32 @@ interface FilterBarProps {
   availableOptions: { dietaryServices: string[] };
 }
 
+const PorkFreeIcon = () => (
+  <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 12a7.5 7.5 0 0 1 12.8-5.3L20 6v3.1a7 7 0 0 1 1 3.7v1.1l-2.3.8a7.5 7.5 0 0 1-2.1 2.7V20h-2.5l-.7-1.3H9L8.3 20H6v-3.1A7.6 7.6 0 0 1 4 12Z" />
+    <path d="M17.5 11h.01M2.5 3l19 18" />
+  </svg>
+);
+
 const featuredOptions = [
-  { value: 'Halal Food Option Available', label: 'Halal food' },
-  { value: 'Vegetarian Food Option Available', label: 'Vegetarian' },
-  { value: 'Vegan Food Option Available', label: 'Vegan' },
-  { value: 'Pork-Free Menu', label: 'Pork-free' }
+  { value: 'Halal Food Option Available', label: 'Halal options', Icon: Utensils },
+  { value: 'Vegetarian Food Option Available', label: 'Vegetarian options', Icon: Leaf },
+  { value: 'Vegan Food Option Available', label: 'Vegan options', Icon: Sprout },
+  { value: 'Pork-Free Menu', label: 'Pork-free menu', Icon: PorkFreeIcon }
 ];
 
 export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
   const selected = filters.dietary_services[0] || '';
-  const select = (value: string) => onFiltersChange({
-    ...filters,
-    dietary_services: [value]
-  });
+  const select = (value: string) => onFiltersChange({ ...filters, dietary_services: [value] });
 
   return (
     <div className="flex max-w-full gap-2 overflow-x-auto overscroll-x-contain scroll-px-1 px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-4" aria-label="Food options">
-      {featuredOptions.map(option => {
-        const active = selected === option.value;
+      {featuredOptions.map(({ value, label, Icon }) => {
+        const active = selected === value;
         return (
-          <Button key={option.label} aria-pressed={active} onPress={() => select(option.value)}
+          <Button key={value} aria-pressed={active} onPress={() => select(value)}
             className={`h-11 shrink-0 rounded-full border px-4 text-sm font-semibold ${active ? 'border-[#175d3e] bg-[#175d3e] text-white shadow-[0_2px_8px_rgba(25,50,32,0.22)]' : 'border-[#d4e3d8] bg-[#fafbf7] text-[#355343] shadow-[0_2px_8px_rgba(25,50,32,0.18)]'}`}>
-            {active && <Check size={16} />} {option.label}
+            <Icon size={16} aria-hidden="true" /> {label} {active && <Check size={16} aria-hidden="true" />}
           </Button>
         );
       })}
