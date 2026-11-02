@@ -11,7 +11,6 @@ interface FilterBarProps {
 const featuredOptions = [
   { value: '', label: 'All centres' },
   { value: 'Halal Food Option Available', label: 'Halal food' },
-  { value: 'Halal Centre', label: 'Halal centre' },
   { value: 'Vegetarian Food Option Available', label: 'Vegetarian' },
   { value: 'Vegan Food Option Available', label: 'Vegan' },
   { value: 'Pork-Free Menu', label: 'Pork-free' }
