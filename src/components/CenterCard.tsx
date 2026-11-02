@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Check, Copy, ExternalLink, Globe, Heart, MapPin, Phone } from 'lucide-react';
 import { Center } from '../types/center';
 import { useFavorites } from '../hooks/useFavorites';
+import { foodOptions, matchesFoodOption } from '../utils/foodOptions';
 
 interface CenterCardProps {
   center: Center;
@@ -20,6 +21,7 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
   const [copyStatus, setCopyStatus] = useState<{ field: 'address' | 'phone'; message: string; success: boolean } | null>(null);
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ageGroups = [...new Set(center.programs.map(program => program.age_group).filter(Boolean))];
+  const listedFoodOptions = foodOptions.filter(option => matchesFoodOption(center.dietary_services, option.value));
   const address = `${center.location.address}${center.location.postal_code ? `, ${center.location.postal_code}` : ''}`;
   const phone = center.center_contact.phone?.trim();
   const buttonClass = 'inline-flex min-h-11 min-w-0 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#175d3e]';
@@ -74,6 +76,12 @@ export const CenterCard: React.FC<CenterCardProps> = ({ center }) => {
       <section className="border-t border-[#e4ece4] px-5 py-4 sm:px-6" aria-label="Programs">
         <h3 className="text-sm font-semibold text-[#284a36]">Programs</h3>
         <p className="mt-1.5 text-sm leading-relaxed text-[#53685a]">{ageGroups.length ? ageGroups.join(' · ') : 'Programs not listed'}</p>
+      </section>
+
+      <section className="border-t border-[#e4ece4] px-5 py-4 sm:px-6" aria-label="Food options">
+        <h3 className="text-sm font-semibold text-[#284a36]">Food options</h3>
+        <p className="mt-1.5 text-sm leading-relaxed text-[#53685a]">{listedFoodOptions.length ? listedFoodOptions.map(option => option.label).join(' · ') : 'No food options listed'}</p>
+        {listedFoodOptions.length > 0 && <p className="mt-1 text-sm text-[#53685a]">Confirm details with the centre</p>}
       </section>
 
       <section className="border-t border-[#e4ece4] px-5 py-4 sm:px-6" aria-label="Centre actions">
