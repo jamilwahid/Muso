@@ -23,12 +23,12 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
   });
 
   return (
-    <div className="flex max-w-full gap-2 overflow-x-auto overscroll-x-contain scroll-px-3 px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-4" aria-label="Food options">
+    <div className="flex max-w-full gap-2 overflow-x-auto overscroll-x-contain scroll-px-1 px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-4" aria-label="Food options">
       {featuredOptions.map(option => {
         const active = selected === option.value;
         return (
           <Button key={option.label} aria-pressed={active} onPress={() => select(option.value)}
-            className={`h-11 shrink-0 rounded-full border px-4 text-sm font-semibold ${active ? 'border-[#175d3e] bg-[#175d3e] text-white' : 'border-[#cbdad0] bg-white text-[#355343]'}`}>
+            className={`h-11 shrink-0 rounded-full border px-4 text-sm font-semibold ${active ? 'border-[#175d3e] bg-[#175d3e] text-white shadow-[0_2px_8px_rgba(25,50,32,0.22)]' : 'border-[#d4e3d8] bg-[#fafbf7] text-[#355343] shadow-[0_2px_8px_rgba(25,50,32,0.18)]'}`}>
             {active && <Check size={16} />} {option.label}
           </Button>
         );

@@ -19,7 +19,7 @@ export const MapControls: React.FC<MapControlsProps> = ({
   expanded
 }) => {
   return (
-    <div className={`absolute right-4 z-20 flex flex-col space-y-2 md:bottom-4 ${selected ? (expanded ? 'hidden md:flex' : 'bottom-[220px]') : 'bottom-14'}`}>
+    <div className={`absolute right-4 z-20 flex flex-col space-y-2 md:bottom-4 ${selected ? (expanded ? 'hidden md:flex' : 'bottom-[calc(60%+3rem)]') : 'bottom-14'}`}>
       {/* Zoom Controls */}
       <div className="flex flex-col space-y-1 bg-white/95 backdrop-blur-xl rounded-lg shadow-lg border border-white/30 p-1">
         {/* Zoom In */}

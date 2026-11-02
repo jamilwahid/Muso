@@ -23,7 +23,7 @@ function App() {
             <div className="pointer-events-auto shrink-0 rounded-2xl border border-[#dce8de] bg-[#fafbf7]/95 shadow-[0_2px_12px_rgba(32,52,43,0.12)] backdrop-blur">
               <Header />
             </div>
-            <div className="pointer-events-auto max-w-full min-w-0 overflow-hidden rounded-2xl border border-[#dce8de] bg-[#fafbf7]/95 shadow-[0_2px_12px_rgba(32,52,43,0.12)] backdrop-blur">
+            <div className="pointer-events-auto max-w-full min-w-0">
               <FilterBar filters={filters} onFiltersChange={setFilters} availableOptions={availableOptions} />
             </div>
           </div>
