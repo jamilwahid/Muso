@@ -24,3 +24,10 @@ html, body, #root { height: 100%; margin: 0; }
 .map-popup .mapboxgl-popup-content {
   background: transparent !important;
 }
+/* Keep map attribution above the mobile sheet. */
+@media (max-width: 767px) {
+  .muso-map.sheet-collapsed .mapboxgl-ctrl-bottom-left,
+  .muso-map.sheet-collapsed .mapboxgl-ctrl-bottom-right { bottom: 164px; }
+  .muso-map.sheet-expanded .mapboxgl-ctrl-bottom-left,
+  .muso-map.sheet-expanded .mapboxgl-ctrl-bottom-right { bottom: min(75%, calc(100% - 5rem)); }
+}

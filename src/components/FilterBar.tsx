@@ -23,7 +23,7 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
   });
 
   return (
-    <div className="flex gap-2 overflow-x-auto px-4 py-3 sm:px-6" aria-label="Food options">
+    <div className="flex max-w-full gap-2 overflow-x-auto overscroll-x-contain scroll-px-3 px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-4" aria-label="Food options">
       {featuredOptions.map(option => {
         const active = selected === option.value;
         return (

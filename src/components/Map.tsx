@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import Map, { Marker } from 'react-map-gl';
+import MapGL, { Marker } from 'react-map-gl';
 import { MapPin } from 'lucide-react';
 import { Center } from '../types/center';
 import { CenterDetailsPanel } from './CenterDetailsPanel';
 import { MapControls } from './MapControls';
 import { useFavorites } from '../hooks/useFavorites';
+import { clusterCenters } from '../utils/clusterCenters';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface MapComponentProps {
@@ -14,6 +15,14 @@ interface MapComponentProps {
 
 export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) => {
   const [selectedCenter, setSelectedCenter] = useState<Center | null>(null);
+  const [sheetExpanded, setSheetExpanded] = useState(false);
+  const [mobile, setMobile] = useState(() => window.matchMedia('(max-width: 767px)').matches);
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 767px)');
+    const update = () => setMobile(query.matches);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
   const [hoveredCenter, setHoveredCenter] = useState<Center | null>(null);
   const favoritesHook = useFavorites();
   const { favorites, favoritesCount } = favoritesHook;
@@ -51,6 +60,35 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
       !isNaN(center.location.longitude)
     );
   }, [filteredCenters, favorites, favoritesCount]); // Force re-render when favorites change
+
+  const markerGroups = useMemo(() => {
+    const others = centersWithCoords.filter(center => center.center_id !== selectedCenter?.center_id);
+    const groups = clusterCenters(others, viewState.zoom, mobile);
+    if (selectedCenter && centersWithCoords.some(center => center.center_id === selectedCenter.center_id)) groups.push([selectedCenter]);
+    return groups;
+  }, [centersWithCoords, mobile, viewState.zoom, selectedCenter]);
+
+  // Separate centres with identical coordinates at close zoom so each can be selected.
+  const markerOffsets = useMemo(() => {
+    const offsets = new Map<string, [number, number]>();
+    if (!mobile || viewState.zoom < 17) return offsets;
+    const locations = new Map<string, Center[]>();
+    centersWithCoords.forEach(center => {
+      const key = `${center.location.longitude},${center.location.latitude}`;
+      const colocated = locations.get(key) || [];
+      colocated.push(center);
+      locations.set(key, colocated);
+    });
+    locations.forEach(colocated => {
+      if (colocated.length < 2) return;
+      const radius = Math.max(20, (colocated.length * 40) / (2 * Math.PI));
+      colocated.forEach((center, index) => {
+        const angle = (index * 2 * Math.PI) / colocated.length;
+        offsets.set(center.center_id, [Math.round(radius * Math.cos(angle)), Math.round(radius * Math.sin(angle))]);
+      });
+    });
+    return offsets;
+  }, [centersWithCoords, mobile, viewState.zoom]);
 
   // Handle map movement to track user interaction
   const handleMove = useCallback((evt: any) => {
@@ -155,6 +193,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
     } else {
       // Select the new marker
       setSelectedCenter(center);
+      setSheetExpanded(false);
+      if (mobile && mapRef.current) {
+        mapRef.current.getMap().easeTo({ center: [center.location.longitude!, center.location.latitude!], offset: [0, -100], duration: 450 });
+      }
       
       // Calculate card position after a brief delay to ensure map is ready
       setTimeout(() => {
@@ -162,7 +204,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
         setCardPosition(position);
       }, 100);
     }
-  }, [selectedCenter, calculateCardPosition]);
+  }, [selectedCenter, calculateCardPosition, mobile]);
 
   // Handle marker hover
   const handleMarkerMouseEnter = useCallback((center: Center, event: any) => {
@@ -220,8 +262,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
   }, [viewState, selectedCenter, calculateCardPosition]);
 
   return (
-    <div className="relative h-full w-full">
-      <Map
+    <div className={`muso-map relative h-full w-full ${selectedCenter ? (sheetExpanded ? 'sheet-expanded' : 'sheet-collapsed') : ''}`}>
+      <MapGL
         ref={mapRef}
         {...viewState}
         onMove={handleMove}
@@ -230,10 +272,20 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%' }}
         attributionControl={true}
-        logoPosition="bottom-right"
+        logoPosition="bottom-left"
       >
-        {/* Only render filtered centers with coordinates - Force re-render with key */}
-        {centersWithCoords.map((center) => {
+        {markerGroups.map((group) => {
+          if (group.length > 1) {
+            const longitude = group.reduce((sum, center) => sum + center.location.longitude!, 0) / group.length;
+            const latitude = group.reduce((sum, center) => sum + center.location.latitude!, 0) / group.length;
+            return <Marker key={`cluster-${group.map(center => center.center_id).join('-')}`} longitude={longitude} latitude={latitude} anchor="center" onClick={event => {
+              event.originalEvent.stopPropagation();
+              setSelectedCenter(null);
+              setSheetExpanded(false);
+              mapRef.current?.getMap().easeTo({center: [longitude, latitude], zoom: Math.min(viewState.zoom + 2, 17), duration: 400});
+            }}><button type="button" aria-label={`${group.length} centres, zoom in`} className="flex h-11 min-w-11 items-center justify-center rounded-full border-[3px] border-white bg-[#32465d] px-2 text-sm font-bold text-white shadow-lg">{group.length}</button></Marker>;
+          }
+          const center = group[0];
           const isSelected = selectedCenter?.center_id === center.center_id;
           const isCenterFavorited = favoritesHook.isFavorite(center.center_id);
           
@@ -248,6 +300,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
               longitude={center.location.longitude!}
               latitude={center.location.latitude!}
               anchor="bottom"
+              offset={markerOffsets.get(center.center_id) || [0, 0]}
+              style={{ zIndex: isSelected ? 5 : 1 }}
               onClick={(e) => handleMarkerClick(center, e)}
             >
               <div 
@@ -291,7 +345,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
           );
         })}
 
-      </Map>
+      </MapGL>
 
       {/* Hover Tooltip */}
       {hoveredCenter && tooltipPosition && !selectedCenter && (
@@ -316,7 +370,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
       )}
       {/* Centre details stay within reach on small screens. */}
       {selectedCenter && (
-        <CenterDetailsPanel key={selectedCenter.center_id} center={selectedCenter} onClose={() => { setSelectedCenter(null); setCardPosition(null); }} />
+        <CenterDetailsPanel key={selectedCenter.center_id} center={selectedCenter} expanded={sheetExpanded} onExpandedChange={setSheetExpanded} onClose={() => { setSelectedCenter(null); setCardPosition(null); }} />
       )}
 
       {/* Map Navigation Controls */}
@@ -325,6 +379,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({ filteredCenters }) =
         onZoomOut={handleZoomOut}
         canZoomIn={canZoomIn}
         canZoomOut={canZoomOut}
+        selected={!!selectedCenter}
+        expanded={sheetExpanded}
       />
 
 

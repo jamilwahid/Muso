@@ -6,16 +6,20 @@ interface MapControlsProps {
   onZoomOut: () => void;
   canZoomIn: boolean;
   canZoomOut: boolean;
+  selected: boolean;
+  expanded: boolean;
 }
 
 export const MapControls: React.FC<MapControlsProps> = ({
   onZoomIn,
   onZoomOut,
   canZoomIn,
-  canZoomOut
+  canZoomOut,
+  selected,
+  expanded
 }) => {
   return (
-    <div className="absolute bottom-4 right-4 z-20 flex flex-col space-y-2">
+    <div className={`absolute right-4 z-20 flex flex-col space-y-2 md:bottom-4 ${selected ? (expanded ? 'hidden md:flex' : 'bottom-[220px]') : 'bottom-14'}`}>
       {/* Zoom Controls */}
       <div className="flex flex-col space-y-1 bg-white/95 backdrop-blur-xl rounded-lg shadow-lg border border-white/30 p-1">
         {/* Zoom In */}
