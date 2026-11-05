@@ -1,41 +1,7 @@
-@import "tailwindcss";
-@import "@heroui/styles";
-
-@config "../tailwind.config.js";
-
-html, body, #root { height: 100%; margin: 0; }
-
-/* Custom styles for Mapbox popup */
-.mapboxgl-popup {
-  max-width: none !important;
-}
-
-.mapboxgl-popup-content {
-  padding: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-}
-
-.mapboxgl-popup-tip {
-  display: none !important;
-}
-
-.map-popup .mapboxgl-popup-content {
-  background: transparent !important;
-}
-/* Keep map attribution above the mobile sheet. */
-@media (max-width: 767px) {
-  .muso-map.sheet-collapsed .mapboxgl-ctrl-bottom-left,
-  .muso-map.sheet-collapsed .mapboxgl-ctrl-bottom-right { bottom: 60%; }
-  .muso-map.sheet-expanded .mapboxgl-ctrl-bottom-left,
-  .muso-map.sheet-expanded .mapboxgl-ctrl-bottom-right { bottom: 86%; }
-}
-
-@media (max-width: 767px) {
-  .mobile-centre-sheet { animation: centre-sheet-enter 260ms ease-out; }
-  @keyframes centre-sheet-enter { from { transform: translateY(100%); } to { transform: translateY(0); } }
-}
-@media (prefers-reduced-motion: reduce) {
-  .mobile-centre-sheet { animation: none; }
-}
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+@import './styles/palette.css';
+@import './styles/foundations.css';
+@import './styles/base.css';
+@import './styles/components.css';
+@import './styles/pages.css';
+@import './styles/finder.css';

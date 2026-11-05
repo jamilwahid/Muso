@@ -1,0 +1,38 @@
+/* Muso colour system — change the values here to switch the interface palette.
+   Roles are shared by CSS and the Mapbox map. Keep text/action contrast checked. */
+:root {
+  --color-ink: #3f103d;
+  --color-text: #534158;
+  --color-muted: #68556a;
+  --color-brand: #f15a24;
+  --color-brand-strong: #ad360c;
+  --color-action: #103f9c;
+  --color-action-hover: #0b2e76;
+  --color-accent: #62b994;
+  --color-accent-soft: #dcefe4;
+  --color-surface: #ffffff;
+  --color-canvas: #fffaf5;
+  --color-surface-warm: #fbf1e6;
+  --color-surface-cool: #edf3fa;
+  --color-surface-accent: #e5f3eb;
+  --color-border: #dbd1d9;
+  --color-border-strong: #a998aa;
+  --color-on-dark: #ffffff;
+  --color-focus: #315ec2;
+  --color-map-land: #fbf1e6;
+  --color-map-water: #b8e1ef;
+  --color-map-park: #d7ead9;
+  --color-map-label: #68556a;
+  --color-map-marker: #cc4314;
+  --color-map-selected: #103f9c;
+  --color-map-marker-text: #ffffff;
+  --color-shadow-soft: rgba(63, 16, 61, .10);
+  --color-shadow-medium: rgba(63, 16, 61, .18);
+  --color-shadow-strong: rgba(63, 16, 61, .27);
+  /* Existing short names remain aliases to the semantic roles. */
+  --ink: var(--color-ink);
+  --coral: var(--color-brand);
+  --blue: var(--color-action);
+  --cream: var(--color-surface-warm);
+  --line: var(--color-border);
+}

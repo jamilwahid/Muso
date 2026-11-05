@@ -1,0 +1,16 @@
+:root {
+  --font-body: 'Nunito', system-ui, sans-serif;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --radius-control: 9px;
+  --radius-panel: 14px;
+  --radius-pill: 100px;
+  --header-height: 76px;
+}
+@media (max-width: 767px) { :root { --header-height: 64px; } }
